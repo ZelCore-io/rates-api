@@ -11,7 +11,8 @@ const zeltrezRates = {
       request({ uri: 'https://www.cryptopia.co.nz/api/GetMarket/ANON_BTC', json: true }),
       request({ uri: 'https://api.coinmarketcap.com/v1/ticker/suqa/', json: true }),
       request({ uri: 'https://tradesatoshi.com/api/public/getticker?market=GENX_BTC', json: true }),
-      request({ uri: 'https://coinlib.io/api/v1/coin?key=38bc7ea5cf2b6231&pref=BTC&symbol=POR', json: true }),
+      request({ uri: 'https://api.crex24.com/v2/public/tickers?instrument=BZE-BTC', json: true }),
+      request({ uri: 'https://coinlib.io/api/v1/coin?key=38bc7ea5cf2b6231&pref=BTC&symbol=POR', json: true })
     ]).then((results) => {
       const ccDataA = results[0]; // results from cryptocompare
       const ccDataB = results[1]; // results from cryptocompare
@@ -21,7 +22,8 @@ const zeltrezRates = {
       const anonprice = results[5].Data.LastPrice
       const suqaprice = Number(results[6][0].price_btc)
       const genxprice = results[7].result.last
-      const porprice = Number(results[8].price)
+      const bzeprice = results[8][0].last
+      const porprice = Number(results[9].price)
 
       const rates = [];
       const efg = {}
@@ -41,6 +43,7 @@ const zeltrezRates = {
       efg.ANON = anonprice
       efg.SUQA = suqaprice
       efg.GENX = genxprice
+      efg.BZE = bzeprice
       efg.POR = porprice
       rates.push(bitpayData);
       rates.push(efg)
