@@ -1,7 +1,7 @@
 {
   "name": "rates-api",
-  "version": "1.0.0",
-  "description": "Service that supplies rates conversion for ZelTreZ coins to other curriences",
+  "version": "1.1.0",
+  "description": "Service that supplies rates conversion for ZelCore coins to other curriences",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
