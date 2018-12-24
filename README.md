@@ -1,5 +1,5 @@
-# zeltrez-rates-api
-A Restful API that displays currently integrated ZelTreZ coins in exchange Rates
+# zelcore-rates-api
+A Restful API that displays currently integrated ZelCore coins in exchange Rates
 
 ## Requirements
 Requires node version 6.0 and above
