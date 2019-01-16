@@ -15,11 +15,10 @@ var zeltrezRates = {
   getAll() {
     return Promise.all([
       apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=TOK,CONI,PAX,GUSD,USDC,ETC,XMR,DASH,BTC,ETH,ZEC,USDT,LTC,BTCZ,RVN,BCH,BNB,BTX,SONM,OMG,ZIL,ZRX,GNT,SPHTX,BAT,MKR,KNC,ENG,PAY,SUB,CVC,STX,BTG,KCS,SRN&tsyms=BTC'),
-      apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=HUSH,ZCL,XSG,BTCP,ZEN,KMD,XZC,ZER,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,RDN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARN,BRD,REP,QKC,LOOM&tsyms=BTC'),
+      apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=HUSH,ZCL,XSG,BTCP,ZEN,KMD,XZC,ZER,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,RDN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARN,BRD,REP,QKC,LOOM,ANON&tsyms=BTC'),
       apiRequest('https://bitpay.com/api/rates'),
       apiRequest('https://www.worldcoinindex.com/apiservice/ticker?key=pZURzUjb0QFbY9knkicp3rrOqwYdwn&label=safebtc&fiat=btc'),
       apiRequest('https://api.coinmarketcap.com/v1/ticker/zelcash/'),
-      apiRequest('https://www.cryptopia.co.nz/api/GetMarket/ANON_BTC'),
       apiRequest('https://api.coinmarketcap.com/v1/ticker/suqa/'),
       apiRequest('https://tradesatoshi.com/api/public/getticker?market=GENX_BTC'),
       apiRequest('https://api.crex24.com/v2/public/tickers?instrument=BZE-BTC'),
@@ -51,35 +50,29 @@ var zeltrezRates = {
         errors.errors.ZEL = results[4]
       }
       try {
-        var anonprice = results[5].Data.LastPrice
-        efg.ANON = anonprice
-      } catch (e) {
-        errors.errors.ANON = results[5]
-      }
-      try {
-        var suqaprice = Number(results[6][0].price_btc)
+        var suqaprice = Number(results[5][0].price_btc)
         efg.SUQA = suqaprice
       } catch (e) {
-        errors.errors.suqa = results[6]
+        errors.errors.suqa = results[5]
       }
       try {
-        var genxprice = results[7].result.last
+        var genxprice = results[6].result.last
         efg.GENX = genxprice
       } catch (e) {
-        errors.errors.GENX = results[7]
+        errors.errors.GENX = results[6]
       }
       try {
-        var bzeprice = results[8][0].last
+        var bzeprice = results[7][0].last
         efg.BZE = bzeprice
       } catch (e) {
-        errors.errors.BZE = results[8]
+        errors.errors.BZE = results[7]
       }
       try {
-        var eztest = results[9].markets[0].symbol
-        var porprice = Number(results[9].price)
+        var eztest = results[8].markets[0].symbol
+        var porprice = Number(results[8].price)
         efg.POR = porprice
       } catch (e) {
-        errors.errors.POR = results[9]
+        errors.errors.POR = results[8]
       }
 
       var coinsA = Object.keys(ccDataA)
