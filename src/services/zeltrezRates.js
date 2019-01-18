@@ -68,7 +68,6 @@ var zeltrezRates = {
         errors.errors.BZE = results[7]
       }
       try {
-        var eztest = results[8].markets[0].symbol
         var porprice = Number(results[8].price)
         efg.POR = porprice
       } catch (e) {
