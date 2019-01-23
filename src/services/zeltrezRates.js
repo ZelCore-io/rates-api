@@ -22,7 +22,8 @@ var zeltrezRates = {
       apiRequest('https://api.coinmarketcap.com/v1/ticker/suqa/'),
       apiRequest('https://tradesatoshi.com/api/public/getticker?market=GENX_BTC'),
       apiRequest('https://api.crex24.com/v2/public/tickers?instrument=BZE-BTC'),
-      apiRequest('https://coinlib.io/api/v1/coin?key=38bc7ea5cf2b6231&pref=BTC&symbol=POR')
+      apiRequest('https://coinlib.io/api/v1/coin?key=38bc7ea5cf2b6231&pref=BTC&symbol=POR'),
+      apiRequest('https://api.instantbitex.com/customticker/BTH_BTC')
     ]).then((results) => {
       var rates = [];
       var efg = {};
@@ -72,6 +73,12 @@ var zeltrezRates = {
         efg.POR = porprice
       } catch (e) {
         errors.errors.POR = results[8]
+      }
+      try {
+        var bthprice = Number(results[9].combinations.last)
+        efg.BTH = bthprice
+      } catch (e) {
+        errors.errors.BTH = results[9]
       }
 
       var coinsA = Object.keys(ccDataA)
