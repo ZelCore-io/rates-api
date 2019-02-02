@@ -106,6 +106,8 @@ var zeltrezRates = {
           errors.errors.coinsB = results[1]
         }
       })
+      
+      efg.TEL = 0
 
       rates.push(bitpayData);
       rates.push(efg);
