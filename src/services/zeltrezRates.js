@@ -107,7 +107,7 @@ var zeltrezRates = {
         }
       })
       
-      efg.TEL = 0
+      efg.TESTZEL = 0
 
       rates.push(bitpayData);
       rates.push(efg);
