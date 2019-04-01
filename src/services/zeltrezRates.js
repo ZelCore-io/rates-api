@@ -14,7 +14,7 @@ function apiRequest(url) {
 var zeltrezRates = {
   getAll() {
     return Promise.all([
-      apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=TOK,CONI,PAX,GUSD,USDC,ETC,XMR,DASH,BTC,ETH,ZEC,USDT,LTC,BTCZ,RVN,BCH,BNB,BTX,SONM,OMG,ZIL,ZRX,GNT,SPHTX,BAT,MKR,KNC,ENG,PAY,SUB,CVC,STX,BTG,KCS,SRN,,EVX,FET,GTO,GVT,HOT,INS,IOTX,KEY,LUN,MDA,MITH,MTH,OAX,OST,PPT,QSP,REN,RLC,SNGLS,TNB,TNT,VIB,VIBE,WABI,WPR,DOCK,FUEL,BZX,CDT,CELR,CND,DATA,DGD,DLT,AGI&tsyms=BTC'),
+      apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=TOK,CONI,PAX,GUSD,USDC,ETC,XMR,DASH,BTC,ETH,ZEC,USDT,LTC,BTCZ,RVN,BCH,BNB,BTX,SONM,OMG,ZIL,ZRX,GNT,SPHTX,BAT,MKR,KNC,ENG,PAY,SUB,CVC,STX,BTG,KCS,SRN,,EVX,FET,GTO,GVT,HOT,INS,IOTX,KEY,LUN,MDA,MITH,MTH,OAX,OST,PPT,QSP,REN,RLC,SNGLS,TNB,TNT,VIB,VIBE,WABI,WPR,DOCK,FUEL, CDT,CELR,CND,DATA,DGD,DLT,AGI&tsyms=BTC'),
       apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=HUSH,ZCL,XSG,BTCP,ZEN,KMD,XZC,ZER,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,RDN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARN,BRD,REP,QKC,LOOM,ANON,EURS,AMB,BCPT&tsyms=BTC'),
       apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=EOS,ADA,XRP,DOCK,NEO,TRON,BTT&tsyms=BTC'),
       apiRequest('https://bitpay.com/api/rates'),
@@ -28,6 +28,7 @@ var zeltrezRates = {
       apiRequest('https://api.coinmarketcap.com/v1/ticker/commercium/'),
       apiRequest('https://api.coinmarketcap.com/v1/ticker/groestlcoin/'),
       apiRequest('https://openapi.idax.pro/api/v2/ticker?pair=GUNTHY_BTC'),
+      apiRequest('https://api.coinmarketcap.com/v1/ticker/bitcoin-zero/'),
     ]).then((results) => {
       var rates = [];
       var efg = {};
@@ -98,10 +99,16 @@ var zeltrezRates = {
         errors.errors.GRS = results[12]
       }
       try {
-        var grsprice = Number(results[13].ticker[0].last)
-        efg.GUNTHY = grsprice
+        var gunthyprice = Number(results[13].ticker[0].last)
+        efg.GUNTHY = gunthyprice
       } catch (e) {
         errors.errors.GUNTHY = results[13]
+      }
+      try {
+        var bzxprice = Number(results[14][0].price_btc)
+        efg.BZX = bzxprice
+      } catch (e) {
+        errors.errors.BZX = results[14]
       }
 
       var coinsA = Object.keys(ccDataA)
