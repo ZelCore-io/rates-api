@@ -73,7 +73,7 @@ var zelcoreMarkets = {
         try {
           var coindetail ={}
           coindetail['price'] = ccDataFullC.RAW[coin].BTC.PRICE
-          coindetail['SUPPLY'] = ccDataFullC.RAW[coin].BTC.SUPPLY
+          coindetail['supply'] = ccDataFullC.RAW[coin].BTC.SUPPLY
           coindetail['volume'] = ccDataFullC.RAW[coin].BTC.TOTALVOLUME24H
           coindetail['change'] = ccDataFullC.RAW[coin].BTC.CHANGEPCT24HOUR
           coindetail['market'] = ccDataFullC.RAW[coin].BTC.MKTCAP
