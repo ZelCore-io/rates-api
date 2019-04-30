@@ -173,7 +173,6 @@ var zelcoreRates = {
       var coinsFullD = Object.keys(ccDataFullD) // full results from coingecko
       coinsFullD.forEach((coin) => {
         try {
-          console.log(upperCase(ccDataFullD[coin].symbol))
           var coindetail ={}
           coindetail['current_price'] = ccDataFullD[coin].current_price
           coindetail['circulating_supply'] = ccDataFullD[coin].circulating_supply
