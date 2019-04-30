@@ -19,12 +19,10 @@ var zelcoreRates = {
       apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=HUSH,ZCL,XSG,BTCP,ZEN,KMD,XZC,ZER,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,RDN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARN,BRD,REP,QKC,LOOM,ANON,EURS,AMB,BCPT&tsyms=BTC'),
       apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=EOS,ADA,XRP,DOCK,NEO,TRON,BTT,SAFE,SUQA,BTH,GRS,ZEL&tsyms=BTC'),
       apiRequest('https://bitpay.com/api/rates'),
-      apiRequest('https://www.worldcoinindex.com/apiservice/ticker?key=pZURzUjb0QFbY9knkicp3rrOqwYdwn&label=safebtc&fiat=btc'),
-      apiRequest('https://tradesatoshi.com/api/public/getticker?market=GENX_BTC'),
-      apiRequest('https://api.crex24.com/v2/public/tickers?instrument=BZE-BTC'),
-      apiRequest('https://coinlib.io/api/v1/coin?key=c01488b7aacd78a0&pref=BTC&symbol=POR'),
+      apiRequest('https://api.coinmarketcap.com/v1/ticker/safecoin/'),
+      apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=genesis-network&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
+      apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=bzedge&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
       apiRequest('https://api.coinmarketcap.com/v1/ticker/commercium/'),
-      apiRequest('https://openapi.idax.pro/api/v2/ticker?pair=GUNTHY_BTC'),
       apiRequest('https://api.coinmarketcap.com/v1/ticker/bitcoin-zero/'),
 
       //marketcap Pull -- Jefke
@@ -44,9 +42,9 @@ var zelcoreRates = {
       var ccDataC = results[2]; // results from cryptocompare
 
       //marketcap Data
-      var ccDataFullA = results[11]; // Full results from cryptocompare -- Jefke
-      var ccDataFullB = results[12]; // Full results from cryptocompare -- Jefke
-      var ccDataFullC = results[13]; // Full results from cryptocompare -- Jefke
+      var ccDataFullA = results[9]; // Full results from cryptocompare -- Jefke
+      var ccDataFullB = results[10]; // Full results from cryptocompare -- Jefke
+      var ccDataFullC = results[11]; // Full results from cryptocompare -- Jefke
 
       try {
         var dummyTest = results[3][1].code; // results from bitpay
@@ -57,7 +55,7 @@ var zelcoreRates = {
       }
 
       try {
-        var safeprice = results[4].Markets[0].Price
+        var safeprice = Number(results[4][0].price_btc)
         efg.SAFE = safeprice
       } catch (e) {
         errors.errors.SAFE = results[4]
@@ -75,28 +73,16 @@ var zelcoreRates = {
         errors.errors.BZE = results[6]
       }
       try {
-        var porprice = Number(results[7].price)
-        efg.POR = porprice
-      } catch (e) {
-        errors.errors.POR = results[7]
-      }
-      try {
-        var cmmprice = Number(results[8][0].price_btc)
+        var cmmprice = Number(results[7][0].price_btc)
         efg.CMM = cmmprice
       } catch (e) {
-        errors.errors.CMM = results[8]
+        errors.errors.CMM = results[7]
       }
       try {
-        var gunthyprice = Number(results[9].ticker[0].last)
-        efg.GUNTHY = gunthyprice
-      } catch (e) {
-        errors.errors.GUNTHY = results[9]
-      }
-      try {
-        var bzxprice = Number(results[10][0].price_btc)
+        var bzxprice = Number(results[8][0].price_btc)
         efg.BZX = bzxprice
       } catch (e) {
-        errors.errors.BZX = results[10]
+        errors.errors.BZX = results[8]
       }
 
       var coinsA = Object.keys(ccDataA)
@@ -139,7 +125,7 @@ var zelcoreRates = {
           coindetail['MKTCAP'] = ccDataFullA.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
         } catch (e) {
-          errors.errors.coinsFullA = results[11]
+          errors.errors.coinsFullA = results[9]
         }
       })
 
@@ -154,7 +140,7 @@ var zelcoreRates = {
           coindetail['MKTCAP'] = ccDataFullB.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
         } catch (e) {
-          errors.errors.coinsFullB = results[12]
+          errors.errors.coinsFullB = results[10]
         }
       })
 
@@ -169,11 +155,13 @@ var zelcoreRates = {
           coindetail['MKTCAP'] = ccDataFullC.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
         } catch (e) {
-          errors.errors.coinsFullC = results[13]        }
+          errors.errors.coinsFullC = results[11]        }
       })
 
       efg.TESTZEL = 0
       efg.DIBI = 0
+      efg.POR = 0
+      efg.GUNTHY = 0
 
       rates.push(bitpayData);
       rates.push(efg);
