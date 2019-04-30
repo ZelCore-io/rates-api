@@ -42,11 +42,11 @@ var zelcoreMarkets = {
       coinsFullA.forEach((coin) => {
         try {
           var coindetail ={}
-          coindetail['PRICE'] = ccDataFullA.RAW[coin].BTC.PRICE
-          coindetail['SUPPLY'] = ccDataFullA.RAW[coin].BTC.SUPPLY
-          coindetail['TOTALVOLUME24H'] = ccDataFullA.RAW[coin].BTC.TOTALVOLUME24H
-          coindetail['CHANGEPCT24HOUR'] = ccDataFullA.RAW[coin].BTC.CHANGEPCT24HOUR
-          coindetail['MKTCAP'] = ccDataFullA.RAW[coin].BTC.MKTCAP
+          coindetail['price'] = ccDataFullA.RAW[coin].BTC.PRICE
+          coindetail['supply'] = ccDataFullA.RAW[coin].BTC.SUPPLY
+          coindetail['volume'] = ccDataFullA.RAW[coin].BTC.TOTALVOLUME24H
+          coindetail['change'] = ccDataFullA.RAW[coin].BTC.CHANGEPCT24HOUR
+          coindetail['market'] = ccDataFullA.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
         } catch (e) {
           errors.errors.coinsFullA = results[9]
@@ -57,11 +57,11 @@ var zelcoreMarkets = {
       coinsFullB.forEach((coin) => {
         try {
           var coindetail ={}
-          coindetail['PRICE'] = ccDataFullB.RAW[coin].BTC.PRICE
-          coindetail['SUPPLY'] = ccDataFullB.RAW[coin].BTC.SUPPLY
-          coindetail['TOTALVOLUME24H'] = ccDataFullB.RAW[coin].BTC.TOTALVOLUME24H
-          coindetail['CHANGEPCT24HOUR'] = ccDataFullB.RAW[coin].BTC.CHANGEPCT24HOUR
-          coindetail['MKTCAP'] = ccDataFullB.RAW[coin].BTC.MKTCAP
+          coindetail['price'] = ccDataFullB.RAW[coin].BTC.PRICE
+          coindetail['supply'] = ccDataFullB.RAW[coin].BTC.SUPPLY
+          coindetail['volume'] = ccDataFullB.RAW[coin].BTC.TOTALVOLUME24H
+          coindetail['change'] = ccDataFullB.RAW[coin].BTC.CHANGEPCT24HOUR
+          coindetail['market'] = ccDataFullB.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
         } catch (e) {
           errors.errors.coinsFullB = results[10]
@@ -72,11 +72,11 @@ var zelcoreMarkets = {
       coinsFullC.forEach((coin) => {
         try {
           var coindetail ={}
-          coindetail['PRICE'] = ccDataFullC.RAW[coin].BTC.PRICE
+          coindetail['price'] = ccDataFullC.RAW[coin].BTC.PRICE
           coindetail['SUPPLY'] = ccDataFullC.RAW[coin].BTC.SUPPLY
-          coindetail['TOTALVOLUME24H'] = ccDataFullC.RAW[coin].BTC.TOTALVOLUME24H
-          coindetail['CHANGEPCT24HOUR'] = ccDataFullC.RAW[coin].BTC.CHANGEPCT24HOUR
-          coindetail['MKTCAP'] = ccDataFullC.RAW[coin].BTC.MKTCAP
+          coindetail['volume'] = ccDataFullC.RAW[coin].BTC.TOTALVOLUME24H
+          coindetail['change'] = ccDataFullC.RAW[coin].BTC.CHANGEPCT24HOUR
+          coindetail['market'] = ccDataFullC.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
         } catch (e) {
           errors.errors.coinsFullC = results[11]        
@@ -87,11 +87,11 @@ var zelcoreMarkets = {
       coinsFullD.forEach((coin) => {
         try {
           var coindetail ={}
-          coindetail['current_price'] = ccDataFullD[coin].current_price
-          coindetail['circulating_supply'] = ccDataFullD[coin].circulating_supply
-          coindetail['total_volume'] = ccDataFullD[coin].total_volume
-          coindetail['price_change_percentage_24h'] = ccDataFullD[coin].price_change_percentage_24h
-          coindetail['market_cap'] = ccDataFullD[coin].market_cap
+          coindetail['price'] = ccDataFullD[coin].current_price
+          coindetail['supply'] = ccDataFullD[coin].circulating_supply
+          coindetail['volume'] = ccDataFullD[coin].total_volume
+          coindetail['change'] = ccDataFullD[coin].price_change_percentage_24h
+          coindetail['market'] = ccDataFullD[coin].market_cap
           cmk[upperCase(ccDataFullD[coin].symbol)] = coindetail
         } catch (e) {
           errors.errors.coinsFullD = results[12]        
