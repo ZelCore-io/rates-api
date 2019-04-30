@@ -1,5 +1,4 @@
 const request = require('request-promise-native');
-var upperCase = require('upper-case')
 
 function apiRequest(url) {
   return request({ uri: url, json: true })
@@ -92,7 +91,7 @@ var zelcoreMarkets = {
           coindetail['volume'] = ccDataFullD[coin].total_volume
           coindetail['change'] = ccDataFullD[coin].price_change_percentage_24h
           coindetail['market'] = ccDataFullD[coin].market_cap
-          cmk[upperCase(ccDataFullD[coin].symbol)] = coindetail
+          cmk[ccDataFullD[coin].symbol.toUpperCase()] = coindetail
         } catch (e) {
           errors.errors.coinsFullD = results[12]        
         }

@@ -1,5 +1,4 @@
 const request = require('request-promise-native');
-var upperCase = require('upper-case')
 
 function apiRequest(url) {
   return request({ uri: url, json: true })
