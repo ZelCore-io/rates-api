@@ -61,13 +61,13 @@ var zelcoreRates = {
         errors.errors.SAFE = results[4]
       }
       try {
-        var genxprice = results[5].result.last
+        var genxprice = Number(results[5][0].current_price)
         efg.GENX = genxprice
       } catch (e) {
         errors.errors.GENX = results[5]
       }
       try {
-        var bzeprice = results[6][0].last
+        var bzeprice = Number(results[6][0].current_price)
         efg.BZE = bzeprice
       } catch (e) {
         errors.errors.BZE = results[6]
