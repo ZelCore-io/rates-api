@@ -172,11 +172,11 @@ var zelcoreRates = {
       coinsFullD.forEach((coin) => {
         try {
           var coindetail ={}
-          coindetail['current_price'] = ccDataFullD[coin].BTC.current_price
-          coindetail['circulating_supply'] = ccDataFullD[coin].BTC.circulating_supply
-          coindetail['total_volume'] = ccDataFullD[coin].BTC.total_volume
-          coindetail['price_change_percentage_24h'] = ccDataFullD[coin].BTC.price_change_percentage_24h
-          coindetail['market_cap'] = ccDataFullD[coin].BTC.market_cap
+          coindetail['current_price'] = ccDataFullD[coin].current_price
+          coindetail['circulating_supply'] = ccDataFullD[coin].circulating_supply
+          coindetail['total_volume'] = ccDataFullD[coin].total_volume
+          coindetail['price_change_percentage_24h'] = ccDataFullD[coin].price_change_percentage_24h
+          coindetail['market_cap'] = ccDataFullD[coin].market_cap
           cmk[coin] = coindetail
         } catch (e) {
           errors.errors.coinsFullD = results[12]        
