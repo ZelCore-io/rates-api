@@ -172,11 +172,6 @@ var zelcoreRates = {
           coindetail['CHANGEPCT24HOUR'] = ccDataFullC.RAW[coin].BTC.CHANGEPCT24HOUR
           coindetail['MKTCAP'] = ccDataFullC.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
-          //price
-          //supply
-          //totalvolume24h
-          //mktcap
-
         } catch (e) {
           errors.errors.coinsFullC = results[13]        }
       })
