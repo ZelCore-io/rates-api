@@ -1,9 +1,9 @@
-const zeltrezRates = require('../services/zeltrezRates');
+const zelcoreRates = require('../services/zelcoreRates');
 const log = require('../lib/log');
 
 exports.list = (req, res, next) => {
   log.debug('Pulling Rates information from APIs');
-  zeltrezRates.getAll().then((rates) => {
+  zelcoreRates.getAll().then((rates) => {
     res.json(rates);
   }).catch(next);
 };
