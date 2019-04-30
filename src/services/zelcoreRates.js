@@ -26,36 +26,14 @@ var zelcoreRates = {
       apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=commercium&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 7
       apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=bitcoin-zero&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 8
 
-      //  marketinfo
-      apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=TOK,CONI,PAX,GUSD,USDC,ETC,XMR,DASH,BTC,ETH,ZEC,USDT,LTC,BTCZ,RVN,BCH,BNB,BTX,SONM,OMG,ZIL,ZRX,GNT,SPHTX,BAT,MKR,KNC,ENG,PAY,SUB,CVC,STX,BTG,KCS,SRN,EVX,GTO,GVT,HOT,INS,IOTX,KEY,LUN,MDA,MITH,MTH,OAX,OST,PPT,QSP,REN,RLC,SNGLS,TNB,TNT,VIB,VIBE,WABI,WPR,DOCK,FUEL,CDT,CELR,CND,DATA,DGD,DLT,AGI&tsyms=BTC'),  //  9
-      apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=HUSH,ZCL,XSG,BTCP,ZEN,KMD,XZC,ZER,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARN,BRD,REP,QKC,LOOM,ANON,EURS,AMB,BCPT&tsyms=BTC'), //  10
-      apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=EOS,ADA,XRP,DOCK,NEO,BTT,SUQA,GRS,ZEL&tsyms=BTC'), // 11
-      // marketinfo CoinGecko
-      apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=zencash,adex,fetch-ai,bitcoin-private,hush,raiden-network,anon,tron,bithereum,safe-coin-2,genesis-network,bzedge,commercium,bitcoin-zero,zelcash&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 12
-      //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=genesis-network&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 13
-      //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=bzedge&order=market_cap_desc&per_page=100&page=1&sparkline=false'),  // 14
-      //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=commercium&order=market_cap_desc&per_page=100&page=1&sparkline=false'),  //  15
-      //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=bitcoin-zero&order=market_cap_desc&per_page=100&page=1&sparkline=false'),  //  16
-
       
     ]).then((results) => {
       var rates = [];
       var efg = {};
-      var cmk = {};
       var errors = { errors: {} }
       var ccDataA = results[0]; // results from cryptocompare
       var ccDataB = results[1]; // results from cryptocompare
       var ccDataC = results[2]; // results from cryptocompare
-
-      //marketcap Data
-      var ccDataFullA = results[9]; // full results from cryptocompare
-      var ccDataFullB = results[10]; // full results from cryptocompare
-      var ccDataFullC = results[11]; // full results from cryptocompare
-      var ccDataFullD = results[12]; // full results from cmc for SAFE
-      var ccDataFullE = results[13]; // full results from coingecko for GENX
-      var ccDataFullF = results[14]; // full results from coingecko for BZE
-      var ccDataFullG = results[15]; // full results from cmc for CMM
-      var ccDataFullH = results[16]; // full results from coingecko for BZX
 
       try {
         var dummyTest = results[3][1].code; // results from bitpay
@@ -122,68 +100,6 @@ var zelcoreRates = {
           errors.errors.coinsB = results[2]
         }
       })
-      
-      // adding full data to the json file
-
-      var coinsFullA = Object.keys(ccDataFullA.RAW) // full results from cryptocompare
-      coinsFullA.forEach((coin) => {
-        try {
-          var coindetail ={}
-          coindetail['PRICE'] = ccDataFullA.RAW[coin].BTC.PRICE
-          coindetail['SUPPLY'] = ccDataFullA.RAW[coin].BTC.SUPPLY
-          coindetail['TOTALVOLUME24H'] = ccDataFullA.RAW[coin].BTC.TOTALVOLUME24H
-          coindetail['CHANGEPCT24HOUR'] = ccDataFullA.RAW[coin].BTC.CHANGEPCT24HOUR
-          coindetail['MKTCAP'] = ccDataFullA.RAW[coin].BTC.MKTCAP
-          cmk[coin] = coindetail
-        } catch (e) {
-          errors.errors.coinsFullA = results[9]
-        }
-      })
-
-      var coinsFullB = Object.keys(ccDataFullB.RAW) // full results from cryptocompare
-      coinsFullB.forEach((coin) => {
-        try {
-          var coindetail ={}
-          coindetail['PRICE'] = ccDataFullB.RAW[coin].BTC.PRICE
-          coindetail['SUPPLY'] = ccDataFullB.RAW[coin].BTC.SUPPLY
-          coindetail['TOTALVOLUME24H'] = ccDataFullB.RAW[coin].BTC.TOTALVOLUME24H
-          coindetail['CHANGEPCT24HOUR'] = ccDataFullB.RAW[coin].BTC.CHANGEPCT24HOUR
-          coindetail['MKTCAP'] = ccDataFullB.RAW[coin].BTC.MKTCAP
-          cmk[coin] = coindetail
-        } catch (e) {
-          errors.errors.coinsFullB = results[10]
-        }
-      })
-
-      var coinsFullC = Object.keys(ccDataFullC.RAW) // full results from cryptocompare
-      coinsFullC.forEach((coin) => {
-        try {
-          var coindetail ={}
-          coindetail['PRICE'] = ccDataFullC.RAW[coin].BTC.PRICE
-          coindetail['SUPPLY'] = ccDataFullC.RAW[coin].BTC.SUPPLY
-          coindetail['TOTALVOLUME24H'] = ccDataFullC.RAW[coin].BTC.TOTALVOLUME24H
-          coindetail['CHANGEPCT24HOUR'] = ccDataFullC.RAW[coin].BTC.CHANGEPCT24HOUR
-          coindetail['MKTCAP'] = ccDataFullC.RAW[coin].BTC.MKTCAP
-          cmk[coin] = coindetail
-        } catch (e) {
-          errors.errors.coinsFullC = results[11]        
-        }
-      })
-
-      var coinsFullD = Object.keys(ccDataFullD) // full results from coingecko
-      coinsFullD.forEach((coin) => {
-        try {
-          var coindetail ={}
-          coindetail['current_price'] = ccDataFullD[coin].current_price
-          coindetail['circulating_supply'] = ccDataFullD[coin].circulating_supply
-          coindetail['total_volume'] = ccDataFullD[coin].total_volume
-          coindetail['price_change_percentage_24h'] = ccDataFullD[coin].price_change_percentage_24h
-          coindetail['market_cap'] = ccDataFullD[coin].market_cap
-          cmk[upperCase(ccDataFullD[coin].symbol)] = coindetail
-        } catch (e) {
-          errors.errors.coinsFullD = results[12]        
-        }
-      })
 
       // assets with zero value or no usable API
       efg.TESTZEL = 0
@@ -193,7 +109,6 @@ var zelcoreRates = {
 
       rates.push(bitpayData);
       rates.push(efg);
-      rates.push(cmk);
 
       rates.push(errors);
 

@@ -6,5 +6,5 @@ const log = require('./src/lib/log');
 const server = http.createServer(app);
 
 server.listen(config.server.port, () => {
-  log.info(`zelcore-rates-api-v2 launched, listening on port ${config.server.port}!`);
+  log.info(`rates-api launched, listening on port ${config.server.port}!`);
 });
