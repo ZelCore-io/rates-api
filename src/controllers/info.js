@@ -30,21 +30,20 @@ exports.list = (req, res, next) => {
   ]
   log.debug('Pulling Coin information from APIs');
 
-  //hoping to loop through the array of url's to get a big json
-  coins.forEach(function(coin){
-      zelcoreInfo.getAll(coin).then((infos) => {
-        infoJson['coin'].push(infos);
-      });   
-  });
+  // //hoping to loop through the array of url's to get a big json
+  // coins.forEach(function(coin){
+  //     zelcoreInfo.getAll(coin).then((infos) => {
+  //       infoJson['coin'].push(infos);
+  //     });   
+  // });
   
-  
+  // --------------------------------------------------------------------
 
 
-  //this still works...
-  var url = 'https://api.coingecko.com/api/v3/coins/zelcash'
-  zelcoreInfo.getAll(url).then((infos) => {
-     infoJson['coin'].push(infos);
-     res.json(infoJson);
+
+  zelcoreInfo.getAll().then((infos) => {
+     //infoJson['coin'].push(infos);
+     res.json(infos);
     
   }).catch(next);
 
