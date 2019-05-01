@@ -20,6 +20,7 @@ var zelcoreMarkets = {
       apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=EOS,ADA,XRP,DOCK,NEO,BTT,SUQA,GRS,ZEL&tsyms=BTC'), // 2
       // marketinfo CoinGecko
       apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=zencash,adex,fetch-ai,bitcoin-private,hush,raiden-network,anon,tron,bithereum,safe-coin-2,genesis-network,bzedge,commercium,bitcoin-zero,zelcash&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 3
+      // apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD') // give me price of BTC in USD
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=genesis-network&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=bzedge&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=commercium&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
@@ -36,13 +37,20 @@ var zelcoreMarkets = {
       var ccDataFullB = results[1]; // full results from cryptocompare
       var ccDataFullC = results[2]; // full results from cryptocompare
       var ccDataFullD = results[3]; // full results from coingecko
+      // var btcPrice = results[4];
+      // var btcInUsd = 5300;
+      // try {
+      //   btcInUsd = btcPrice.RAW.BTC.USD.PRICE;
+      // } catch (e) {
+      //   errors.errors.btcerror = results[4];
+      // }
 
       var coinsFullA = Object.keys(ccDataFullA.RAW) // full results from cryptocompare
       coinsFullA.forEach((coin) => {
         try {
           var coindetail ={}
           coindetail['supply'] = ccDataFullA.RAW[coin].BTC.SUPPLY
-          coindetail['volume'] = ccDataFullA.RAW[coin].BTC.TOTALVOLUME24H
+          coindetail['volume'] = ccDataFullA.RAW[coin].BTC.TOTALVOLUME24HTO
           coindetail['change'] = ccDataFullA.RAW[coin].BTC.CHANGEPCT24HOUR
           coindetail['market'] = ccDataFullA.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
@@ -56,7 +64,7 @@ var zelcoreMarkets = {
         try {
           var coindetail ={}
           coindetail['supply'] = ccDataFullB.RAW[coin].BTC.SUPPLY
-          coindetail['volume'] = ccDataFullB.RAW[coin].BTC.TOTALVOLUME24H
+          coindetail['volume'] = ccDataFullB.RAW[coin].BTC.TOTALVOLUME24HTO
           coindetail['change'] = ccDataFullB.RAW[coin].BTC.CHANGEPCT24HOUR
           coindetail['market'] = ccDataFullB.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
@@ -70,7 +78,7 @@ var zelcoreMarkets = {
         try {
           var coindetail ={}
           coindetail['supply'] = ccDataFullC.RAW[coin].BTC.SUPPLY
-          coindetail['volume'] = ccDataFullC.RAW[coin].BTC.TOTALVOLUME24H
+          coindetail['volume'] = ccDataFullC.RAW[coin].BTC.TOTALVOLUME24HTO
           coindetail['change'] = ccDataFullC.RAW[coin].BTC.CHANGEPCT24HOUR
           coindetail['market'] = ccDataFullC.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
