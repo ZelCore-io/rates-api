@@ -41,7 +41,7 @@ var zelcoreMarkets = {
       coinsFullA.forEach((coin) => {
         try {
           var coindetail ={}
-          coindetail['price'] = ccDataFullA.RAW[coin].BTC.PRICE
+          //coindetail['price'] = ccDataFullA.RAW[coin].BTC.PRICE
           coindetail['supply'] = ccDataFullA.RAW[coin].BTC.SUPPLY
           coindetail['volume'] = ccDataFullA.RAW[coin].BTC.TOTALVOLUME24H
           coindetail['change'] = ccDataFullA.RAW[coin].BTC.CHANGEPCT24HOUR
@@ -56,7 +56,7 @@ var zelcoreMarkets = {
       coinsFullB.forEach((coin) => {
         try {
           var coindetail ={}
-          coindetail['price'] = ccDataFullB.RAW[coin].BTC.PRICE
+          //coindetail['price'] = ccDataFullB.RAW[coin].BTC.PRICE
           coindetail['supply'] = ccDataFullB.RAW[coin].BTC.SUPPLY
           coindetail['volume'] = ccDataFullB.RAW[coin].BTC.TOTALVOLUME24H
           coindetail['change'] = ccDataFullB.RAW[coin].BTC.CHANGEPCT24HOUR
@@ -71,7 +71,7 @@ var zelcoreMarkets = {
       coinsFullC.forEach((coin) => {
         try {
           var coindetail ={}
-          coindetail['price'] = ccDataFullC.RAW[coin].BTC.PRICE
+          //coindetail['price'] = ccDataFullC.RAW[coin].BTC.PRICE
           coindetail['supply'] = ccDataFullC.RAW[coin].BTC.SUPPLY
           coindetail['volume'] = ccDataFullC.RAW[coin].BTC.TOTALVOLUME24H
           coindetail['change'] = ccDataFullC.RAW[coin].BTC.CHANGEPCT24HOUR
@@ -86,7 +86,7 @@ var zelcoreMarkets = {
       coinsFullD.forEach((coin) => {
         try {
           var coindetail ={}
-          coindetail['price'] = ccDataFullD[coin].current_price
+          //coindetail['price'] = ccDataFullD[coin].current_price
           coindetail['supply'] = ccDataFullD[coin].circulating_supply
           coindetail['volume'] = ccDataFullD[coin].total_volume
           coindetail['change'] = ccDataFullD[coin].price_change_percentage_24h
