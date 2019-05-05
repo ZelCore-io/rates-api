@@ -34,19 +34,6 @@ var zelcoreRates = {
         var bitpayData = -1
         errors.errors.bitPayData = results[0]
       }
-
-      // results from cryptocompare (prices)
-      var coinsCC = Object.keys(
-	{...results[1],
-	  ...results[2],
-	  ...results[3]})
-      coinsCC.forEach((coin) => {
-        try {
-          efg[coin] = results[1][coin].BTC
-        } catch (e) {
-          errors.errors.coinsCC = results[1]
-        }
-      })
       
       // results from coingecko (prices)
       var coinsCG = Object.keys(results[4])
@@ -56,6 +43,19 @@ var zelcoreRates = {
         } catch (e) {
           errors.errors.coinsCG = results[4]
         }
+      })
+
+      // results from cryptocompare (prices)
+      var dataCC = [results[1], results[2], results[3]]
+      dataCC.forEach((subresult) => {
+	var coinsCC = Object.keys(subresult)
+	coinsCC.forEach((coin) => {
+	  try {
+	    efg[coin] = subresult[coin].BTC
+	  } catch (e) {
+	    errors.errors.coinsCC = subresult
+	  }
+	})
       })
 
       // assets with zero value or no usable API
