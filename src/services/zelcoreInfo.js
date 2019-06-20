@@ -1,8 +1,8 @@
 const request = require('request-promise-native');
 
 function apiRequest(url) {
-    
-    return request({ uri: url, json: true })
+
+  return request({ uri: url, json: true })
     .then((response) => {
       return response
     })
@@ -10,8 +10,8 @@ function apiRequest(url) {
       console.log("ERROR: " + url)
       return error
     })
-    
-    }
+
+}
 
 
 var zelcoreInfo = {
@@ -23,10 +23,10 @@ var zelcoreInfo = {
       //apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETC,XMR,DASH,BTC,ETH,ZEC,USDT,LTC,BTCZ,RVN,BCH,BNB,BTX,SONM,OMG,ZIL,ZRX,GNT,SPHTX,BAT,MKR,KNC,ENG,PAY,SUB,CVC,STX,BTG,KCS,SRN,EVX,GTO,GVT,HOT,INS,IOTX,KEY,LUN,MDA,MITH,MTH,OAX,OST,PPT,QSP,REN,RLC,SNGLS,TNB,TNT,VIB,VIBE,WABI,WPR,DOCK,FUEL,CDT,CELR,CND,DATA,DGD,DLT,AGI&tsyms=BTC'),  //  0
       //apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=HUSH,ZCL,XSG,BTCP,ZEN,KMD,XZC,ZER,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARN,BRD,REP,QKC,LOOM,ANON,EURS,AMB,BCPT&tsyms=BTC'), //  1
       //apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=EOS,ADA,XRP,DOCK,NEO,BTT,SUQA,GRS,ZEL&tsyms=BTC'), // 2
-      
-      
+
+
       // marketinfo CoinGecko
-      
+
       //apiRequest('https://api.coingecko.com/api/v3/coins/usd-coin'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/gemini-dollar'),
       // apiRequest('https://api.coingecko.com/api/v3/coins/paxos-standard'),
@@ -47,7 +47,7 @@ var zelcoreInfo = {
       // apiRequest('https://api.coingecko.com/api/v3/coins/bzedge'),
       // apiRequest('https://api.coingecko.com/api/v3/coins/commercium'),
       // apiRequest('https://api.coingecko.com/api/v3/coins/bitcoin-zero'),
-       
+
 
       // -- DONE --
       //apiRequest('https://api.coingecko.com/api/v3/coins/tokok'),
@@ -145,7 +145,7 @@ var zelcoreInfo = {
       //--apiRequest('https://api.coingecko.com/api/v3/coins/storj'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/iostoken'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/dent'),
-     //'' apiRequest('https://api.coingecko.com/api/v3/coins/ethlend'),
+      //'' apiRequest('https://api.coingecko.com/api/v3/coins/ethlend'),
       //--apiRequest('https://api.coingecko.com/api/v3/coins/link'),
       //--apiRequest('https://api.coingecko.com/api/v3/coins/decentraland'),
       //''apiRequest('https://api.coingecko.com/api/v3/coins/loopring'),
@@ -185,22 +185,22 @@ var zelcoreInfo = {
       //''apiRequest('https://api.coingecko.com/api/v3/coins/amber'),
       //--apiRequest('https://api.coingecko.com/api/v3/coins/blockmason-credit-protocol'),
       //''apiRequest('https://api.coingecko.com/api/v3/coins/eos'),
-     // apiRequest('https://api.coingecko.com/api/v3/coins/cardano'),
+      // apiRequest('https://api.coingecko.com/api/v3/coins/cardano'),
       //--apiRequest('https://api.coingecko.com/api/v3/coins/ripple'),
       //--apiRequest('https://api.coingecko.com/api/v3/coins/dock'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/neo'),
-     //'' apiRequest('https://api.coingecko.com/api/v3/coins/tron'),
+      //'' apiRequest('https://api.coingecko.com/api/v3/coins/tron'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/blocktrade'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/bitcoin-zero'),
       //--apiRequest('https://api.coingecko.com/api/v3/coins/gunthy'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/groestlcoin'),
       //--apiRequest('https://api.coingecko.com/api/v3/coins/commercium'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/bithereum'),
-     //'' apiRequest('https://api.coingecko.com/api/v3/coins/genesis-network'),
+      //'' apiRequest('https://api.coingecko.com/api/v3/coins/genesis-network'),
       //--apiRequest('https://api.coingecko.com/api/v3/coins/suqa'),
 
     ]).then((results) => {
-      
+
       var nfo = {};
       var errors = { errors: {} }
 
@@ -208,30 +208,30 @@ var zelcoreInfo = {
       //foreach result in results{
 
       results.forEach((result) => {
-      
-      var ccDataFullInfo = result; // full results from coingecko
-      
-      var coinsFullInfo = Object.keys(ccDataFullInfo) // full results from coingecko       
-      try {
-        var coindetail ={}
-        coindetail['id'] = ccDataFullInfo.id
-        coindetail['unit'] = ccDataFullInfo.symbol
-        coindetail['name'] = ccDataFullInfo.name
-        coindetail['description'] = ccDataFullInfo.description.en
-        coindetail['links'] = ccDataFullInfo.links
-        nfo[ccDataFullInfo.symbol.toUpperCase()] = coindetail
-      } catch (e) {
-        errors.errors.coinsFullInfo = result       
-      }
-        })
+
+        var ccDataFullInfo = result; // full results from coingecko
+
+        var coinsFullInfo = Object.keys(ccDataFullInfo) // full results from coingecko       
+        try {
+          var coindetail = {}
+          coindetail['id'] = ccDataFullInfo.id
+          coindetail['unit'] = ccDataFullInfo.symbol
+          coindetail['name'] = ccDataFullInfo.name
+          coindetail['description'] = ccDataFullInfo.description.en
+          coindetail['links'] = ccDataFullInfo.links
+          nfo[ccDataFullInfo.symbol.toUpperCase()] = coindetail
+        } catch (e) {
+          errors.errors.coinsFullInfo = result
+        }
+      })
       infos.push(nfo);
       infos.push(errors);
 
       return infos;
-  
+
 
     })
-    
+
   },
 };
 

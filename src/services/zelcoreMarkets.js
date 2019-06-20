@@ -26,7 +26,7 @@ var zelcoreMarkets = {
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=commercium&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=bitcoin-zero&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
 
-      
+
     ]).then((results) => {
       var markets = [];
       var cmk = {};
@@ -48,7 +48,7 @@ var zelcoreMarkets = {
       var coinsFullA = Object.keys(ccDataFullA.RAW) // full results from cryptocompare
       coinsFullA.forEach((coin) => {
         try {
-          var coindetail ={}
+          var coindetail = {}
           coindetail['supply'] = ccDataFullA.RAW[coin].BTC.SUPPLY
           coindetail['volume'] = ccDataFullA.RAW[coin].BTC.TOTALVOLUME24HTO
           coindetail['change'] = ccDataFullA.RAW[coin].BTC.CHANGEPCT24HOUR
@@ -62,7 +62,7 @@ var zelcoreMarkets = {
       var coinsFullB = Object.keys(ccDataFullB.RAW) // full results from cryptocompare
       coinsFullB.forEach((coin) => {
         try {
-          var coindetail ={}
+          var coindetail = {}
           coindetail['supply'] = ccDataFullB.RAW[coin].BTC.SUPPLY
           coindetail['volume'] = ccDataFullB.RAW[coin].BTC.TOTALVOLUME24HTO
           coindetail['change'] = ccDataFullB.RAW[coin].BTC.CHANGEPCT24HOUR
@@ -76,28 +76,28 @@ var zelcoreMarkets = {
       var coinsFullC = Object.keys(ccDataFullC.RAW) // full results from cryptocompare
       coinsFullC.forEach((coin) => {
         try {
-          var coindetail ={}
+          var coindetail = {}
           coindetail['supply'] = ccDataFullC.RAW[coin].BTC.SUPPLY
           coindetail['volume'] = ccDataFullC.RAW[coin].BTC.TOTALVOLUME24HTO
           coindetail['change'] = ccDataFullC.RAW[coin].BTC.CHANGEPCT24HOUR
           coindetail['market'] = ccDataFullC.RAW[coin].BTC.MKTCAP
           cmk[coin] = coindetail
         } catch (e) {
-          errors.errors.coinsFullC = results[2]        
+          errors.errors.coinsFullC = results[2]
         }
       })
 
       var coinsFullD = Object.keys(ccDataFullD) // full results from coingecko
       coinsFullD.forEach((coin) => {
         try {
-          var coindetail ={}
+          var coindetail = {}
           coindetail['supply'] = ccDataFullD[coin].circulating_supply
           coindetail['volume'] = ccDataFullD[coin].total_volume
           coindetail['change'] = ccDataFullD[coin].price_change_percentage_24h
           coindetail['market'] = ccDataFullD[coin].market_cap
           cmk[ccDataFullD[coin].symbol.toUpperCase()] = coindetail
         } catch (e) {
-          errors.errors.coinsFullD = results[3]        
+          errors.errors.coinsFullD = results[3]
         }
       })
 
