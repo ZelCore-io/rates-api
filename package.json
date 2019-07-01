@@ -1,6 +1,6 @@
 {
   "name": "rates-api",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A service that supplies market info for ZelCore assets and conversions to other currencies",
   "main": "index.js",
   "scripts": {
