@@ -64,6 +64,7 @@ var zelcoreRates = {
       efg.POR = 0
       efg.GUNTHY = 0
       efg.BXY = 0.00001249
+      efg.FISH = 0
 
       rates.push(bitpayData);
       rates.push(efg);
