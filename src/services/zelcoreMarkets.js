@@ -100,6 +100,7 @@ var zelcoreMarkets = {
           errors.errors.coinsFullD = results[3]
         }
       })
+      cmk.ONG = cmk.ONGAS;
 
       markets.push(cmk);
       markets.push(errors);
