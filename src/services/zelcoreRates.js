@@ -15,7 +15,7 @@ var zelcoreRates = {
   getAll() {
     return Promise.all([
       // fiat rates
-      apiRequest('https://bitpay.com/api/rates'), //  0
+      apiRequest('https://bitpay.com/rates/BTC'), //  0
       //  crypto prices
       apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=TOK,CONI,PAX,GUSD,USDC,ETC,XMR,DASH,BTC,ETH,ZEC,USDT,LTC,BTCZ,RVN,BCH,BNB,BTX,SONM,OMG,ZIL,ZRX,GNT,SPHTX,BAT,MKR,KNC,ENG,PAY,SUB,CVC,STX,BTG,KCS,SRN,,EVX,FET,GTO,GVT,INS,IOTX,KEY,LUN,MDA,MITH,MTH,OAX,OST,PPT,QSP,REN,RLC,SNGLS,TNB,TNT,VIB,VIBE,WABI,WPR,DOCK,FUEL,CDT,CELR,CND,DATA,DGD,DLT,AGI&tsyms=BTC'),  //  1
       apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=HUSH,ZCL,XSG,BTCP,ZEN,KMD,XZC,ZER,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,RDN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARN,BRD,REP,QKC,LOOM,ANON,EURS,AMB,BCPT&tsyms=BTC'), //  2
@@ -29,9 +29,10 @@ var zelcoreRates = {
       // results from bitpay (fiat rates)
       try {
         var dummyTest = results[0][1].code;
+        if (dummyTest == undefined) throw "Bitpay does not work correctly"
         var bitpayData = results[0]
       } catch (e) {
-        var bitpayData = -1
+        var bitpayData = [{code: "USD", rate: 10000}];
         errors.errors.bitPayData = results[0]
       }
 
