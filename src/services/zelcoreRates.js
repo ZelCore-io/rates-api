@@ -28,12 +28,14 @@ var zelcoreRates = {
 
       // results from bitpay (fiat rates)
       try {
-        var dummyTest = results[0][1].code;
-        if (dummyTest == undefined) throw "Bitpay does not work correctly"
-        var bitpayData = results[0]
+        console.log(results[0])
+        var dummyTest = results[0].data[1].code;
+        console.log(dummyTest)
+        if (dummyTest == undefined) throw new Error("Bitpay does not work correctly")
+        var bitpayData = results[0].data;
       } catch (e) {
         var bitpayData = [{code: "USD", rate: 10000}];
-        errors.errors.bitPayData = results[0]
+        errors.errors.bitPayData = results[0].data
       }
 
       // results from coingecko (prices)
