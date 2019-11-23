@@ -75,6 +75,7 @@ var zelcoreRates = {
       efg.GCTGT = efg.USDT
       efg.GCSWAL = efg.USDT
       efg.ONG = efg.ONGAS
+      efg.SAI = efg.DAI
 
 
       rates.push(bitpayData);

@@ -101,6 +101,7 @@ var zelcoreMarkets = {
         }
       })
       cmk.ONG = cmk.ONGAS;
+      cmk.SAI = cmk.DAI;
 
       markets.push(cmk);
       markets.push(errors);
