@@ -21,6 +21,7 @@ var zelcoreRates = {
       apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=HUSH,ZCL,XSG,BTCP,ZEN,KMD,XZC,ZER,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,RDN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARN,BRD,REP,QKC,LOOM,ANON,EURS,AMB,BCPT&tsyms=BTC'), //  2
       apiRequest('https://min-api.cryptocompare.com/data/pricemulti?fsyms=QTUM,XEM,ONGAS,ONT,MIOTA,GAS,TRX,DGB,XLM,DOGE,EOS,ADA,XRP,DOCK,NEO,TRON,BTT,SAFE,BTH,GRS,XCASH,LEO,USDS&tsyms=BTC'),  //  3
       apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=hotbit-token,binance-usd,huobi-pool-token,huobi-token,zb-token,mx-token,bitforex,okb,veriblock,dmme,suqa,holotoken,half-life,axe,safe-coin-2,genesis-network,bzedge,commercium,bitcoin-zero,zelcash&order=market_cap_desc&per_page=100&page=1&sparkline=false'),  // 4
+      apiRequest('https://api.coinpaprika.com/v1/ticker/golf-golfcoin'),  // 5
     ]).then((results) => {
       var rates = [];
       var efg = {};
@@ -34,7 +35,7 @@ var zelcoreRates = {
         if (dummyTest == undefined) throw new Error("Bitpay does not work correctly")
         var bitpayData = results[0].data;
       } catch (e) {
-        var bitpayData = [{code: "USD", rate: 10000}];
+        var bitpayData = [{ code: "USD", rate: 10000 }];
         errors.errors.bitPayData = results[0].data
       }
 
@@ -60,6 +61,13 @@ var zelcoreRates = {
           }
         })
       })
+
+      // results from coinpaprika (prices)
+      try {
+        efg.GOLF = Number(results[5].price_btc) || 0.00000001
+      } catch (e) {
+        errors.errors.GOLF = results[5]
+      }
 
       // assets with zero value or no usable API
       efg.TESTZEL = 0

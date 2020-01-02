@@ -20,11 +20,12 @@ var zelcoreMarkets = {
       apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=QTUM,XEM,ONGAS,ONT,MIOTA,GAS,TRX,DGB,XLM,DOGE,EOS,ADA,XRP,DOCK,NEO,BTT,GRS,XCASH,LEO&tsyms=BTC'), // 2
       // marketinfo CoinGecko
       apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=hotbit-token,binance-usd,huobi-pool-token,huobi-token,zb-token,mx-token,bitforex,okb,veriblock,dmme,suqa,holotoken,half-life,axe,zencash,adex,fetch-ai,bitcoin-private,hush,raiden-network,anon,tron,bithereum,safe-coin-2,genesis-network,bzedge,commercium,bitcoin-zero,zelcash&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 3
-      // apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD') // give me price of BTC in USD
+      apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD'), // give me price of BTC in USD 4
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=genesis-network&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=bzedge&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=commercium&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=bitcoin-zero&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
+      apiRequest('https://api.coinpaprika.com/v1/ticker/golf-golfcoin'),  // 5
 
 
     ]).then((results) => {
@@ -37,6 +38,8 @@ var zelcoreMarkets = {
       var ccDataFullB = results[1]; // full results from cryptocompare
       var ccDataFullC = results[2]; // full results from cryptocompare
       var ccDataFullD = results[3]; // full results from coingecko
+      var btcPrice = results[4];
+      var ccDataFullE = results[5]; // full results from coinpaprika
       // var btcPrice = results[4];
       // var btcInUsd = 5300;
       // try {
@@ -100,6 +103,17 @@ var zelcoreMarkets = {
           errors.errors.coinsFullD = results[3]
         }
       })
+
+      try {
+        var coindetail = {}
+        coindetail['supply'] = Number(ccDataFullE.circulating_supply)
+        coindetail['volume'] = Number(ccDataFullE.volume_24h_usd) / btcPrice.RAW.BTC.USD.PRICE
+        coindetail['change'] = Number(ccDataFullE.percent_change_24h)
+        coindetail['market'] = Number(ccDataFullE.market_cap_usd) / btcPrice.RAW.BTC.USD.PRICE
+        cmk[ccDataFullE.symbol.toUpperCase()] = coindetail
+      } catch (e) {
+        errors.errors.coinsFullD = results[5]
+      }
       cmk.ONG = cmk.ONGAS;
       cmk.SAI = cmk.DAI;
 
