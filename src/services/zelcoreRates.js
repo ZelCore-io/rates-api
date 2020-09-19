@@ -1,6 +1,6 @@
 const request = require('request-promise-native');
 const config = require('config');
-const apiKey = config.apiKey;
+const apiKey = process.env.API_KEY || config.apiKey;
 
 function apiRequest(url) {
   return request({ uri: url, json: true })
