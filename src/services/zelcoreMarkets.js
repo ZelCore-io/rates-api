@@ -118,6 +118,7 @@ var zelcoreMarkets = {
       }
       cmk.ONG = cmk.ONGAS;
       cmk.SAI = cmk.DAI;
+      cmk.FIRO = cmk.XZC;
 
       markets.push(cmk);
       markets.push(errors);
