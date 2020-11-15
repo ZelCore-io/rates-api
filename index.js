@@ -4,7 +4,8 @@ const app = require('./src/lib/server');
 const log = require('./src/lib/log');
 
 const server = http.createServer(app);
+const port = config.server.port
 
-server.listen(config.server.port, () => {
-  log.info(`rates-api launched, listening on port ${config.server.port}!`);
+server.listen(port, () => {
+  log.info(`rates-api launched, listening on port ${port}!`);
 });
