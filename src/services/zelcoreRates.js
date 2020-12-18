@@ -87,6 +87,7 @@ var zelcoreRates = {
       efg.ONG = efg.ONGAS
       efg.SAI = efg.DAI
       efg.FIRO = efg.XZC;
+      efg.TENT = efg.XSG;
 
 
       rates.push(bitpayData);
