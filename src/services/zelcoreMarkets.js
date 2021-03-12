@@ -123,6 +123,7 @@ var zelcoreMarkets = {
       cmk.TENT = cmk.XSG;
       cmk.WBNB = cmk.BNB;
       cmk.ARN = cmk.ARNX;
+      cmk.FLUX = cmk.ZEL;
 
       markets.push(cmk);
       markets.push(errors);

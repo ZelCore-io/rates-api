@@ -80,6 +80,7 @@ var zelcoreRates = {
       efg.SAI = efg.DAI
       efg.WBNB = efg.BNB
       efg.ARN = efg.ARNX
+      efg.FLUX = efg.ZEL;
       efg.TESTWND = 0;
       efg.TESTBTC = 0;
       efg.TESTETH = 0;
