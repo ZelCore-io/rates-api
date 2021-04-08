@@ -124,6 +124,11 @@ var zelcoreMarkets = {
       cmk.WBNB = cmk.BNB;
       cmk.ARN = cmk.ARNX;
       cmk.ZEL = cmk.FLUX;
+      cmk['FLUX-KDA'] = cmk.FLUX;
+      cmk['FLUX-ETH'] = cmk.FLUX;
+      cmk['FLUX-BNB'] = cmk.FLUX;
+      cmk['FLUX-TRX'] = cmk.FLUX;
+      cmk['FLUX-BSC'] = cmk.FLUX;
 
       markets.push(cmk);
       markets.push(errors);
