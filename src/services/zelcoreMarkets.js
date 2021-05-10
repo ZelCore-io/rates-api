@@ -18,7 +18,7 @@ var zelcoreMarkets = {
     return Promise.all([
       //  marketinfo
       apiRequest(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=TOK,CONI,PAX,GUSD,USDC,ETC,XMR,DASH,BTC,ETH,ZEC,USDT,LTC,BTCZ,RVN,BCH,BNB,BTX,SONM,OMG,ZIL,ZRX,GNT,SPHTX,BAT,MKR,ENG,PAY,SUB,CVC,STX,BTG,KCS,SRN,EVX,GTO,GVT,INS,IOTX,KEY,LUN,MDA,MITH,MTH,OAX,OST,PPT,QSP,REN,RLC,SNGLS,TNB,TNT,VIB,VIBE,WABI,WPR,DOCK,FUEL,CDT,CELR,CND,DATA,DGD,DLT,AGI&tsyms=BTC&api_key=${apiKey}`),  //  0
-      apiRequest(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=HUSH,XSG,BTCP,ZEN,KMD,XZC,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARNX,BRD,REP,QKC,LOOM,ANON,EURS,AMB,BCPT&tsyms=BTC&api_key=${apiKey}`), //  1
+      apiRequest(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=HUSH,TENT,BTCP,ZEN,KMD,XZC,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARNX,BRD,REP,QKC,LOOM,ANON,EURS,AMB,BCPT&tsyms=BTC&api_key=${apiKey}`), //  1
       apiRequest(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=QTUM,XEM,ONGAS,ONT,MIOTA,GAS,TRX,DGB,XLM,DOGE,EOS,ADA,XRP,DOCK,NEO,BTT,GRS,XCASH,LEO,USDS,ENQ,FTM,0XBTC,AERGO,UBT,ILC,HEX,COMP,VIDT,DRGN,WBTC,OM,UNI,JST,BDX,FIRO,CAKE,MATIC&tsyms=BTC&api_key=${apiKey}`), // 2
       // marketinfo CoinGecko
       apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=kyber-network,kyber-network-crystal,solana,serum,gatechain-token,snowgem,zclassic,1inch,zero,hotbit-token,binance-usd,huobi-pool-token,huobi-token,zb-token,mx-token,bitforex,okb,veriblock,dmme,suqa,holotoken,half-life,axe,safe-coin-2,genesis-network,bzedge,commercium,bitcoin-zero,zelcash,kadena,whale,golfcoin,polkadot,kusama,nxm,just-stablecoin,sun,chiliz,gnosis,cybervein,husd,ocean-protocol,quant-network,hedgetrade,terrausd,reserve-rights-token,ampleforth,swissborg,renbtc,uma,crypto-com-chain,celsius-degree-token,sushi,the-graph,ftx-token,yearn-finance,havven,aave,revain,xdai-stake,dai,nexo,binance-usd,true-usd,thorchain,bitcoin-bep2,maidsafecoin,bakerytoken&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 3
@@ -120,7 +120,6 @@ var zelcoreMarkets = {
       // }
       cmk.ONG = cmk.ONGAS;
       cmk.SAI = cmk.DAI;
-      cmk.TENT = cmk.XSG;
       cmk.WBNB = cmk.BNB;
       cmk.ARN = cmk.ARNX;
       cmk.ZEL = cmk.FLUX;
