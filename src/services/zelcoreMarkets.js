@@ -129,7 +129,7 @@ var zelcoreMarkets = {
       cmk['FLUX-TRX'] = cmk.FLUX;
       cmk['FLUX-BSC'] = cmk.FLUX;
       cmk.MSRM = cmk.SRM;
-      cmk.WSOL = cmk.WSOL;
+      cmk.WSOL = cmk.SOL;
 
       markets.push(cmk);
       markets.push(errors);

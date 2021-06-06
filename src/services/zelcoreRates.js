@@ -90,7 +90,7 @@ var zelcoreRates = {
       efg.TESTBTC = 0;
       efg.TESTETH = 0;
       efg.MSRM = efg.SRM * 1000000;
-      efg.WSOL = efg.WSOL;
+      efg.WSOL = efg.SOL;
 
 
       rates.push(bitpayData);
