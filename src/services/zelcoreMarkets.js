@@ -21,7 +21,8 @@ var zelcoreMarkets = {
       apiRequest(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=HUSH,TENT,BTCP,ZEN,KMD,XZC,ABT,ADX,AE,AION,AST,BBO,APPC,BLZ,BNT,ETHOS,COFI,DAI,DGX,ELEC,ELF,ENJ,STORJ,IOST,DENT,LEND,LINK,MANA,LRC,QASH,ICN,MCO,MTL,POE,POLY,POWR,RCN,REQ,SNT,SALT,STORM,EDO,TUSD,DCN,WAX,WINGS,DTA,FUN,KIN,BSV,AOA,THETA,ADT,MFT,ATL,ANT,ARNX,BRD,REP,QKC,LOOM,ANON,EURS,AMB,BCPT&tsyms=BTC&api_key=${apiKey}`), //  1
       apiRequest(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=SIN,MER,ALEPH,FLUX,ER,QTUM,XEM,ONGAS,ONT,MIOTA,GAS,TRX,DGB,XLM,DOGE,EOS,ADA,XRP,DOCK,NEO,BTT,GRS,XCASH,LEO,USDS,ENQ,FTM,0XBTC,AERGO,UBT,ILC,HEX,COMP,VIDT,DRGN,WBTC,OM,UNI,JST,BDX,FIRO,CAKE,MATIC,ZCL,VBK&tsyms=BTC&api_key=${apiKey}`), // 2
       // marketinfo CoinGecko
-      apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=solfarm,cope,bonfida,maps,media-network,oxygen,raydium,step-finance,rope-token,presearch,kyber-network,kyber-network-crystal,solana,serum,gatechain-token,snowgem,zclassic,1inch,hotbit-token,binance-usd,huobi-pool-token,huobi-token,zb-token,mx-token,bitforex,okb,veriblock,dmme,suqa,holotoken,half-life,axe,safe-coin-2,genesis-network,bzedge,commercium,bitcoin-zero,zelcash,kadena,whale,golfcoin,polkadot,kusama,nxm,just-stablecoin,sun,chiliz,gnosis,cybervein,husd,ocean-protocol,quant-network,hedgetrade,terrausd,reserve-rights-token,ampleforth,swissborg,renbtc,uma,crypto-com-chain,celsius-degree-token,sushi,the-graph,ftx-token,yearn-finance,havven,aave,revain,xdai-stake,dai,nexo,binance-usd,true-usd,thorchain,bitcoin-bep2,maidsafecoin,bakerytoken&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 3
+      apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=solfarm,cope,bonfida,maps,media-network,oxygen,raydium,step-finance,rope-token,presearch,kyber-network,kyber-network-crystal,solana,serum,gatechain-token,snowgem,zclassic,1inch,hotbit-token,binance-usd,huobi-pool-token,huobi-token,zb-token,mx-token,bitforex,okb,veriblock,dmme,suqa,holotoken,half-life,axe,safe-coin-2,genesis-network,bzedge,commercium,bitcoin-zero,zelcash,kadena,whale,golfcoin&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 3
+      apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=polkadot,kusama,nxm,just-stablecoin,sun,chiliz,gnosis,cybervein,husd,ocean-protocol,quant-network,hedgetrade,terrausd,reserve-rights-token,ampleforth,swissborg,renbtc,uma,crypto-com-chain,celsius-degree-token,sushi,the-graph,ftx-token,yearn-finance,havven,aave,revain,xdai-stake,dai,nexo,true-usd,thorchain,bitcoin-bep2,maidsafecoin,bakerytoken&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 4
       // apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD'), // give me price of BTC in USD 4
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=genesis-network&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=bzedge&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
@@ -40,6 +41,7 @@ var zelcoreMarkets = {
       var ccDataFullB = results[1]; // full results from cryptocompare
       var ccDataFullC = results[2]; // full results from cryptocompare
       var ccDataFullD = results[3]; // full results from coingecko
+      var ccDataFullE = results[4]; // full results from coingecko
       // var btcPrice = results[4];
       // var ccDataFullE = results[5]; // full results from coinpaprika
       // var btcPrice = results[4];
@@ -105,6 +107,22 @@ var zelcoreMarkets = {
           cmk[ccDataFullD[coin].symbol.toUpperCase()] = coindetail
         } catch (e) {
           errors.errors.coinsFullD = results[3]
+        }
+      })
+
+      var coinsFullE = Object.keys(ccDataFullE) // full results from coingecko
+      coinsFullE.forEach((coin) => {
+        try {
+          var coindetail = {}
+          coindetail['rank'] = ccDataFullE[coin].market_cap_rank
+          coindetail['total_supply'] = ccDataFullE[coin].total_supply
+          coindetail['supply'] = ccDataFullE[coin].circulating_supply
+          coindetail['volume'] = ccDataFullE[coin].total_volume
+          coindetail['change'] = ccDataFullE[coin].price_change_percentage_24h
+          coindetail['market'] = ccDataFullE[coin].market_cap
+          cmk[ccDataFullE[coin].symbol.toUpperCase()] = coindetail
+        } catch (e) {
+          errors.errors.coinsFullE = results[4]
         }
       })
 
