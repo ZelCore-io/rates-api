@@ -24,6 +24,8 @@ var zelcoreRates = {
       apiRequest(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=SIN,MER,ALEPH,FLUX,ZER,QTUM,XEM,ONGAS,ONT,MIOTA,GAS,TRX,DGB,XLM,DOGE,EOS,ADA,XRP,DOCK,NEO,TRON,BTT,SAFE,BTH,GRS,XCASH,LEO,USDS,ENQ,FTM,0XBTC,AERGO,UBT,ILC,HEX,COMP,VIDT,DRGN,WBTC,OM,UNI,JST,BDX,FIRO,CAKE,MATIC,ZCL,VBK,STETH,AMP,TEL,ONE,AVAX,ATOM,AXS,XTZ,BTCB,SHIB,UST,YFI,SNX,NEAR,C98,ANKR,SXP,WRX&tsyms=BTC&api_key=${apiKey}`),  //  3
       apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=solfarm,cope,bonfida,maps,media-network,oxygen,raydium,step-finance,rope-token,presearch,kyber-network,kyber-network-crystal,solana,serum,gatechain-token,snowgem,zclassic,1inch,hotbit-token,binance-usd,huobi-pool-token,huobi-token,zb-token,mx-token,bitforex,okb,veriblock,dmme,suqa,holotoken,half-life,axe,safe-coin-2,genesis-network,bzedge,commercium,bitcoin-zero,zelcash,kadena,whale,golfcoin,alpha-finance&order=market_cap_desc&per_page=100&page=1&sparkline=false'),  // 4
       apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=polkadot,kusama,nxm,just-stablecoin,sun-token,chiliz,gnosis,cybervein,husd,ocean-protocol,quant-network,hedgetrade,terrausd,reserve-rights-token,ampleforth,swissborg,renbtc,uma,crypto-com-chain,celsius-degree-token,sushi,the-graph,ftx-token,yearn-finance,havven,aave,revain,xdai-stake,dai,nexo,true-usd,thorchain,bitcoin-bep2,maidsafecoin,bakerytoken,safemoon,huplife,raptoreum,axie-infinity,vertcoin,lido-staked-ether,amp,telcoin,harmony&order=market_cap_desc&per_page=100&page=1&sparkline=false'),  // 5
+      apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=waves,perpetual-protocol,audius,curve-dao-token,the-sandbox,fetch-ai,golem,neutrino,skale,numeraire,livepeer,my-neighbor-alice,fei-protocol,origin-protocol,injective-protocol,singularitynet,pax-gold,band-protocol,storm,reef-finance,cartesi,nkn&order=market_cap_desc&per_page=100&page=1&sparkline=false'),  // 6
+      
     ]).then((results) => {
       var rates = [];
       var efg = {};
@@ -58,6 +60,16 @@ var zelcoreRates = {
           efg[results[5][index].symbol.toUpperCase()] = results[5][index].current_price
         } catch (e) {
           errors.errors.coinsCG = results[5]
+        }
+      })
+
+      // results from coingecko (prices)
+      var coinsCGC = Object.keys(results[6])
+      coinsCGC.forEach((index) => {
+        try {
+          efg[results[6][index].symbol.toUpperCase()] = results[6][index].current_price
+        } catch (e) {
+          errors.errors.coinsCG = results[6]
         }
       })
 

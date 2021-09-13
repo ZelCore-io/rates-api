@@ -23,6 +23,7 @@ var zelcoreMarkets = {
       // marketinfo CoinGecko
       apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=solfarm,cope,bonfida,maps,media-network,oxygen,raydium,step-finance,rope-token,presearch,kyber-network,kyber-network-crystal,solana,serum,gatechain-token,snowgem,zclassic,1inch,hotbit-token,binance-usd,huobi-pool-token,huobi-token,zb-token,mx-token,bitforex,okb,veriblock,dmme,suqa,holotoken,half-life,axe,safe-coin-2,genesis-network,bzedge,commercium,bitcoin-zero,zelcash,kadena,whale,golfcoin,alpha-finance&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 3
       apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=polkadot,kusama,nxm,just-stablecoin,sun-token,chiliz,gnosis,cybervein,husd,ocean-protocol,quant-network,hedgetrade,terrausd,reserve-rights-token,ampleforth,swissborg,renbtc,uma,crypto-com-chain,celsius-degree-token,sushi,the-graph,ftx-token,yearn-finance,havven,aave,revain,xdai-stake,dai,nexo,true-usd,thorchain,bitcoin-bep2,maidsafecoin,bakerytoken,safemoon,huplife,raptoreum,axie-infinity,vertcoin,lido-staked-ether,amp,telcoin,harmony&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 4
+      apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=waves,perpetual-protocol,audius,curve-dao-token,the-sandbox,fetch-ai,golem,neutrino,skale,numeraire,livepeer,my-neighbor-alice,fei-protocol,origin-protocol,injective-protocol,singularitynet,pax-gold,band-protocol,storm,reef-finance,cartesi,nkn&order=market_cap_desc&per_page=100&page=1&sparkline=false'), // 5
       // apiRequest('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD'), // give me price of BTC in USD 4
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=genesis-network&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
       //apiRequest('https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=bzedge&order=market_cap_desc&per_page=100&page=1&sparkline=false'),
@@ -42,6 +43,7 @@ var zelcoreMarkets = {
       var ccDataFullC = results[2]; // full results from cryptocompare
       var ccDataFullD = results[3]; // full results from coingecko
       var ccDataFullE = results[4]; // full results from coingecko
+      var ccDataFullF = results[5]; // full results from coingecko
       // var btcPrice = results[4];
       // var ccDataFullE = results[5]; // full results from coinpaprika
       // var btcPrice = results[4];
@@ -123,6 +125,22 @@ var zelcoreMarkets = {
           cmk[ccDataFullE[coin].symbol.toUpperCase()] = coindetail
         } catch (e) {
           errors.errors.coinsFullE = results[4]
+        }
+      })
+
+      var coinsFullF = Object.keys(ccDataFullF) // full results from coingecko
+      coinsFullF.forEach((coin) => {
+        try {
+          var coindetail = {}
+          coindetail['rank'] = ccDataFullF[coin].market_cap_rank
+          coindetail['total_supply'] = ccDataFullF[coin].total_supply
+          coindetail['supply'] = ccDataFullF[coin].circulating_supply
+          coindetail['volume'] = ccDataFullF[coin].total_volume
+          coindetail['change'] = ccDataFullF[coin].price_change_percentage_24h
+          coindetail['market'] = ccDataFullF[coin].market_cap
+          cmk[ccDataFullF[coin].symbol.toUpperCase()] = coindetail
+        } catch (e) {
+          errors.errors.coinsFullF = results[5]
         }
       })
 
