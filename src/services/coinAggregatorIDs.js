@@ -42,8 +42,8 @@ const  coinAggregatorIDs = {
 
 /**
  * Function that combines with commas the elements of a string array till some max length and then return the new array of strings
- * @param {String[]} elements 
- * @param {Int} maxLength 
+ * @param {string[]} elements 
+ * @param {number} maxLength 
  * @returns ApiCallStrings[]
  */
 function makeRequestStrings(elements,maxLength){
