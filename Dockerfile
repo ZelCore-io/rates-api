@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:14-alpine
 MAINTAINER Tadeas Kmenta <tadeas@zel.network>
 
 COPY package.json /tmp/package.json

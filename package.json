@@ -1,31 +1,30 @@
 {
   "name": "rates-api",
-  "version": "2.2.0",
-  "description": "A service that supplies market info for ZelCore assets and conversions to other currencies",
+  "version": "2.3.0",
+  "description": "A service that supplies market info for Zelcore assets and conversions to other currencies",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
     "test": "echo 'No tests have been implemented' && exit 1",
     "lint": "eslint src/"
   },
-  "author": "Zel Technologies GmbH, Zug",
+  "author": "Zelcore Technologies",
   "license": "MIT",
   "dependencies": {
-    "apicache": "^1.1.0",
-    "config": "^1.28.1",
-    "cors": "^2.8.4",
-    "express": "^4.16.2",
-    "morgan": "^1.9.0",
-    "nodemon": "^1.12.1",
-    "request": "^2.83.0",
-    "request-promise-native": "^1.0.5"
+    "apicache": "^1.6.2",
+    "config": "^3.3.6",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.12",
+    "request": "^2.88.2",
+    "request-promise-native": "^1.0.9"
   },
   "devDependencies": {
-    "eslint": "^4.11.0",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
-    "eslint-plugin-react": "^7.5.1",
-    "power-assert": "^1.4.4"
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.25.3"
   }
 }
