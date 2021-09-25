@@ -77,6 +77,8 @@ const zelcoreMarkets = {
         cmk['FLUX-BSC'] = cmk.FLUX;
         cmk.MSRM = cmk.SRM;
         cmk.WSOL = cmk.SOL;
+        cmk.WETH = cmk.ETH;
+        cmk.WMATIC = cmk.MATIC;
 
         markets.push(cmk);
         markets.push(errors);
