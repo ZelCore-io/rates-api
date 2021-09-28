@@ -22,7 +22,7 @@ const coinAggregatorIDs = {
     '0XBTC', 'AERGO', 'UBT', 'ILC', 'HEX', 'COMP', 'VIDT', 'DRGN', 'WBTC', 'OM', 'UNI',
     'JST', 'BDX', 'FIRO', 'CAKE', 'MATIC', 'ZCL', 'VBK', 'STETH', 'AMP', 'TEL', 'ONE',
     'AVAX', 'ATOM', 'AXS', 'XTZ', 'BTCB', 'SHIB', 'UST', 'YFI', 'SNX', 'NEAR', 'C98',
-    'ANKR', 'SXP', 'WRX',
+    'ANKR', 'SXP', 'WRX', 'QUICK',
   ],
   coingecko: [
     'solfarm', 'cope', 'bonfida', 'maps', 'media-network', 'oxygen', 'raydium', 'step-finance', 'rope-token', 'presearch', 'kyber-network', 'kyber-network-crystal', 'solana',
@@ -33,7 +33,7 @@ const coinAggregatorIDs = {
     'yearn-finance', 'havven', 'aave', 'revain', 'xdai-stake', 'dai', 'nexo', 'true-usd', 'thorchain', 'bitcoin-bep2', 'maidsafecoin', 'bakerytoken', 'safemoon', 'huplife',
     'raptoreum', 'axie-infinity', 'vertcoin', 'lido-staked-ether', 'amp', 'telcoin', 'harmony', 'waves', 'perpetual-protocol', 'audius', 'curve-dao-token', 'the-sandbox',
     'fetch-ai', 'golem', 'neutrino', 'skale', 'numeraire', 'livepeer', 'my-neighbor-alice', 'fei-protocol', 'origin-protocol', 'injective-protocol', 'singularitynet',
-    'pax-gold', 'band-protocol', 'storm', 'reef-finance', 'cartesi', 'nkn',
+    'pax-gold', 'band-protocol', 'storm', 'reef-finance', 'cartesi', 'nkn', 'quick',
   ],
 };
 
