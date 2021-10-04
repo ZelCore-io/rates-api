@@ -2,6 +2,7 @@
  * @const { cryptoCompare:String[], coingecko:String[] } dictionary with Cryptocompare and Congecko IDS
  */
 const  coinAggregatorIDs = {
+  // Just add the cryptoCompare ID in the end of this list
   cryptoCompare : [
     "TOK", "CONI", "PAX", "GUSD", "USDC", "ETC", "XMR", "DASH", "BTC", "ETH",
     "ZEC", "USDT", "LTC", "BTCZ", "RVN", "BCH", "BNB", "BTX", "SONM", "OMG",
@@ -24,6 +25,7 @@ const  coinAggregatorIDs = {
     "AVAX", "ATOM", "AXS", "XTZ", "BTCB", "SHIB", "UST", "YFI", "SNX", "NEAR", "C98",
     "ANKR", "SXP", "WRX",    
   ],
+  // Just add the coingecko ID in the end of this list
   coingecko : [
     "solfarm", "cope", "bonfida", "maps", "media-network", "oxygen", "raydium", "step-finance", "rope-token", "presearch", "kyber-network", "kyber-network-crystal", "solana", 
 	"serum", "gatechain-token", "snowgem", "zclassic", "1inch", "hotbit-token", "binance-usd", "huobi-pool-token", "huobi-token", "zb-token", "mx-token", "bitforex", 
@@ -33,10 +35,7 @@ const  coinAggregatorIDs = {
 	"yearn-finance", "havven", "aave", "revain", "xdai-stake", "dai", "nexo", "true-usd", "thorchain", "bitcoin-bep2", "maidsafecoin", "bakerytoken", "safemoon", "huplife", 
 	"raptoreum", "axie-infinity", "vertcoin", "lido-staked-ether", "amp", "telcoin", "harmony", "waves", "perpetual-protocol", "audius", "curve-dao-token", "the-sandbox", 
 	"fetch-ai", "golem", "neutrino", "skale", "numeraire", "livepeer", "my-neighbor-alice", "fei-protocol", "origin-protocol", "injective-protocol", "singularitynet", 
-	"pax-gold", "band-protocol", "storm", "reef-finance", "cartesi", "nkn",
-  ],
-  coingecko1 : [
-    "solfarm",
+	"pax-gold", "band-protocol", "storm", "reef-finance", "cartesi", "nkn", "woo-network", "polycat-finance", "solfarm",
   ],
 };
 
