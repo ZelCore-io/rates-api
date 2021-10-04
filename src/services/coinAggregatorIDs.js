@@ -1,4 +1,4 @@
-/** 
+/**
  * @const { cryptoCompare:String[], coingecko:String[] } dictionary with Cryptocompare and Congecko IDS
  */
 const  coinAggregatorIDs = {
@@ -23,7 +23,7 @@ const  coinAggregatorIDs = {
     "0XBTC", "AERGO", "UBT", "ILC", "HEX", "COMP", "VIDT", "DRGN", "WBTC", "OM", "UNI",
     "JST", "BDX", "FIRO", "CAKE", "MATIC", "ZCL", "VBK", "STETH", "AMP", "TEL", "ONE",
     "AVAX", "ATOM", "AXS", "XTZ", "BTCB", "SHIB", "UST", "YFI", "SNX", "NEAR", "C98",
-    "ANKR", "SXP", "WRX",    
+    "ANKR", "SXP", "WRX", 'QUICK',
   ],
   // Just add the coingecko ID in the end of this list
   coingecko : [
@@ -35,36 +35,35 @@ const  coinAggregatorIDs = {
 	"yearn-finance", "havven", "aave", "revain", "xdai-stake", "dai", "nexo", "true-usd", "thorchain", "bitcoin-bep2", "maidsafecoin", "bakerytoken", "safemoon", "huplife", 
 	"raptoreum", "axie-infinity", "vertcoin", "lido-staked-ether", "amp", "telcoin", "harmony", "waves", "perpetual-protocol", "audius", "curve-dao-token", "the-sandbox", 
 	"fetch-ai", "golem", "neutrino", "skale", "numeraire", "livepeer", "my-neighbor-alice", "fei-protocol", "origin-protocol", "injective-protocol", "singularitynet", 
-	"pax-gold", "band-protocol", "storm", "reef-finance", "cartesi", "nkn", "woo-network", "polycat-finance", "solfarm",
+	"pax-gold", "band-protocol", "storm", "reef-finance", "cartesi", "nkn", 'quick', "woo-network", "polycat-finance", "solfarm",
   ],
 };
 
 /**
  * Function that combines with commas the elements of a string array till some max length and then return the new array of strings
- * @param {string[]} elements 
- * @param {number} maxLength 
+ * @param {string[]} elements
+ * @param {number} maxLength
  * @returns ApiCallStrings[]
  */
-function makeRequestStrings(elements,maxLength){
-  var result = [], temp = '';
-  elements.forEach(element => {
-    if ((temp+element+',').length >= maxLength) {
-        result.push(temp.replace(/,\s*$/, ""));
-        temp = element + ',';
-      }
-      else if (element == elements[elements.length-1]) {
-        result.push(temp+element);
-      }
-      else {
-          temp = temp + element + ',';
-      }
+function makeRequestStrings(elements, maxLength) {
+  const result = [];
+  let temp = '';
+  elements.forEach((element) => {
+    if ((`${temp + element},`).length >= maxLength) {
+      result.push(temp.replace(/,\s*$/, '')); // remove last ,
+      temp = `${element},`;
+    } else if (element === elements[elements.length - 1]) {
+      result.push(temp + element);
+    } else {
+      temp = `${temp + element},`;
+    }
   });
   return result;
 }
 
-cryptoCompareIDs = makeRequestStrings(coinAggregatorIDs.cryptoCompare,300)
-coingeckoIDs = makeRequestStrings(coinAggregatorIDs.coingecko,450)
+const cryptoCompareIDs = makeRequestStrings(coinAggregatorIDs.cryptoCompare, 300);
+const coingeckoIDs = makeRequestStrings(coinAggregatorIDs.coingecko, 450);
 
-//console.log(cryptoCompareIDs);
-//console.log(coingeckoIDs);
-module.exports = {cryptoCompareIDs,coingeckoIDs};
+// console.log(cryptoCompareIDs);
+// console.log(coingeckoIDs);
+module.exports = { cryptoCompareIDs, coingeckoIDs };

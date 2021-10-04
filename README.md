@@ -4,7 +4,7 @@ A Service that supplies rates and market conversion for ZelCore assets to other 
 
 ## Requirements
 
-Requires node version 6.0 and above
+Requires node version 10.0 and above
 
 ## Installation
 
