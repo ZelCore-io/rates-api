@@ -17,7 +17,7 @@ const  coinAggregatorIDs = {
     "POLY", "POWR", "RCN", "RDN", "REQ", "SNT", "SALT", "STORM", "EDO", "TUSD",
     "DCN", "WAX", "WINGS", "DTA", "FUN", "KIN", "BSV", "AOA", "THETA", "ADT",
     "MFT", "ATL", "ANT", "ARNX", "BRD", "REP", "QKC", "LOOM", "ANON", "EURS",
-    "AMB", "BCPT", "SIN", "MER", "ALEPH", "FLUX", "ZER", "QTUM", "XEM", "ONGAS",
+    "AMB", "BCPT", "SIN", "MER", "ALEPH", "ZER", "QTUM", "XEM", "ONGAS",
     "ONT", "MIOTA", "GAS", "TRX", "DGB", "XLM", "DOGE", "EOS", "ADA", "XRP", "DOCK",
     "NEO", "TRON", "BTT", "SAFE", "BTH", "GRS", "XCASH", "LEO", "USDS", "ENQ", "FTM",
     "0XBTC", "AERGO", "UBT", "ILC", "HEX", "COMP", "VIDT", "DRGN", "WBTC", "OM", "UNI",
@@ -35,7 +35,7 @@ const  coinAggregatorIDs = {
 	"yearn-finance", "havven", "aave", "revain", "xdai-stake", "dai", "nexo", "true-usd", "thorchain", "bitcoin-bep2", "maidsafecoin", "bakerytoken", "safemoon", "huplife", 
 	"raptoreum", "axie-infinity", "vertcoin", "lido-staked-ether", "amp", "telcoin", "harmony", "waves", "perpetual-protocol", "audius", "curve-dao-token", "the-sandbox", 
 	"fetch-ai", "golem", "neutrino", "skale", "numeraire", "livepeer", "my-neighbor-alice", "fei-protocol", "origin-protocol", "injective-protocol", "singularitynet", 
-	"pax-gold", "band-protocol", "storm", "reef-finance", "cartesi", "nkn", 'quick', "woo-network", "polycat-finance", "solfarm",
+	"pax-gold", "band-protocol", "storm", "reef-finance", "cartesi", "nkn", 'quick', "woo-network", "polycat-finance", "solfarm", "zelcash",
   ],
 };
 

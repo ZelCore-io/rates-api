@@ -91,6 +91,7 @@ const zelcoreRates = {
         efg['FLUX-BNB'] = efg.FLUX;
         efg['FLUX-TRX'] = efg.FLUX;
         efg['FLUX-BSC'] = efg.FLUX;
+        efg['FLUX-SOL'] = efg.FLUX;
         efg.TESTWND = 0;
         efg.TESTBTC = 0;
         efg.TESTETH = 0;
