@@ -23,7 +23,7 @@ const  coinAggregatorIDs = {
     "0XBTC", "AERGO", "UBT", "ILC", "HEX", "COMP", "VIDT", "DRGN", "WBTC", "OM", "UNI",
     "JST", "BDX", "FIRO", "CAKE", "MATIC", "ZCL", "VBK", "STETH", "AMP", "TEL", "ONE",
     "AVAX", "ATOM", "AXS", "XTZ", "BTCB", "SHIB", "UST", "YFI", "SNX", "NEAR", "C98",
-    "ANKR", "SXP", "WRX", 'QUICK',
+    "ANKR", "SXP", "WRX", "QUICK",
   ],
   // Just add the coingecko ID in the end of this list
   coingecko : [
@@ -35,7 +35,9 @@ const  coinAggregatorIDs = {
 	"yearn-finance", "havven", "aave", "revain", "xdai-stake", "dai", "nexo", "true-usd", "thorchain", "bitcoin-bep2", "maidsafecoin", "bakerytoken", "safemoon", "huplife", 
 	"raptoreum", "axie-infinity", "vertcoin", "lido-staked-ether", "amp", "telcoin", "harmony", "waves", "perpetual-protocol", "audius", "curve-dao-token", "the-sandbox", 
 	"fetch-ai", "golem", "neutrino", "skale", "numeraire", "livepeer", "my-neighbor-alice", "fei-protocol", "origin-protocol", "injective-protocol", "singularitynet", 
-	"pax-gold", "band-protocol", "storm", "reef-finance", "cartesi", "nkn", 'quick', "woo-network", "polycat-finance", "solfarm", "zelcash",
+	"pax-gold", "band-protocol", "storm", "reef-finance", "cartesi", "nkn", 'quick', "woo-network", "polycat-finance", "solfarm", "zelcash","stratis","energy-web-token",
+  "prometeus","coti","orchid-protocol","tomochain","orbs","ultra","badger-dao","pha","smooth-love-potion","mass-vehicle-ledger","nucypher","dodo","xyo-network","utrust",
+  "yfii-finance","melon","balancer","bora","strike","videocoin","weth","dydx","digitalbits","velas","fx-coin","asd",
   ],
 };
 
