@@ -1,7 +1,7 @@
 /**
  * @const { cryptoCompare:String[], coingecko:String[] } dictionary with Cryptocompare and Congecko IDS
  */
-const  coinAggregatorIDs = {
+ const  coinAggregatorIDs = {
   // Just add the cryptoCompare ID in the end of this list
   cryptoCompare : [
     "TOK", "CONI", "PAX", "GUSD", "USDC", "ETC", "XMR", "DASH", "BTC", "ETH",
@@ -23,7 +23,7 @@ const  coinAggregatorIDs = {
     "0XBTC", "AERGO", "UBT", "ILC", "HEX", "COMP", "VIDT", "DRGN", "WBTC", "OM", "UNI",
     "JST", "BDX", "FIRO", "CAKE", "MATIC", "ZCL", "VBK", "STETH", "AMP", "TEL", "ONE",
     "AVAX", "ATOM", "AXS", "XTZ", "BTCB", "SHIB", "UST", "YFI", "SNX", "NEAR", "C98",
-    "ANKR", "SXP", "WRX", "QUICK",
+    "ANKR", "SXP", "WRX", "QUICK", "TRIBE"
   ],
   // Just add the coingecko ID in the end of this list
   coingecko : [
@@ -37,7 +37,7 @@ const  coinAggregatorIDs = {
 	"fetch-ai", "golem", "neutrino", "skale", "numeraire", "livepeer", "my-neighbor-alice", "fei-protocol", "origin-protocol", "injective-protocol", "singularitynet", 
 	"pax-gold", "band-protocol", "storm", "reef-finance", "cartesi", "nkn", 'quick', "woo-network", "polycat-finance", "solfarm", "zelcash","stratis","energy-web-token",
   "prometeus","coti","orchid-protocol","tomochain","orbs","ultra","badger-dao","pha","smooth-love-potion","mass-vehicle-ledger","nucypher","dodo","xyo-network","utrust",
-  "yfii-finance","melon","balancer","bora","strike","videocoin","weth","dydx","digitalbits","velas","fx-coin","asd",
+  "yfii-finance","melon","balancer","bora","strike","videocoin","weth","dydx","digitalbits","velas","fx-coin","asd", "tribe-2",
   ],
 };
 
