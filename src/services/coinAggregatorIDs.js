@@ -1,7 +1,7 @@
 /**
  * @const { cryptoCompare:String[], coingecko:String[] } dictionary with Cryptocompare and Congecko IDS
  */
-const  coinAggregatorIDs = {
+ const  coinAggregatorIDs = {
   // Just add the cryptoCompare ID in the end of this list
   cryptoCompare : [
     "TOK", "CONI", "PAX", "GUSD", "USDC", "ETC", "XMR", "DASH", "BTC", "ETH",
