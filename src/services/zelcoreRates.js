@@ -45,27 +45,27 @@ const zelcoreRates = {
         // results from coingecko (prices)
         const dataCG = results.slice(1 + cryptoCompareIDs.length, 1 + cryptoCompareIDs.length + coingeckoIDs.length);
         dataCG.forEach((subresult) => {
-          const coinsCG = Object.keys(subresult);
-          coinsCG.forEach((index) => {
-            try {
+          try {
+            const coinsCG = Object.keys(subresult);
+            coinsCG.forEach((index) => {
               efg[subresult[index].symbol.toUpperCase()] = subresult[index].current_price;
-            } catch (e) {
-              errors.errors.coinsCG = subresult;
-            }
-          });
+            });
+          } catch (e) {
+            errors.errors.coinsCG = subresult;
+          }
         });
 
         // results from cryptocompare (prices)
         const dataCC = results.slice(1, 1 + cryptoCompareIDs.length);
         dataCC.forEach((subresult) => {
-          const coinsCC = Object.keys(subresult);
-          coinsCC.forEach((coin) => {
-            try {
+          try {
+            const coinsCC = Object.keys(subresult);
+            coinsCC.forEach((coin) => {
               efg[coin] = subresult[coin].BTC;
-            } catch (e) {
-              errors.errors.coinsCC = subresult;
-            }
-          });
+            });
+          } catch (e) {
+            errors.errors.coinsCC = subresult;
+          }
         });
 
         // assets with zero value or no usable API
