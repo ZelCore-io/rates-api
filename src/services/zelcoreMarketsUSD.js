@@ -29,27 +29,27 @@ const zelcoreMarkets = {
         // full results from cryptocompare
         const dataCC = results.slice(0, cryptoCompareIDs.length);
         dataCC.forEach((subresult) => {
-          const coinsFull = Object.keys(subresult.RAW);
-          coinsFull.forEach((coin) => {
-            try {
+          try {
+            const coinsFull = Object.keys(subresult.RAW);
+            coinsFull.forEach((coin) => {
               const coindetail = {};
               coindetail.supply = subresult.RAW[coin].USD.SUPPLY;
               coindetail.volume = subresult.RAW[coin].USD.TOTALVOLUME24HTO;
               coindetail.change = subresult.RAW[coin].USD.CHANGEPCT24HOUR;
               coindetail.market = subresult.RAW[coin].USD.MKTCAP;
               cmk[coin] = coindetail;
-            } catch (e) {
-              errors.errors.coinsFull = subresult;
-            }
-          });
+            });
+          } catch (e) {
+            errors.errors.coinsFull = subresult;
+          }
         });
 
         // full results from coingecko
         const dataCG = results.slice(cryptoCompareIDs.length, cryptoCompareIDs.length + coingeckoIDs.length);
         dataCG.forEach((subresult) => {
-          const coinsFull = Object.keys(subresult);
-          coinsFull.forEach((coin) => {
-            try {
+          try {
+            const coinsFull = Object.keys(subresult);
+            coinsFull.forEach((coin) => {
               const coindetail = {};
               coindetail.rank = subresult[coin].market_cap_rank;
               coindetail.total_supply = subresult[coin].total_supply;
@@ -58,10 +58,10 @@ const zelcoreMarkets = {
               coindetail.change = subresult[coin].price_change_percentage_24h;
               coindetail.market = subresult[coin].market_cap;
               cmk[subresult[coin].symbol.toUpperCase()] = coindetail;
-            } catch (e) {
-              errors.errors.coinsFull = subresult;
-            }
-          });
+            });
+          } catch (e) {
+            errors.errors.coinsFull = subresult;
+          }
         });
 
         // Some wrapped assets and flux
