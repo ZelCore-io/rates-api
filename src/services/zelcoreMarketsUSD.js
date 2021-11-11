@@ -1,6 +1,7 @@
 const request = require('request-promise-native');
 const config = require('config');
 const { cryptoCompareIDs, coingeckoIDs } = require('./coinAggregatorIDs');
+const log = require('../lib/log');
 
 const apiKey = process.env.API_KEY || config.apiKey;
 
@@ -8,7 +9,7 @@ function apiRequest(url) {
   return request({ uri: url, json: true })
     .then((response) => response)
     .catch((error) => {
-      console.log(`ERROR: ${url}`);
+      log.error(`ERROR: ${url}`);
       return error;
     });
 }
