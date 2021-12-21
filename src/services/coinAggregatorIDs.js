@@ -39,7 +39,8 @@ const coinAggregatorIDs = {
     'prometeus', 'coti', 'orchid-protocol', 'tomochain', 'orbs', 'ultra', 'badger-dao', 'pha', 'smooth-love-potion', 'mass-vehicle-ledger', 'nucypher', 'dodo', 'xyo-network', 'utrust',
     'yfii-finance', 'melon', 'balancer', 'bora', 'strike', 'videocoin', 'weth', 'dydx', 'digitalbits', 'velas', 'fx-coin', 'asd', 'tribe-2', 'gods-unchained', 'ore-token', 'paribus',
     'crowny-token', 'samoyedcoin', 'mango-markets', 'star-atlas', 'star-atlas-dao', 'orca', 'aurory', 'solend', 'saber', 'liq-protocol', 'synthetify-token', 'port-finance', 'allbridge',
-    'cropperfinance', 'investin', 'grape-2', 'ninja-protocol',
+    'cropperfinance', 'investin', 'grape-2', 'ninja-protocol', 'msol', 'lido-staked-sol', 'solanium', 'defi-land', 'invictus', 'jet', 'dexlab', 'only1', 'marinade', 'hapi', 'aldrin',
+    'cyclos', 'fabric', 'waggle-network', 'moonlana', 'solanax', 'cato', 'corestarter', 'sator', 'apyswap', 'sunny-aggregator', 'kurobi',
   ],
 };
 
