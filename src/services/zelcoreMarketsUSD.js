@@ -80,6 +80,7 @@ const zelcoreMarkets = {
         cmk.MSRM = cmk.SRM;
         cmk.WSOL = cmk.SOL;
         cmk.WETH = cmk.ETH;
+        cmk.SFM = cmk.SAEFMOON;
 
         markets.push(cmk);
         markets.push(errors);
