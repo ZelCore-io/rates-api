@@ -98,6 +98,7 @@ const zelcoreRates = {
         efg.WSOL = efg.SOL;
         efg.WETH = efg.ETH;
         efg.WMATIC = efg.MATIC;
+        efg.BABE = efg.KDA / 4.2;
 
         rates.push(bitpayData);
         rates.push(efg);
