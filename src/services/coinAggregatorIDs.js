@@ -2,6 +2,7 @@
  * @const { cryptoCompare:String[], coingecko:String[] } dictionary with Cryptocompare and Congecko IDS
  */
 const coinAggregatorIDs = {
+  // Just add the cryptoCompare ID in the end of this list
   cryptoCompare: [
     'TOK', 'CONI', 'PAX', 'GUSD', 'USDC', 'ETC', 'XMR', 'DASH', 'BTC', 'ETH',
     'ZEC', 'USDT', 'LTC', 'BTCZ', 'RVN', 'BCH', 'BNB', 'BTX', 'SONM', 'OMG',
@@ -16,14 +17,15 @@ const coinAggregatorIDs = {
     'POLY', 'POWR', 'RCN', 'RDN', 'REQ', 'SNT', 'SALT', 'STORM', 'EDO', 'TUSD',
     'DCN', 'WAX', 'WINGS', 'DTA', 'FUN', 'KIN', 'BSV', 'AOA', 'THETA', 'ADT',
     'MFT', 'ATL', 'ANT', 'ARNX', 'BRD', 'REP', 'QKC', 'LOOM', 'ANON', 'EURS',
-    'AMB', 'BCPT', 'SIN', 'MER', 'ALEPH', 'FLUX', 'ZER', 'QTUM', 'XEM', 'ONGAS',
+    'AMB', 'BCPT', 'SIN', 'MER', 'ALEPH', 'ZER', 'QTUM', 'XEM', 'ONGAS',
     'ONT', 'MIOTA', 'GAS', 'TRX', 'DGB', 'XLM', 'DOGE', 'EOS', 'ADA', 'XRP', 'DOCK',
     'NEO', 'TRON', 'BTT', 'SAFE', 'BTH', 'GRS', 'XCASH', 'LEO', 'USDS', 'ENQ', 'FTM',
     '0XBTC', 'AERGO', 'UBT', 'ILC', 'HEX', 'COMP', 'VIDT', 'DRGN', 'WBTC', 'OM', 'UNI',
     'JST', 'BDX', 'FIRO', 'CAKE', 'MATIC', 'ZCL', 'VBK', 'STETH', 'AMP', 'TEL', 'ONE',
     'AVAX', 'ATOM', 'AXS', 'XTZ', 'BTCB', 'SHIB', 'UST', 'YFI', 'SNX', 'NEAR', 'C98',
-    'ANKR', 'SXP', 'WRX',
+    'ANKR', 'SXP', 'WRX', 'QUICK',
   ],
+  // Just add the coingecko ID in the end of this list
   coingecko: [
     'solfarm', 'cope', 'bonfida', 'maps', 'media-network', 'oxygen', 'raydium', 'step-finance', 'rope-token', 'presearch', 'kyber-network', 'kyber-network-crystal', 'solana',
     'serum', 'gatechain-token', 'snowgem', 'zclassic', '1inch', 'hotbit-token', 'binance-usd', 'huobi-pool-token', 'huobi-token', 'zb-token', 'mx-token', 'bitforex',
@@ -33,7 +35,12 @@ const coinAggregatorIDs = {
     'yearn-finance', 'havven', 'aave', 'revain', 'xdai-stake', 'dai', 'nexo', 'true-usd', 'thorchain', 'bitcoin-bep2', 'maidsafecoin', 'bakerytoken', 'safemoon', 'huplife',
     'raptoreum', 'axie-infinity', 'vertcoin', 'lido-staked-ether', 'amp', 'telcoin', 'harmony', 'waves', 'perpetual-protocol', 'audius', 'curve-dao-token', 'the-sandbox',
     'fetch-ai', 'golem', 'neutrino', 'skale', 'numeraire', 'livepeer', 'my-neighbor-alice', 'fei-protocol', 'origin-protocol', 'injective-protocol', 'singularitynet',
-    'pax-gold', 'band-protocol', 'storm', 'reef-finance', 'cartesi', 'nkn',
+    'pax-gold', 'band-protocol', 'storm', 'reef-finance', 'cartesi', 'nkn', 'quick', 'woo-network', 'polycat-finance', 'solfarm', 'zelcash', 'stratis', 'energy-web-token',
+    'prometeus', 'coti', 'orchid-protocol', 'tomochain', 'orbs', 'ultra', 'badger-dao', 'pha', 'smooth-love-potion', 'mass-vehicle-ledger', 'nucypher', 'dodo', 'xyo-network', 'utrust',
+    'yfii-finance', 'melon', 'balancer', 'bora', 'strike', 'videocoin', 'weth', 'dydx', 'digitalbits', 'velas', 'fx-coin', 'asd', 'tribe-2', 'gods-unchained', 'ore-token', 'paribus',
+    'crowny-token', 'samoyedcoin', 'mango-markets', 'star-atlas', 'star-atlas-dao', 'orca', 'aurory', 'solend', 'saber', 'liq-protocol', 'synthetify-token', 'port-finance', 'allbridge',
+    'cropperfinance', 'investin', 'grape-2', 'ninja-protocol', 'msol', 'lido-staked-sol', 'solanium', 'defi-land', 'invictus', 'jet', 'dexlab', 'only1', 'marinade', 'hapi', 'aldrin',
+    'cyclos', 'fabric', 'waggle-network', 'moonlana', 'solanax', 'cato', 'corestarter', 'sator', 'apyswap', 'sunny-aggregator', 'kurobi',
   ],
 };
 

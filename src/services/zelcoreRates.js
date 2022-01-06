@@ -1,6 +1,7 @@
 const request = require('request-promise-native');
 const config = require('config');
 const { cryptoCompareIDs, coingeckoIDs } = require('./coinAggregatorIDs');
+const log = require('../lib/log');
 
 const apiKey = process.env.API_KEY || config.apiKey;
 
@@ -8,7 +9,7 @@ function apiRequest(url) {
   return request({ uri: url, json: true })
     .then((response) => response)
     .catch((error) => {
-      console.log(`ERROR: ${url}`);
+      log.error(`ERROR: ${url}`);
       return error;
     });
 }
@@ -31,9 +32,7 @@ const zelcoreRates = {
         const errors = { errors: {} };
         // results from bitpay (fiat rates)
         try {
-          console.log(results[0]);
           const dummyTest = results[0].data[1].code;
-          console.log(dummyTest);
           if (!dummyTest) {
             throw new Error('Bitpay does not work correctly');
           }
@@ -45,27 +44,27 @@ const zelcoreRates = {
         // results from coingecko (prices)
         const dataCG = results.slice(1 + cryptoCompareIDs.length, 1 + cryptoCompareIDs.length + coingeckoIDs.length);
         dataCG.forEach((subresult) => {
-          const coinsCG = Object.keys(subresult);
-          coinsCG.forEach((index) => {
-            try {
+          try {
+            const coinsCG = Object.keys(subresult);
+            coinsCG.forEach((index) => {
               efg[subresult[index].symbol.toUpperCase()] = subresult[index].current_price;
-            } catch (e) {
-              errors.errors.coinsCG = subresult;
-            }
-          });
+            });
+          } catch (e) {
+            errors.errors.coinsCG = subresult;
+          }
         });
 
         // results from cryptocompare (prices)
         const dataCC = results.slice(1, 1 + cryptoCompareIDs.length);
         dataCC.forEach((subresult) => {
-          const coinsCC = Object.keys(subresult);
-          coinsCC.forEach((coin) => {
-            try {
+          try {
+            const coinsCC = Object.keys(subresult);
+            coinsCC.forEach((coin) => {
               efg[coin] = subresult[coin].BTC;
-            } catch (e) {
-              errors.errors.coinsCC = subresult;
-            }
-          });
+            });
+          } catch (e) {
+            errors.errors.coinsCC = subresult;
+          }
         });
 
         // assets with zero value or no usable API
@@ -91,6 +90,7 @@ const zelcoreRates = {
         efg['FLUX-BNB'] = efg.FLUX;
         efg['FLUX-TRX'] = efg.FLUX;
         efg['FLUX-BSC'] = efg.FLUX;
+        efg['FLUX-SOL'] = efg.FLUX;
         efg.TESTWND = 0;
         efg.TESTBTC = 0;
         efg.TESTETH = 0;
@@ -99,6 +99,7 @@ const zelcoreRates = {
         efg.WETH = efg.ETH;
         efg.WMATIC = efg.MATIC;
         efg.BABE = efg.KDA / 4.2;
+        efg.SFM = efg.SAFEMOON;
 
         rates.push(bitpayData);
         rates.push(efg);
