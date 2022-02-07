@@ -23,7 +23,7 @@ const coinAggregatorIDs = {
     '0XBTC', 'AERGO', 'UBT', 'ILC', 'HEX', 'COMP', 'VIDT', 'DRGN', 'WBTC', 'OM', 'UNI',
     'JST', 'BDX', 'FIRO', 'CAKE', 'MATIC', 'ZCL', 'VBK', 'STETH', 'AMP', 'TEL', 'ONE',
     'AVAX', 'ATOM', 'AXS', 'XTZ', 'BTCB', 'SHIB', 'UST', 'YFI', 'SNX', 'NEAR', 'C98',
-    'ANKR', 'SXP', 'WRX', 'QUICK',
+    'ANKR', 'SXP', 'WRX', 'QUICK', 'SAITO',
   ],
   // Just add the coingecko ID in the end of this list
   coingecko: [
