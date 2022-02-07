@@ -81,6 +81,7 @@ const zelcoreMarkets = {
         cmk.WSOL = cmk.SOL;
         cmk.WETH = cmk.ETH;
         cmk.WMATIC = cmk.MATIC;
+        cmk.kFRAX = cmk.FRAX;
         cmk.BABE = {
           total_supply: 1720082,
           supply: 22001,
