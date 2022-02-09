@@ -101,6 +101,7 @@ const zelcoreRates = {
         efg.BABE = efg.KDA / 4.2;
         efg.SFM = efg.SAFEMOON;
         efg.kFRAX = efg.FRAX;
+        efg.GLINK = efg.TENT;
 
         rates.push(bitpayData);
         rates.push(efg);
