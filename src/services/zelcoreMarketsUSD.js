@@ -91,7 +91,6 @@ const zelcoreMarkets = {
           rank: 0,
           change: cmk.KDA.change,
         };
-        cmk.SFM = cmk.SAEFMOON;
 
         markets.push(cmk);
         markets.push(errors);

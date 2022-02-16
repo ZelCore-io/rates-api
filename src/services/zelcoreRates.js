@@ -99,7 +99,6 @@ const zelcoreRates = {
         efg.WETH = efg.ETH;
         efg.WMATIC = efg.MATIC;
         efg.BABE = efg.KDA / 4.2;
-        efg.SFM = efg.SAFEMOON;
         efg.kFRAX = efg.FRAX;
         efg.GLINK = efg.TENT;
 
