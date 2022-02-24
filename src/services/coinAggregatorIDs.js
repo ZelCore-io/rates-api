@@ -19,7 +19,7 @@ const coinAggregatorIDs = {
     'MFT', 'ATL', 'ANT', 'ARNX', 'BRD', 'REP', 'QKC', 'LOOM', 'ANON', 'EURS',
     'AMB', 'BCPT', 'SIN', 'MER', 'ALEPH', 'ZER', 'QTUM', 'XEM', 'ONGAS',
     'ONT', 'MIOTA', 'GAS', 'TRX', 'DGB', 'XLM', 'DOGE', 'EOS', 'ADA', 'XRP', 'DOCK',
-    'NEO', 'TRON', 'BTT', 'SAFE', 'BTH', 'GRS', 'XCASH', 'LEO', 'USDS', 'ENQ', 'FTM',
+    'NEO', 'TRON', 'BTTOLD', 'SAFE', 'BTH', 'GRS', 'XCASH', 'LEO', 'USDS', 'ENQ', 'FTM',
     '0XBTC', 'AERGO', 'UBT', 'ILC', 'HEX', 'COMP', 'VIDT', 'DRGN', 'WBTC', 'OM', 'UNI',
     'JST', 'BDX', 'FIRO', 'CAKE', 'MATIC', 'ZCL', 'VBK', 'STETH', 'AMP', 'TEL', 'ONE',
     'AVAX', 'ATOM', 'AXS', 'XTZ', 'BTCB', 'SHIB', 'UST', 'YFI', 'SNX', 'NEAR', 'C98',
@@ -42,7 +42,7 @@ const coinAggregatorIDs = {
     'cropperfinance', 'investin', 'grape-2', 'ninja-protocol', 'msol', 'lido-staked-sol', 'solanium', 'defi-land', 'invictus', 'jet', 'dexlab', 'only1', 'marinade', 'hapi', 'aldrin',
     'cyclos', 'fabric', 'waggle-network', 'moonlana', 'solanax', 'cato', 'corestarter', 'sator', 'apyswap', 'sunny-aggregator', 'kurobi', 'frax', 'fio-protocol', 'avalanche-2', 'terra-luna',
     'terra-sdt', 'terra-krw', 'mirrored-amazon', 'mirrored-apple', 'mirrored-airbnb', 'mirrored-coinbase', 'mirrored-microsoft', 'mirrored-google', 'mirrored-tesla', 'mirrored-twitter', 'mirrored-netflix',
-    'safemoon-2',
+    'safemoon-2', 'bittorrent', 'elrond-erd-2',
   ],
 };
 
