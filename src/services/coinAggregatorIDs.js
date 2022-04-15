@@ -17,7 +17,7 @@ const coinAggregatorIDs = {
     'POLY', 'POWR', 'RCN', 'RDN', 'REQ', 'SNT', 'SALT', 'STORM', 'EDO', 'TUSD',
     'DCN', 'WAX', 'WINGS', 'DTA', 'FUN', 'KIN', 'BSV', 'AOA', 'THETA', 'ADT',
     'MFT', 'ATL', 'ANT', 'ARNX', 'BRD', 'REP', 'QKC', 'LOOM', 'ANON', 'EURS',
-    'AMB', 'BCPT', 'SIN', 'MER', 'ALEPH', 'ZER', 'QTUM', 'XEM', 'ONGAS',
+    'AMB', 'BCPT', 'SIN', 'MER', 'ALEPH', 'QTUM', 'XEM', 'ONGAS',
     'ONT', 'MIOTA', 'GAS', 'TRX', 'DGB', 'XLM', 'DOGE', 'EOS', 'ADA', 'XRP', 'DOCK',
     'NEO', 'TRON', 'BTTOLD', 'SAFE', 'BTH', 'GRS', 'XCASH', 'LEO', 'USDS', 'ENQ', 'FTM',
     '0XBTC', 'AERGO', 'UBT', 'ILC', 'HEX', 'COMP', 'VIDT', 'DRGN', 'WBTC', 'OM', 'UNI',
@@ -42,7 +42,7 @@ const coinAggregatorIDs = {
     'cropperfinance', 'investin', 'grape-2', 'ninja-protocol', 'msol', 'lido-staked-sol', 'solanium', 'defi-land', 'invictus', 'jet', 'dexlab', 'only1', 'marinade', 'hapi', 'aldrin',
     'cyclos', 'fabric', 'waggle-network', 'moonlana', 'solanax', 'cato', 'corestarter', 'sator', 'apyswap', 'sunny-aggregator', 'kurobi', 'frax', 'fio-protocol', 'avalanche-2', 'terra-luna',
     'terra-sdt', 'terra-krw', 'mirrored-amazon', 'mirrored-apple', 'mirrored-airbnb', 'mirrored-coinbase', 'mirrored-microsoft', 'mirrored-google', 'mirrored-tesla', 'mirrored-twitter', 'mirrored-netflix',
-    'safemoon-2', 'bittorrent', 'elrond-erd-2', 'hollaex-token',
+    'safemoon-2', 'bittorrent', 'elrond-erd-2', 'hollaex-token', 'zero',
   ],
 };
 
