@@ -20,7 +20,7 @@ const zelcoreMarkets = {
       // cryptocompare
       ...cryptoCompareIDs.map((elementGroup) => apiRequest(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${elementGroup}&tsyms=USD&api_key=${apiKey}`)),
       // coingecko
-      ...coingeckoIDs.map((elementGroup) => apiRequest(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${elementGroup}&order=market_cap_desc&per_page=100&page=1&sparkline=false`)),
+      ...coingeckoIDs.map((elementGroup) => apiRequest(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${elementGroup}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=7d`)),
     ])
       .then((results) => {
         const markets = [];
@@ -57,6 +57,7 @@ const zelcoreMarkets = {
               coindetail.supply = subresult[coin].circulating_supply;
               coindetail.volume = subresult[coin].total_volume;
               coindetail.change = subresult[coin].price_change_percentage_24h;
+              coindetail.change7d = subresult[coin].price_change_percentage_7d_in_currency;
               coindetail.market = subresult[coin].market_cap;
               cmk[subresult[coin].symbol.toUpperCase()] = coindetail;
             });
