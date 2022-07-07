@@ -91,6 +91,7 @@ const zelcoreRates = {
         efg['FLUX-TRX'] = efg.FLUX;
         efg['FLUX-BSC'] = efg.FLUX;
         efg['FLUX-SOL'] = efg.FLUX;
+        efg['FLUX-AVAX'] = efg.FLUX;
         efg['AVAX-C'] = efg.AVAX;
         efg['AVAX-P'] = efg.AVAX;
         efg['AVAX-X'] = efg.AVAX;

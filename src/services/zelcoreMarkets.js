@@ -77,6 +77,7 @@ const zelcoreMarkets = {
         cmk['FLUX-TRX'] = cmk.FLUX;
         cmk['FLUX-BSC'] = cmk.FLUX;
         cmk['FLUX-SOL'] = cmk.FLUX;
+        cmk['FLUX-AVAX'] = cmk.FLUX;
         cmk['AVAX-C'] = cmk.AVAX;
         cmk['AVAX-P'] = cmk.AVAX;
         cmk['AVAX-X'] = cmk.AVAX;
