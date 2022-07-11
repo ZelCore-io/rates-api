@@ -1,9 +1,14 @@
 const request = require('request-promise-native');
 const config = require('config');
-const { cryptoCompareIDs, coingeckoIDs } = require('./coinAggregatorIDs');
+const {
+  cryptoCompareIDs,
+  coingeckoIDs,
+  cg4ccIDs,
+} = require('./coinAggregatorIDs');
 const log = require('../lib/log');
 
 const apiKey = process.env.API_KEY || config.apiKey;
+coingeckoIDs.push(...cg4ccIDs); // Adding coingecko ids for cryptocompare coins
 
 function apiRequest(url) {
   return request({ uri: url, json: true })
