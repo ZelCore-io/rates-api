@@ -133,7 +133,7 @@ const zelcoreMarkets = {
           volume: 0,
           market: 0,
           rank: 0,
-          change: cmk.KDA.change,
+          change: cmk.KDA ? cmk.KDA.change : 0,
         };
 
         markets.push(cmk);
