@@ -1,9 +1,10 @@
-const request = require('request-promise-native');
+const axios = require('axios');
 const config = require('config');
 const {
   cryptoCompareIDs,
   coingeckoIDs,
   cg4ccIDs,
+  liveCoinWatchIDs,
 } = require('./coinAggregatorIDs');
 const log = require('../lib/log');
 
@@ -11,8 +12,32 @@ const apiKey = process.env.API_KEY || config.apiKey;
 coingeckoIDs.push(...cg4ccIDs); // Adding coingecko ids for cryptocompare coins
 
 function apiRequest(url) {
-  return request({ uri: url, json: true })
-    .then((response) => response)
+  return axios.get(url)
+    .then((response) => response.data)
+    .catch((error) => {
+      log.error(`ERROR: ${url}`);
+      return error;
+    });
+}
+
+function apiRequestPost(url, coinList) {
+  const data = {
+    currency: 'USD',
+    codes: coinList,
+    sort: 'rank',
+    order: 'ascending',
+    offset: 0,
+    limit: 0,
+    meta: true,
+  };
+  const headers = {
+    'x-api-key': 'c9f00288-bea1-49a3-a9c3-2219d61aa0d1',
+  };
+  const axiosConfig = {
+    headers,
+  };
+  return axios.post(url, data, axiosConfig)
+    .then((response) => response.data)
     .catch((error) => {
       log.error(`ERROR: ${url}`);
       return error;
@@ -26,6 +51,8 @@ const zelcoreMarkets = {
       ...cryptoCompareIDs.map((elementGroup) => apiRequest(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${elementGroup}&tsyms=USD&api_key=${apiKey}`)),
       // coingecko
       ...coingeckoIDs.map((elementGroup) => apiRequest(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${elementGroup}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=7d`)),
+      // livecoinwatch
+      apiRequestPost('https://api.livecoinwatch.com/coins/map', liveCoinWatchIDs),
     ])
       .then((results) => {
         const markets = [];
@@ -69,6 +96,19 @@ const zelcoreMarkets = {
           } catch (e) {
             errors.errors.coinsFull = subresult;
           }
+        });
+
+        const dataLCW = results[results.length - 1];
+        dataLCW.forEach((coin) => {
+          const coindetail = {};
+          coindetail.rank = coin.rank;
+          coindetail.total_supply = coin.totalSupply;
+          coindetail.supply = coin.circulatingSupply;
+          coindetail.volume = coin.volume;
+          coindetail.change = coin.delta.day ? (1 - coin.delta.day) * 100 : 0;
+          coindetail.change7d = coin.delta.week ? (1 - coin.delta.week) * 100 : 0;
+          coindetail.market = coin.cap ? coin.cap : coin.circulatingSupply * coin.rate;
+          cmk[coin.code] = coindetail;
         });
 
         // Some wrapped assets and flux

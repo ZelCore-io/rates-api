@@ -56,6 +56,8 @@ const coinAggregatorIDs = {
     'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin', 'pancakeswap-token', 'matic-network', 'zclassic', 'veriblock', 'staked-ether',
     'amp-token', 'telcoin', 'harmony', 'avalanche-2', 'cosmos', 'axie-infinity', 'tezos', 'bitcoin-bep2', 'shiba-inu', 'yearn-finance', 'havven', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 'quick',
     'saito'],
+  // livecoinwatch api
+  livecoinwatch: ['KDL'],
 };
 
 /**
@@ -83,10 +85,12 @@ function makeRequestStrings(elements, maxLength) {
 const cryptoCompareIDs = makeRequestStrings(coinAggregatorIDs.cryptoCompare, 300);
 const coingeckoIDs = makeRequestStrings(coinAggregatorIDs.coingecko, 450);
 const cg4ccIDs = makeRequestStrings(coinAggregatorIDs.cg4cc, 450);
+const liveCoinWatchIDs = makeRequestStrings(coinAggregatorIDs.livecoinwatch, 400);
 // console.log(cryptoCompareIDs);
 // console.log(coingeckoIDs);
 module.exports = {
   cryptoCompareIDs,
   coingeckoIDs,
   cg4ccIDs,
+  liveCoinWatchIDs,
 };
