@@ -16,7 +16,7 @@ function apiRequest(url) {
 
 function apiRequestPost(url, coinList) {
   const data = {
-    currency: 'USD',
+    currency: 'BTC',
     codes: coinList,
     sort: 'rank',
     order: 'ascending',
