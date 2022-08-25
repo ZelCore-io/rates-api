@@ -54,7 +54,7 @@ const zelcoreRates = {
         const rates = [];
 
         const efg = {};
-        let bitpayData = [{ code: 'USD', rate: 50000 }];
+        let bitpayData = [{ code: 'USD', rate: 22000 }];
         const errors = { errors: {} };
         // results from bitpay (fiat rates)
         try {
@@ -123,6 +123,8 @@ const zelcoreRates = {
         efg['FLUX-BSC'] = efg.FLUX;
         efg['FLUX-SOL'] = efg.FLUX;
         efg['FLUX-AVAX'] = efg.FLUX;
+        efg['FLUX-ERG'] = efg.FLUX;
+        efg['FLUX-ERGO'] = efg.FLUX;
         efg['AVAX-C'] = efg.AVAX;
         efg['AVAX-P'] = efg.AVAX;
         efg['AVAX-X'] = efg.AVAX;

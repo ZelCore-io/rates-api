@@ -12,7 +12,7 @@ log.info('Starting services');
 apiServices.serviceRefresher();
 setInterval(() => {
   apiServices.serviceRefresher();
-}, 8 * 60 * 1000); // refresh every 8 minutes
+}, 10 * 60 * 1000); // refresh every 10 minutes
 
 setTimeout(() => {
   server.listen(port, () => {
