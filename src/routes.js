@@ -10,9 +10,9 @@ module.exports = (app) => {
   app.get('/rates', cache('2 minutes'), (req, res) => {
     apiService.getRates(req, res);
   });
-  app.get('/markets', cache('2 minutes'), (req, res) => {
-    apiService.getMarkets(req, res);
-  });
+  // app.get('/markets', cache('2 minutes'), (req, res) => {
+  //   apiService.getMarkets(req, res);
+  // });
   app.get('/marketsusd', cache('2 minutes'), (req, res) => {
     apiService.getMarketsUsd(req, res);
   });
