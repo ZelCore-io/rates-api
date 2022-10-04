@@ -67,7 +67,7 @@ async function getAll() {
     results.push(res);
     // delay
     // eslint-disable-next-line no-await-in-loop
-    await delay(8000);
+    await delay(11000);
   }
   // eslint-disable-next-line no-restricted-syntax
   for (const promise of postUrls) {
@@ -77,7 +77,7 @@ async function getAll() {
     results.push(res);
     // delay
     // eslint-disable-next-line no-await-in-loop
-    await delay(8000);
+    await delay(11000);
   }
   const rates = [];
 
