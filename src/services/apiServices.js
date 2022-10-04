@@ -22,6 +22,12 @@ async function getMarketsUsd(req, res) {
   }
 }
 
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 async function serviceRefresher() {
   try {
     log.info('Refreshing Markets and Rates');
@@ -38,8 +44,12 @@ async function serviceRefresher() {
       }
     }
     log.info('Refreshment finished');
+    await delay(60000);
+    serviceRefresher();
   } catch (error) {
     log.error(error);
+    await delay(60000);
+    serviceRefresher();
   }
 }
 

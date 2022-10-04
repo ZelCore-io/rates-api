@@ -10,12 +10,9 @@ const { port } = config.server;
 
 log.info('Starting services');
 apiServices.serviceRefresher();
-setInterval(() => {
-  apiServices.serviceRefresher();
-}, 10 * 60 * 1000); // refresh every 10 minutes
 
 setTimeout(() => {
   server.listen(port, () => {
     log.info(`rates-api launched, listening on port ${port}!`);
   });
-}, 5 * 6 * 1000); // 5 min delay
+}, 8 * 6 * 1000); // 8 min delay
