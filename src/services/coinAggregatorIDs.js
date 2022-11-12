@@ -21,7 +21,7 @@ const coinAggregatorIDs = {
     'ONT', 'MIOTA', 'GAS', 'TRX', 'DGB', 'XLM', 'DOGE', 'EOS', 'ADA', 'XRP', 'DOCK',
     'NEO', 'BTTOLD', 'SAFE', 'BTH', 'GRS', 'XCASH', 'LEO', 'USDS', 'ENQ', 'FTM',
     '0XBTC', 'AERGO', 'UBT', 'ILC', 'HEX', 'COMP', 'VIDT', 'DRGN', 'WBTC', 'OM', 'UNI',
-    'JST', 'BDX', 'FIRO', 'CAKE', 'MATIC', 'ZCL', 'VBK', 'STETH', 'AMP', 'TEL', 'ONE',
+    'JST', 'BDX', 'FIRO', 'CAKE', 'MATIC', 'VBK', 'STETH', 'AMP', 'TEL', 'ONE',
     'AVAX', 'ATOM', 'AXS', 'XTZ', 'BTCB', 'SHIB', 'UST', 'YFI', 'SNX', 'NEAR', 'C98',
     'ANKR', 'SXP', 'WRX', 'QUICK', 'SAITO',
   ],
