@@ -153,6 +153,7 @@ async function getAll() {
   efg['FLUX-AVAX'] = efg.FLUX;
   efg['FLUX-ERG'] = efg.FLUX;
   efg['FLUX-ERGO'] = efg.FLUX;
+  efg['FLUX-ALGO'] = efg.FLUX;
   efg['AVAX-C'] = efg.AVAX;
   efg['AVAX-P'] = efg.AVAX;
   efg['AVAX-X'] = efg.AVAX;
