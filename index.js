@@ -11,8 +11,17 @@ const { port } = config.server;
 log.info('Starting services');
 apiServices.serviceRefresher();
 
-setTimeout(() => {
-  server.listen(port, () => {
-    log.info(`rates-api launched, listening on port ${port}!`);
-  });
-}, 5 * 60 * 1000); // 5 min delay
+function startService() {
+  const data = apiServices.getData();
+  if (data.rates[0][0] && data.marketsUSD[0]) {
+    server.listen(port, () => {
+      log.info(`rates-api launched, listening on port ${port}!`);
+    });
+  } else {
+    setTimeout(() => {
+      startService();
+    }, 60 * 1000);
+  }
+}
+
+startService();

@@ -14,6 +14,13 @@ async function getRates(req, res) {
   }
 }
 
+function getData() {
+  return {
+    rates,
+    marketsUSD,
+  };
+}
+
 async function getMarketsUsd(req, res) {
   try {
     res.json(marketsUSD);
@@ -61,4 +68,5 @@ module.exports = {
   // getMarkets,
   getMarketsUsd,
   serviceRefresher,
+  getData,
 };
