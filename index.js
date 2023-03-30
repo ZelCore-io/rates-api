@@ -15,4 +15,4 @@ setTimeout(() => {
   server.listen(port, () => {
     log.info(`rates-api launched, listening on port ${port}!`);
   });
-}, 12 * 6 * 1000); // 12 min delay
+}, 5 * 60 * 1000); // 5 min delay
