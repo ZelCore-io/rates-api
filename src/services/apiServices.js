@@ -34,12 +34,12 @@ async function serviceRefresher() {
     const ratesFetched = await zelcoreRates.getAll();
     const marketsUSDFetched = await zelcoreMarketsUSD.getAll();
     if (ratesFetched && ratesFetched[0] && ratesFetched[0].length > 20 && ratesFetched[1]) {
-      if (Object.keys(ratesFetched[1]).length > 250) {
+      if (Object.keys(ratesFetched[1]).length > 400) {
         rates = ratesFetched;
       }
     }
     if (marketsUSDFetched && marketsUSDFetched[0]) {
-      if (Object.keys(marketsUSDFetched[0].length > 250)) {
+      if (Object.keys(marketsUSDFetched[0]).length > 400) {
         marketsUSD = marketsUSDFetched;
       }
     }
