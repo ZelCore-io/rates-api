@@ -23784,6 +23784,44 @@ const coins = {
       "algorand",
     ],
   },
+  kaspa: {
+    coin: "kaspa",
+    name: "Kaspa",
+    uri: [
+      "kaspa",
+      "kas",
+    ],
+    slip: 111111,
+    pubKeyHash: "1c",
+    scriptHash: "28",
+    wif: "80",
+    addresses: [],
+    api: [
+      "https://api.kas.zelcore.io/",
+      "https://api.kaspa.org/",
+    ],
+    unit: "KAS",
+    type: "kaspa",
+    explorer: [
+      "https://explorer.kaspa.org/txs/",
+    ],
+    logolink: "@/assets/logos/KAS.svg",
+    node: [
+      "api.kas.zelcore.io",
+      "api.kaspa.org",
+    ],
+    decimals: 8,
+    fee: 0.00005,
+    feepolicy: {
+      economy: 1,
+      normal: 2,
+      fast: 10,
+    },
+    color: "#71c9bb",
+    backend: [
+      "kaspa",
+    ],
+  },
 };
 
 module.exports = coins;
