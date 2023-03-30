@@ -93,9 +93,9 @@ function makeRequestStrings(elements, maxLength) {
   return result;
 }
 
-const cryptoCompareIDs = makeRequestStrings(cryptoUnits, 300);
-const coingeckoIDs = makeRequestStrings([], 450);
-const cg4ccIDs = makeRequestStrings([], 450);
+const cryptoCompareIDs = makeRequestStrings(coinAggregatorIDs.cryptoCompare, 300);
+const coingeckoIDs = makeRequestStrings(coinAggregatorIDs.coingecko, 450);
+const cg4ccIDs = makeRequestStrings(coinAggregatorIDs.cg4cc, 450);
 const liveCoinWatchIDs = makeRequestStrings(coinAggregatorIDs.livecoinwatch, 400);
 console.log(cryptoCompareIDs);
 // console.log(coingeckoIDs);

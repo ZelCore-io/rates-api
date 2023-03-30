@@ -3,7 +3,7 @@ const log = require('../lib/log');
 const zelcoreRates = require('./zelcoreRates');
 const zelcoreMarketsUSD = require('./zelcoreMarketsUSD');
 
-let rates = [];
+let rates = [[], {}, {}]; // btc to fiat, alts to fiat, errors
 let marketsUSD = [];
 
 async function getRates(req, res) {
