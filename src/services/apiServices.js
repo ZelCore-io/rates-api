@@ -35,12 +35,14 @@ async function serviceRefresher() {
     await delay(25000);
     const marketsUSDFetched = await zelcoreMarketsUSD.getAll();
     if (ratesFetched && ratesFetched[0] && ratesFetched[0].length > 20 && ratesFetched[1]) {
-      if (Object.keys(ratesFetched[1]).length > 400) {
+      if (Object.keys(ratesFetched[1]).length > 300) {
         rates = ratesFetched;
       }
     }
     if (marketsUSDFetched && marketsUSDFetched[0]) {
-      if (Object.keys(marketsUSDFetched[0]).length > 400) {
+      log.info(Object.keys(marketsUSDFetched[0]));
+      log.info(Object.keys(marketsUSDFetched[0]).length);
+      if (Object.keys(marketsUSDFetched[0]).length > 300) {
         marketsUSD = marketsUSDFetched;
       }
     }
