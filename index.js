@@ -14,9 +14,11 @@ apiServices.serviceRefresher();
 function startService() {
   const data = apiServices.getData();
   if (data.rates[0][0] && data.marketsUSD[0]) {
-    server.listen(port, () => {
-      log.info(`rates-api launched, listening on port ${port}!`);
-    });
+    setTimeout(() => {
+      server.listen(port, () => {
+        log.info(`rates-api launched, listening on port ${port}!`);
+      });
+    }, 5 * 1000);
   } else {
     setTimeout(() => {
       startService();
