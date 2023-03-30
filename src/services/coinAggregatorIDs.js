@@ -1,3 +1,14 @@
+const coinsSimmple = require('../../config/coinsSimple');
+
+const coinIds = Object.keys(coinsSimmple);
+
+const cryptoUnits = [];
+coinIds.forEach((coin) => {
+  if (!cryptoUnits.includes(coinsSimmple[coin].unit)) {
+    cryptoUnits.push(coinsSimmple[coin].unit);
+  }
+});
+
 /**
  * @const { cryptoCompare:String[], coingecko:String[] } dictionary with Cryptocompare and Congecko IDS
  */
@@ -82,11 +93,11 @@ function makeRequestStrings(elements, maxLength) {
   return result;
 }
 
-const cryptoCompareIDs = makeRequestStrings(coinAggregatorIDs.cryptoCompare, 300);
-const coingeckoIDs = makeRequestStrings(coinAggregatorIDs.coingecko, 450);
-const cg4ccIDs = makeRequestStrings(coinAggregatorIDs.cg4cc, 450);
+const cryptoCompareIDs = makeRequestStrings(cryptoUnits, 300);
+const coingeckoIDs = makeRequestStrings([], 450);
+const cg4ccIDs = makeRequestStrings([], 450);
 const liveCoinWatchIDs = makeRequestStrings(coinAggregatorIDs.livecoinwatch, 400);
-// console.log(cryptoCompareIDs);
+console.log(cryptoCompareIDs);
 // console.log(coingeckoIDs);
 module.exports = {
   cryptoCompareIDs,
