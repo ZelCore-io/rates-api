@@ -50,7 +50,7 @@ async function getAll() {
     // fiat rates
     'https://bitpay.com/rates/BTC',
     // cryptocompare
-    ...cryptoCompareIDs.map((elementGroup) => `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${elementGroup}&tsyms=BTC&api_key=${apiKey}`),
+    // ...cryptoCompareIDs.map((elementGroup) => `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${elementGroup}&tsyms=BTC&api_key=${apiKey}`),
     // coinhecko
     ...coingeckoIDs.map((elementGroup) => `https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=${elementGroup}&order=market_cap_desc&per_page=100&page=1&sparkline=false`),
   ];
@@ -154,6 +154,7 @@ async function getAll() {
   efg['FLUX-ERG'] = efg.FLUX;
   efg['FLUX-ERGO'] = efg.FLUX;
   efg['FLUX-ALGO'] = efg.FLUX;
+  efg['FLUX-MATIC'] = efg.FLUX;
   efg['AVAX-C'] = efg.AVAX;
   efg['AVAX-P'] = efg.AVAX;
   efg['AVAX-X'] = efg.AVAX;
