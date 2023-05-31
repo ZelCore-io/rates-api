@@ -54,7 +54,7 @@ async function getAll() {
   const results = [];
   const getUrls = [
     // cryptocompare
-    // ...cryptoCompareIDs.map((elementGroup) => `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${elementGroup}&tsyms=USD&api_key=${apiKey}`),
+    ...cryptoCompareIDs.map((elementGroup) => `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${elementGroup}&tsyms=USD&api_key=${apiKey}`),
     // coingecko
     ...coingeckoIDs.map((elementGroup) => `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${elementGroup}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=7d`),
   ];
