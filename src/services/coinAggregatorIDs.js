@@ -34,9 +34,13 @@ const coinAggregatorIDs = {
     '0XBTC', 'AERGO', 'UBT', 'ILC', 'HEX', 'COMP', 'VIDT', 'DRGN', 'WBTC', 'OM', 'UNI',
     'JST', 'BDX', 'FIRO', 'CAKE', 'MATIC', 'VBK', 'STETH', 'AMP', 'TEL', 'ONE',
     'AVAX', 'ATOM', 'AXS', 'XTZ', 'BTCB', 'SHIB', 'UST', 'YFI', 'SNX', 'NEAR', 'C98',
-    'ANKR', 'SXP', 'WRX', 'QUICK', 'SAITO',
+    'ANKR', 'SXP', 'WRX', 'QUICK', 'SAITO', 'PLANETS', 'XET', 'OPUL',
   ],
-  // Just add the coingecko ID in the end of this list
+  /**
+   * CoinGecko API ID
+   * Found under the "Info" column, and part of the URL, eg. https://www.coingecko.com/en/coins/[API-ID]
+   * Add to the end of the list
+   */
   coingecko: [
     'solfarm', 'cope', 'bonfida', 'maps', 'media-network', 'oxygen', 'raydium', 'step-finance', 'rope-token', 'presearch', 'kyber-network', 'kyber-network-crystal', 'solana',
     'serum', 'gatechain-token', 'snowgem', 'zclassic', '1inch', 'hotbit-token', 'binance-usd', 'huobi-pool-token', 'huobi-token', 'zb-token', 'mx-token', 'bitforex',
@@ -53,7 +57,8 @@ const coinAggregatorIDs = {
     'cropperfinance', 'investin', 'grape-2', 'ninja-protocol', 'msol', 'lido-staked-sol', 'solanium', 'defi-land', 'invictus', 'jet', 'dexlab', 'only1', 'marinade', 'hapi', 'aldrin',
     'cyclos', 'fabric', 'waggle-network', 'moonlana', 'solanax', 'cato', 'corestarter', 'sator', 'apyswap', 'sunny-aggregator', 'kurobi', 'frax', 'fio-protocol', 'avalanche-2', 'terra-luna',
     'terra-sdt', 'terra-krw', 'mirrored-amazon', 'mirrored-apple', 'mirrored-airbnb', 'mirrored-coinbase', 'mirrored-microsoft', 'mirrored-google', 'mirrored-tesla', 'mirrored-twitter', 'mirrored-netflix',
-    'safemoon-2', 'bittorrent', 'elrond-erd-2', 'hollaex-token', 'zero', 'sonm', 'ergo', 'kdlaunch', 'kaddex', 'miners-of-kadenia', 'kdswap', 'algorand', 'kaspa',
+    'safemoon-2', 'bittorrent', 'elrond-erd-2', 'hollaex-token', 'zero', 'sonm', 'ergo', 'kdlaunch', 'kaddex', 'miners-of-kadenia', 'kdswap', 'algorand', 'kaspa', 'planetwatch', 'xfinite-entertainment-token',
+    'opulous',
   ],
   // This is an array with coingecko IDs for the cryptocompare IDs. This array will be used in markets to replace cryptocompare data.
   cg4cc: ['tokok', 'coinbene-token', 'paxos-standard', 'gemini-dollar', 'usd-coin', 'ethereum-classic', 'monero', 'dash', 'bitcoin', 'ethereum', 'zcash', 'tether', 'litecoin', 'bitcoinz', 'ravencoin',
@@ -66,7 +71,7 @@ const coinAggregatorIDs = {
     'aleph', 'ontology', 'gas', 'tron', 'digibyte', 'stellar', 'dogecoin', 'eos', 'cardano', 'ripple', 'dock', 'neo', 'bittorrent-old', 'safe-coin-2', 'groestlcoin', 'leo-token', 'enq-enecuum', 'fantom', 'aergo',
     'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin', 'pancakeswap-token', 'matic-network', 'zclassic', 'veriblock', 'staked-ether',
     'amp-token', 'telcoin', 'harmony', 'avalanche-2', 'cosmos', 'axie-infinity', 'tezos', 'bitcoin-bep2', 'shiba-inu', 'yearn-finance', 'havven', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 'quick',
-    'saito'],
+    'saito', 'planetwatch', 'xfinite-entertainment-token', 'opulous'],
   // livecoinwatch api
   livecoinwatch: ['KDL'],
 };
