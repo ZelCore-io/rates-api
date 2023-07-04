@@ -1,3 +1,14 @@
+const coinsSimmple = require('../../config/coinsSimple');
+
+const coinIds = Object.keys(coinsSimmple);
+
+const cryptoUnits = [];
+coinIds.forEach((coin) => {
+  if (!cryptoUnits.includes(coinsSimmple[coin].unit)) {
+    cryptoUnits.push(coinsSimmple[coin].unit);
+  }
+});
+
 /**
  * @const { cryptoCompare:String[], coingecko:String[] } dictionary with Cryptocompare and Congecko IDS
  */
@@ -46,7 +57,7 @@ const coinAggregatorIDs = {
     'cropperfinance', 'investin', 'grape-2', 'ninja-protocol', 'msol', 'lido-staked-sol', 'solanium', 'defi-land', 'invictus', 'jet', 'dexlab', 'only1', 'marinade', 'hapi', 'aldrin',
     'cyclos', 'fabric', 'waggle-network', 'moonlana', 'solanax', 'cato', 'corestarter', 'sator', 'apyswap', 'sunny-aggregator', 'kurobi', 'frax', 'fio-protocol', 'avalanche-2', 'terra-luna',
     'terra-sdt', 'terra-krw', 'mirrored-amazon', 'mirrored-apple', 'mirrored-airbnb', 'mirrored-coinbase', 'mirrored-microsoft', 'mirrored-google', 'mirrored-tesla', 'mirrored-twitter', 'mirrored-netflix',
-    'safemoon-2', 'bittorrent', 'elrond-erd-2', 'hollaex-token', 'zero', 'sonm', 'ergo', 'kdlaunch', 'kaddex', 'miners-of-kadenia', 'kdswap', 'algorand', 'planetwatch', 'xfinite-entertainment-token',
+    'safemoon-2', 'bittorrent', 'elrond-erd-2', 'hollaex-token', 'zero', 'sonm', 'ergo', 'kdlaunch', 'kaddex', 'miners-of-kadenia', 'kdswap', 'algorand', 'kaspa', 'planetwatch', 'xfinite-entertainment-token',
     'opulous',
   ],
   // This is an array with coingecko IDs for the cryptocompare IDs. This array will be used in markets to replace cryptocompare data.
@@ -91,7 +102,7 @@ const cryptoCompareIDs = makeRequestStrings(coinAggregatorIDs.cryptoCompare, 300
 const coingeckoIDs = makeRequestStrings(coinAggregatorIDs.coingecko, 450);
 const cg4ccIDs = makeRequestStrings(coinAggregatorIDs.cg4cc, 450);
 const liveCoinWatchIDs = makeRequestStrings(coinAggregatorIDs.livecoinwatch, 400);
-// console.log(cryptoCompareIDs);
+console.log(cryptoCompareIDs);
 // console.log(coingeckoIDs);
 module.exports = {
   cryptoCompareIDs,

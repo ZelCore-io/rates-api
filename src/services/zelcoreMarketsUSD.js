@@ -72,7 +72,7 @@ async function getAll() {
     results.push(res);
     // delay
     // eslint-disable-next-line no-await-in-loop
-    await delay(15000);
+    await delay(25000);
   }
   // eslint-disable-next-line no-restricted-syntax
   for (const promise of postUrls) {
@@ -82,7 +82,7 @@ async function getAll() {
     results.push(res);
     // delay
     // eslint-disable-next-line no-await-in-loop
-    await delay(15000);
+    await delay(25000);
   }
 
   const markets = [];
@@ -156,6 +156,8 @@ async function getAll() {
   cmk['FLUX-AVAX'] = cmk.FLUX;
   cmk['FLUX-ERG'] = cmk.FLUX;
   cmk['FLUX-ERGO'] = cmk.FLUX;
+  cmk['FLUX-ALGO'] = cmk.FLUX;
+  cmk['FLUX-MATIC'] = cmk.FLUX;
   cmk['AVAX-C'] = cmk.AVAX;
   cmk['AVAX-P'] = cmk.AVAX;
   cmk['AVAX-X'] = cmk.AVAX;

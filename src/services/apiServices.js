@@ -3,7 +3,7 @@ const log = require('../lib/log');
 const zelcoreRates = require('./zelcoreRates');
 const zelcoreMarketsUSD = require('./zelcoreMarketsUSD');
 
-let rates = [];
+let rates = [[], {}, {}]; // btc to fiat, alts to fiat, errors
 let marketsUSD = [];
 
 async function getRates(req, res) {
@@ -12,6 +12,13 @@ async function getRates(req, res) {
   } catch (error) {
     log.error(error);
   }
+}
+
+function getData() {
+  return {
+    rates,
+    marketsUSD,
+  };
 }
 
 async function getMarketsUsd(req, res) {
@@ -32,14 +39,17 @@ async function serviceRefresher() {
   try {
     log.info('Refreshing Markets and Rates');
     const ratesFetched = await zelcoreRates.getAll();
+    await delay(25000);
     const marketsUSDFetched = await zelcoreMarketsUSD.getAll();
     if (ratesFetched && ratesFetched[0] && ratesFetched[0].length > 20 && ratesFetched[1]) {
-      if (Object.keys(ratesFetched[1]).length > 250) {
+      if (Object.keys(ratesFetched[1]).length > 300) {
         rates = ratesFetched;
       }
     }
     if (marketsUSDFetched && marketsUSDFetched[0]) {
-      if (Object.keys(marketsUSDFetched[0].length > 250)) {
+      log.info(Object.keys(marketsUSDFetched[0]));
+      log.info(Object.keys(marketsUSDFetched[0]).length);
+      if (Object.keys(marketsUSDFetched[0]).length > 300) {
         marketsUSD = marketsUSDFetched;
       }
     }
@@ -58,4 +68,5 @@ module.exports = {
   // getMarkets,
   getMarketsUsd,
   serviceRefresher,
+  getData,
 };

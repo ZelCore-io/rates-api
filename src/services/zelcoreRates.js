@@ -67,7 +67,7 @@ async function getAll() {
     results.push(res);
     // delay
     // eslint-disable-next-line no-await-in-loop
-    await delay(15000);
+    await delay(25000);
   }
   // eslint-disable-next-line no-restricted-syntax
   for (const promise of postUrls) {
@@ -77,7 +77,7 @@ async function getAll() {
     results.push(res);
     // delay
     // eslint-disable-next-line no-await-in-loop
-    await delay(15000);
+    await delay(25000);
   }
   const rates = [];
 
@@ -153,6 +153,8 @@ async function getAll() {
   efg['FLUX-AVAX'] = efg.FLUX;
   efg['FLUX-ERG'] = efg.FLUX;
   efg['FLUX-ERGO'] = efg.FLUX;
+  efg['FLUX-ALGO'] = efg.FLUX;
+  efg['FLUX-MATIC'] = efg.FLUX;
   efg['AVAX-C'] = efg.AVAX;
   efg['AVAX-P'] = efg.AVAX;
   efg['AVAX-X'] = efg.AVAX;
