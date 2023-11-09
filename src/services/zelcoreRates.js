@@ -171,6 +171,7 @@ async function getAll() {
   efg.KDX = efg.KDA / 28;
   efg.SKDX = efg.KDA / 28;
   efg.MOK = efg.KDA / 125;
+  efg.zUSD = efg.USDC;
 
   rates.push(bitpayData);
   rates.push(efg);
