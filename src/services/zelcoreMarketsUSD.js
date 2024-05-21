@@ -169,6 +169,7 @@ async function getAll() {
   cmk.kFRAX = cmk.FRAX;
   cmk.GLINK = cmk.TENT;
   cmk.zUSD = cmk.USDC;
+  cmk.TUSDOLD = cmk.TUSD;
   cmk.BABE = {
     total_supply: 1720082,
     supply: 22001,

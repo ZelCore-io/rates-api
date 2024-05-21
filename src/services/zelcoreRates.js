@@ -173,6 +173,7 @@ async function getAll() {
   efg.SKDX = efg.KDA / 28;
   efg.MOK = efg.KDA / 125;
   efg.zUSD = efg.USDC;
+  efg.TUSDOLD = efg.TUSD;
 
   rates.push(bitpayData);
   rates.push(efg);
