@@ -71,7 +71,7 @@ const coinAggregatorIDs = {
     'aleph', 'ontology', 'gas', 'tron', 'digibyte', 'stellar', 'dogecoin', 'eos', 'cardano', 'ripple', 'dock', 'neo', 'bittorrent-old', 'safe-coin-2', 'groestlcoin', 'leo-token', 'enq-enecuum', 'fantom', 'aergo',
     'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin', 'pancakeswap-token', 'matic-network', 'zclassic', 'veriblock', 'staked-ether',
     'amp-token', 'telcoin', 'harmony', 'avalanche-2', 'cosmos', 'axie-infinity', 'tezos', 'bitcoin-bep2', 'shiba-inu', 'yearn-finance', 'havven', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 'quick',
-    'saito', 'planetwatch', 'xfinite-entertainment-token', 'opulous', 'clore-ai'],
+    'saito', 'planetwatch', 'xfinite-entertainment-token', 'opulous', 'clore-ai', "karate-combat"],
   // livecoinwatch api
   livecoinwatch: ['KDL'],
 };
