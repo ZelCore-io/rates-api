@@ -178,6 +178,7 @@ async function getAll() {
     rank: 0,
     change: cmk.KDA ? cmk.KDA.change : 0,
   };
+  cmk['USDC.E'] = cmk.USDC;
 
   markets.push(cmk);
   markets.push(errors);
