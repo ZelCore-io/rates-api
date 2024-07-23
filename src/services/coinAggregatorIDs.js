@@ -58,7 +58,7 @@ const coinAggregatorIDs = {
     'cyclos', 'fabric', 'waggle-network', 'moonlana', 'solanax', 'cato', 'corestarter', 'sator', 'apyswap', 'sunny-aggregator', 'kurobi', 'frax', 'fio-protocol', 'avalanche-2', 'terra-luna',
     'terra-sdt', 'terra-krw', 'mirrored-amazon', 'mirrored-apple', 'mirrored-airbnb', 'mirrored-coinbase', 'mirrored-microsoft', 'mirrored-google', 'mirrored-tesla', 'mirrored-twitter', 'mirrored-netflix',
     'safemoon-2', 'bittorrent', 'elrond-erd-2', 'hollaex-token', 'zero', 'sonm', 'ergo', 'kdlaunch', 'kaddex', 'miners-of-kadenia', 'kdswap', 'algorand', 'kaspa', 'planetwatch', 'xfinite-entertainment-token',
-    'opulous', 'clore-ai',
+    'opulous', 'clore-ai', 'karate-combat', 'pepe', 'floki', 'turbo',
   ],
   // This is an array with coingecko IDs for the cryptocompare IDs. This array will be used in markets to replace cryptocompare data.
   cg4cc: ['tokok', 'coinbene-token', 'paxos-standard', 'gemini-dollar', 'usd-coin', 'ethereum-classic', 'monero', 'dash', 'bitcoin', 'ethereum', 'zcash', 'tether', 'litecoin', 'bitcoinz', 'ravencoin',
@@ -71,7 +71,8 @@ const coinAggregatorIDs = {
     'aleph', 'ontology', 'gas', 'tron', 'digibyte', 'stellar', 'dogecoin', 'eos', 'cardano', 'ripple', 'dock', 'neo', 'bittorrent-old', 'safe-coin-2', 'groestlcoin', 'leo-token', 'enq-enecuum', 'fantom', 'aergo',
     'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin', 'pancakeswap-token', 'matic-network', 'zclassic', 'veriblock', 'staked-ether',
     'amp-token', 'telcoin', 'harmony', 'avalanche-2', 'cosmos', 'axie-infinity', 'tezos', 'bitcoin-bep2', 'shiba-inu', 'yearn-finance', 'havven', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 'quick',
-    'saito', 'planetwatch', 'xfinite-entertainment-token', 'opulous', 'clore-ai', 'karate-combat'],
+    'saito', 'planetwatch', 'xfinite-entertainment-token', 'opulous', 'clore-ai', 'karate-combat', 'pepe', 'floki-inu', 'turbo',
+  ],
   // livecoinwatch api
   livecoinwatch: ['KDL'],
 };
