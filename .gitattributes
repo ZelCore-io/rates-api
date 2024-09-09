@@ -1,0 +1,50 @@
+# Handle line endings automatically for all text files
+* text=auto
+
+# Explicitly declare text files to ensure proper line ending conversions
+*.ts     text eol=lf
+*.tsx    text eol=lf
+*.js     text eol=lf
+*.jsx    text eol=lf
+*.json   text eol=lf
+*.css    text eol=lf
+*.scss   text eol=lf
+*.html   text eol=lf
+*.md     text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.xml    text eol=lf
+*.sh     text eol=lf
+*.bat    text eol=crlf
+
+# Prevent CRLF conversion for binary files
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.svg    binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.eot    binary
+*.pdf    binary
+
+# Make sure lock files are always LF (like package-lock.json, yarn.lock)
+*.lock   text eol=lf
+
+# Ignore line ending conversion for compressed files
+*.zip    binary
+*.tar    binary
+*.gz     binary
+*.tgz    binary
+*.bz2    binary
+
+# Avoid conflicts for large generated files, such as build artifacts or archives
+*.dll    binary
+*.exe    binary
+*.bin    binary
+
+# Ensure shell scripts have LF endings, useful in cross-platform environments
+*.bash   text eol=lf
+*.zsh    text eol=lf
