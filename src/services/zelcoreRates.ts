@@ -1,11 +1,11 @@
-const axios = require('axios');
-const config = require('config');
-const { cryptoCompareIDs, coingeckoIDs, liveCoinWatchIDs } = require('./coinAggregatorIDs');
-const log = require('../lib/log');
+import axios from 'axios';
+import config from '../../config';
+import { cryptoCompareIDs, coingeckoIDs, liveCoinWatchIDs } from './coinAggregatorIDs';
+import * as log from '../lib/log';
 
-const apiKey = process.env.API_KEY || config.apiKey;
+const apiKey: string = process.env.API_KEY || config.apiKey;
 
-function apiRequest(url) {
+function apiRequest(url: string): Promise<any> {
   return axios.get(url)
     .then((response) => response.data)
     .catch((error) => {
@@ -14,7 +14,7 @@ function apiRequest(url) {
     });
 }
 
-function apiRequestPost(url, coinList) {
+function apiRequestPost(url: string, coinList: string[]): Promise<any> {
   const data = {
     currency: 'BTC',
     codes: coinList,
@@ -38,52 +38,51 @@ function apiRequestPost(url, coinList) {
     });
 }
 
-function delay(ms) {
+function delay(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }
 
-async function getAll() {
-  const results = [];
+export async function getAll(): Promise<any[]> {
+  const results: any[] = [];
   const getUrls = [
     // fiat rates
     'https://bitpay.com/rates/BTC',
     // cryptocompare
     ...cryptoCompareIDs.map((elementGroup) => `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${elementGroup}&tsyms=BTC&api_key=${apiKey}`),
-    // coinhecko
+    // coingecko
     ...coingeckoIDs.map((elementGroup) => `https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=${elementGroup}&order=market_cap_desc&per_page=100&page=1&sparkline=false`),
   ];
   const postUrls = [
     // livecoinwatch
-    ['https://api.livecoinwatch.com/coins/map', liveCoinWatchIDs],
+    {
+      url: 'https://api.livecoinwatch.com/coins/map',
+      coinList: liveCoinWatchIDs,
+    },
   ];
+
   console.log(getUrls);
-  // eslint-disable-next-line no-restricted-syntax
+
   for (const promise of getUrls) {
-    // eslint-disable-next-line no-await-in-loop
     const res = await apiRequest(promise);
     console.log(res);
     results.push(res);
-    // delay
-    // eslint-disable-next-line no-await-in-loop
     await delay(25000);
   }
-  // eslint-disable-next-line no-restricted-syntax
+
   for (const promise of postUrls) {
-    // eslint-disable-next-line no-await-in-loop
-    const res = await apiRequestPost(promise[0], promise[1]);
+    const res = await apiRequestPost(promise.url, promise.coinList);
     console.log(res);
     results.push(res);
-    // delay
-    // eslint-disable-next-line no-await-in-loop
     await delay(25000);
   }
-  const rates = [];
 
-  const efg = {};
-  let bitpayData = [{ code: 'USD', rate: 22000 }];
-  const errors = { errors: {} };
+  const rates: any[] = [];
+  const efg: Record<string, any> = {};
+  let bitpayData: any[] = [{ code: 'USD', rate: 22000 }];
+  const errors: { errors: Record<string, any> } = { errors: {} };
+
   // results from bitpay (fiat rates)
   try {
     const dummyTest = results[0].data[1].code;
@@ -122,7 +121,7 @@ async function getAll() {
   });
 
   const dataLCW = results[results.length - 1];
-  dataLCW.forEach((coin) => {
+  dataLCW.forEach((coin: any) => {
     efg[coin.code] = coin.rate;
   });
 
@@ -178,11 +177,11 @@ async function getAll() {
 
   rates.push(bitpayData);
   rates.push(efg);
-
   rates.push(errors);
+
   return rates;
 }
 
-module.exports = {
+export default {
   getAll,
 };
