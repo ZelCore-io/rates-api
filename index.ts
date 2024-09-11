@@ -1,9 +1,8 @@
-const http = require('http');
-const config = require('config');
-const app = require('./src/lib/server');
-const log = require('./src/lib/log');
-
-const apiServices = require('./src/services/apiServices');
+import * as http from 'http';
+import config from './config';
+import app from './src/lib/server';
+import * as log from './src/lib/log';
+import apiServices from './src/services/apiServices';
 
 const server = http.createServer(app);
 const { port } = config.server;
@@ -11,7 +10,7 @@ const { port } = config.server;
 log.info('Starting services');
 apiServices.serviceRefresher();
 
-function startService() {
+function startService(): void {
   const data = apiServices.getData();
   if (data.rates[0][0] && data.marketsUSD[0]) {
     setTimeout(() => {
