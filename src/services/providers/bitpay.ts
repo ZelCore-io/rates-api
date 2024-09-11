@@ -1,7 +1,6 @@
 import AxiosWrapper from "../../lib/axios";
 import config from "../../../config";
 
-
 export class BitPay {
   private static instance: BitPay;
   private static axiosWrapper: AxiosWrapper;
@@ -34,5 +33,4 @@ export class BitPay {
       return null;
     }
   }
-
 }
