@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "nodemon index.ts",
-    "test": "echo 'No tests have been implemented' && exit 1",
+    "test": "jest",
     "lint": "eslint ./ --fix"
   },
   "author": "Zelcore Technologies",
@@ -33,6 +33,7 @@
     "eslint-plugin-import": "~2.30.0",
     "eslint-plugin-jsx-a11y": "~6.10.0",
     "eslint-plugin-react": "~7.35.2",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5"
   }
 }
