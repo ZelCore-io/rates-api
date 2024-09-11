@@ -96,8 +96,6 @@ const coingeckoIDs = makeRequestStrings(coinAggregatorIDs.coingecko, 450);
 const cg4ccIDs = makeRequestStrings(coinAggregatorIDs.cg4cc, 450);
 const liveCoinWatchIDs = makeRequestStrings(coinAggregatorIDs.livecoinwatch, 400);
 
-console.log(cryptoCompareIDs);
-
 export {
   cryptoCompareIDs,
   coingeckoIDs,
