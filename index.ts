@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import * as http from 'http';
 import config from './config';
 import app from './src/lib/server';
