@@ -1,17 +1,12 @@
-const axios = require('axios');
-const config = require('config');
-const {
-  cryptoCompareIDs,
-  coingeckoIDs,
-  cg4ccIDs,
-  liveCoinWatchIDs,
-} = require('./coinAggregatorIDs');
-const log = require('../lib/log');
+import axios from 'axios';
+import config from '../../config';
+import { cryptoCompareIDs, coingeckoIDs, cg4ccIDs, liveCoinWatchIDs } from './coinAggregatorIDs';
+import * as log from '../lib/log';
 
-const apiKey = process.env.API_KEY || config.apiKey;
+const apiKey: string = process.env.API_KEY || config.apiKey;
 coingeckoIDs.push(...cg4ccIDs); // Adding coingecko ids for cryptocompare coins
 
-function apiRequest(url) {
+function apiRequest(url: string): Promise<any> {
   return axios.get(url)
     .then((response) => response.data)
     .catch((error) => {
@@ -20,7 +15,7 @@ function apiRequest(url) {
     });
 }
 
-function apiRequestPost(url, coinList) {
+function apiRequestPost(url: string, coinList: string[]): Promise<any> {
   const data = {
     currency: 'USD',
     codes: coinList,
@@ -44,14 +39,14 @@ function apiRequestPost(url, coinList) {
     });
 }
 
-function delay(ms) {
+function delay(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }
 
-async function getAll() {
-  const results = [];
+export async function getAll(): Promise<any[]> {
+  const results: any[] = [];
   const getUrls = [
     // cryptocompare
     ...cryptoCompareIDs.map((elementGroup) => `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${elementGroup}&tsyms=USD&api_key=${apiKey}`),
@@ -60,34 +55,31 @@ async function getAll() {
   ];
   const postUrls = [
     // livecoinwatch
-    ['https://api.livecoinwatch.com/coins/map', liveCoinWatchIDs],
+    {
+      url: 'https://api.livecoinwatch.com/coins/map',
+      coinList: liveCoinWatchIDs,
+    },
   ];
 
   console.log(getUrls);
-  // eslint-disable-next-line no-restricted-syntax
+
   for (const promise of getUrls) {
-    // eslint-disable-next-line no-await-in-loop
     const res = await apiRequest(promise);
     console.log(res);
     results.push(res);
-    // delay
-    // eslint-disable-next-line no-await-in-loop
-    await delay(25000);
-  }
-  // eslint-disable-next-line no-restricted-syntax
-  for (const promise of postUrls) {
-    // eslint-disable-next-line no-await-in-loop
-    const res = await apiRequestPost(promise[0], promise[1]);
-    console.log(res);
-    results.push(res);
-    // delay
-    // eslint-disable-next-line no-await-in-loop
     await delay(25000);
   }
 
-  const markets = [];
-  const cmk = {};
-  const errors = { errors: {} };
+  for (const promise of postUrls) {
+    const res = await apiRequestPost(promise.url, promise.coinList);
+    console.log(res);
+    results.push(res);
+    await delay(25000);
+  }
+
+  const markets: any[] = [];
+  const cmk: Record<string, any> = {};
+  const errors: { errors: Record<string, any> } = { errors: {} };
 
   // full results from cryptocompare
   const dataCC = results.slice(0, cryptoCompareIDs.length);
@@ -95,7 +87,7 @@ async function getAll() {
     try {
       const coinsFull = Object.keys(subresult.RAW);
       coinsFull.forEach((coin) => {
-        const coindetail = {};
+        const coindetail: any = {};
         coindetail.supply = subresult.RAW[coin].USD.SUPPLY;
         coindetail.volume = subresult.RAW[coin].USD.TOTALVOLUME24HTO;
         coindetail.change = subresult.RAW[coin].USD.CHANGEPCT24HOUR;
@@ -113,7 +105,7 @@ async function getAll() {
     try {
       const coinsFull = Object.keys(subresult);
       coinsFull.forEach((coin) => {
-        const coindetail = {};
+        const coindetail: any = {};
         coindetail.rank = subresult[coin].market_cap_rank;
         coindetail.total_supply = subresult[coin].total_supply;
         coindetail.supply = subresult[coin].circulating_supply;
@@ -129,8 +121,8 @@ async function getAll() {
   });
 
   const dataLCW = results[results.length - 1];
-  dataLCW.forEach((coin) => {
-    const coindetail = {};
+  dataLCW.forEach((coin: any) => {
+    const coindetail: any = {};
     coindetail.rank = coin.rank;
     coindetail.total_supply = coin.totalSupply;
     coindetail.supply = coin.circulatingSupply;
@@ -186,6 +178,6 @@ async function getAll() {
   return markets;
 }
 
-module.exports = {
+export default {
   getAll,
 };
