@@ -1,5 +1,8 @@
 import AxiosWrapper from "../../lib/axios";
 import config from "../../../config";
+import { arraySplit } from "../../lib/utils";
+
+const MAX_IDS_PER_REQUEST = 250;
 
 interface KeyUsage {
   plan: string;
@@ -53,32 +56,26 @@ export class CoinGecko {
     }
   }
 
-  public async getExchangeRates(ids: string, vsCurrency = 'btc', ): Promise<any | null> {
-    console.log("Running here");
-    try {
-      const response = await this.get('coins/markets', {
-        vs_currency: vsCurrency,
-        ids: ids,
-        order: 'market_cap_desc',
-        per_page: 250,
-        page: 1,
-        sparkline: false,
-      });
-      return response.data;
-    } catch (error) {
-      return null;
-    }
+  private async _getExchangeRates(ids: string, vsCurrency = 'btc', ): Promise<any> {
+    const response = await this.get('coins/markets', {
+      vs_currency: vsCurrency,
+      ids: ids,
+      order: 'market_cap_desc',
+      per_page: 250,
+      page: 1,
+      sparkline: false,
+    });
+    return response.data;
   }
 
-  public async getAllExchangeRates(ids: string[], vsCurrency = 'btc'): Promise<any | null> {
-    const allRates = [];
-    for (const id of ids) {
-      const response = await this.getExchangeRates(id, vsCurrency);
+  public async getExchangeRates(ids: string[], vsCurrency = 'btc'): Promise<any> {
+    const newIds = arraySplit([...new Set(ids)], MAX_IDS_PER_REQUEST).map((id) => id.join(','));
+    const allRates: any[] = [];
+    for (const id of newIds) {
+      const response = await this._getExchangeRates(id, vsCurrency);
       allRates.push(response);
     }
-    return allRates
-      .filter((rate) => rate !== null)
-      .reduce((acc, val) => acc.concat(val), []);
+    return allRates.reduce((acc, val) => acc.concat(val), []);
   }
 
 }
