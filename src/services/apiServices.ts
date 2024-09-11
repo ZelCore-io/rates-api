@@ -1,12 +1,12 @@
-const log = require('../lib/log');
+import { Request, Response } from 'express';
+import * as log from '../lib/log';
+import zelcoreRates from './zelcoreRates';
+import zelcoreMarketsUSD from './zelcoreMarketsUSD';
 
-const zelcoreRates = require('./zelcoreRates');
-const zelcoreMarketsUSD = require('./zelcoreMarketsUSD');
+let rates: any[] = [[], {}, {}]; // btc to fiat, alts to fiat, errors
+let marketsUSD: any[] = [];
 
-let rates = [[], {}, {}]; // btc to fiat, alts to fiat, errors
-let marketsUSD = [];
-
-async function getRates(req, res) {
+export async function getRates(req: Request, res: Response): Promise<void> {
   try {
     res.json(rates);
   } catch (error) {
@@ -14,14 +14,14 @@ async function getRates(req, res) {
   }
 }
 
-function getData() {
+export function getData() {
   return {
     rates,
     marketsUSD,
   };
 }
 
-async function getMarketsUsd(req, res) {
+export async function getMarketsUsd(req: Request, res: Response): Promise<void> {
   try {
     res.json(marketsUSD);
   } catch (error) {
@@ -29,23 +29,25 @@ async function getMarketsUsd(req, res) {
   }
 }
 
-function delay(ms) {
+function delay(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }
 
-async function serviceRefresher() {
+export async function serviceRefresher(): Promise<void> {
   try {
     log.info('Refreshing Markets and Rates');
     const ratesFetched = await zelcoreRates.getAll();
     await delay(25000);
     const marketsUSDFetched = await zelcoreMarketsUSD.getAll();
-    if (ratesFetched && ratesFetched[0] && ratesFetched[0].length > 20 && ratesFetched[1]) {
+    
+    if (ratesFetched && ratesFetched[0]?.length > 20 && ratesFetched[1]) {
       if (Object.keys(ratesFetched[1]).length > 300) {
         rates = ratesFetched;
       }
     }
+    
     if (marketsUSDFetched && marketsUSDFetched[0]) {
       log.info(Object.keys(marketsUSDFetched[0]));
       log.info(Object.keys(marketsUSDFetched[0]).length);
@@ -53,6 +55,7 @@ async function serviceRefresher() {
         marketsUSD = marketsUSDFetched;
       }
     }
+
     log.info('Refreshment finished');
     await delay(60000);
     serviceRefresher();
@@ -63,9 +66,8 @@ async function serviceRefresher() {
   }
 }
 
-module.exports = {
+export default {
   getRates,
-  // getMarkets,
   getMarketsUsd,
   serviceRefresher,
   getData,
