@@ -64,6 +64,7 @@ export class CoinGecko {
       per_page: 250,
       page: 1,
       sparkline: false,
+      price_change_percentage: '7d',
     });
     return response.data;
   }
