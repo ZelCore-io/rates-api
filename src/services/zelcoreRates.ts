@@ -1,18 +1,7 @@
 import axios from 'axios';
-import config from '../../config';
-import { cryptoCompareIDs, coingeckoIDs, liveCoinWatchIDs } from './coinAggregatorIDs';
+import { liveCoinWatchIDs, coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
-
-const apiKey: string = process.env.API_KEY || config.apiKey;
-
-function apiRequest(url: string): Promise<any> {
-  return axios.get(url)
-    .then((response) => response.data)
-    .catch((error) => {
-      log.error(`ERROR: ${url}`);
-      return error;
-    });
-}
+import { CoinGecko, CryptoCompare, BitPay } from './providers';
 
 function apiRequestPost(url: string, coinList: string[]): Promise<any> {
   const data = {
@@ -38,22 +27,8 @@ function apiRequestPost(url: string, coinList: string[]): Promise<any> {
     });
 }
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
 export async function getAll(): Promise<any[]> {
   const results: any[] = [];
-  const getUrls = [
-    // fiat rates
-    'https://bitpay.com/rates/BTC',
-    // cryptocompare
-    ...cryptoCompareIDs.map((elementGroup) => `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${elementGroup}&tsyms=BTC&api_key=${apiKey}`),
-    // coingecko
-    ...coingeckoIDs.map((elementGroup) => `https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=${elementGroup}&order=market_cap_desc&per_page=100&page=1&sparkline=false`),
-  ];
   const postUrls = [
     // livecoinwatch
     {
@@ -62,20 +37,16 @@ export async function getAll(): Promise<any[]> {
     },
   ];
 
-  console.log(getUrls);
-
-  for (const promise of getUrls) {
-    const res = await apiRequest(promise);
-    console.log(res);
-    results.push(res);
-    await delay(25000);
-  }
+  const cc = CryptoCompare.getInstance();
+  const cg = CoinGecko.getInstance();
+  const bp = BitPay.getInstance();
+  const bitpay = await bp.getFiatRates();
+  const cryptocompare = await cc.getExchangeRates(coinAggregatorIDs.cryptoCompare);
+  const coingecko = await cg.getExchangeRates(coinAggregatorIDs.coingecko);
 
   for (const promise of postUrls) {
     const res = await apiRequestPost(promise.url, promise.coinList);
-    console.log(res);
     results.push(res);
-    await delay(25000);
   }
 
   const rates: any[] = [];
@@ -85,40 +56,33 @@ export async function getAll(): Promise<any[]> {
 
   // results from bitpay (fiat rates)
   try {
-    const dummyTest = results[0].data[1].code;
+    const dummyTest = bitpay[1].code;
     if (!dummyTest) {
       throw new Error('Bitpay does not work correctly');
     }
-    bitpayData = results[0].data;
+    bitpayData = bitpay;
   } catch (e) {
-    errors.errors.bitPayData = results[0].data;
+    errors.errors.bitPayData = bitpay;
   }
 
   // results from coingecko (prices)
-  const dataCG = results.slice(1 + cryptoCompareIDs.length, 1 + cryptoCompareIDs.length + coingeckoIDs.length);
-  dataCG.forEach((subresult) => {
-    try {
-      const coinsCG = Object.keys(subresult);
-      coinsCG.forEach((index) => {
-        efg[subresult[index].symbol.toUpperCase()] = subresult[index].current_price;
-      });
-    } catch (e) {
-      errors.errors.coinsCG = subresult;
-    }
-  });
+  try {
+    coingecko.forEach((value: any) => {
+      efg[value.symbol.toUpperCase()] = value.current_price;
+    });
+  } catch (e) {
+    errors.errors.coinsCG = coingecko;
+  }
 
   // results from cryptocompare (prices)
-  const dataCC = results.slice(1, 1 + cryptoCompareIDs.length);
-  dataCC.forEach((subresult) => {
-    try {
-      const coinsCC = Object.keys(subresult);
-      coinsCC.forEach((coin) => {
-        efg[coin] = subresult[coin].BTC;
-      });
-    } catch (e) {
-      errors.errors.coinsCC = subresult;
-    }
-  });
+  try {
+    const coinsCC = Object.keys(cryptocompare);
+    coinsCC.forEach((coin) => {
+      efg[coin] = cryptocompare[coin].BTC;
+    });
+  } catch (e) {
+    errors.errors.coinsCC = cryptocompare;
+  }
 
   const dataLCW = results[results.length - 1];
   dataLCW.forEach((coin: any) => {
