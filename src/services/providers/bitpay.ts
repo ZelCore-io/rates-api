@@ -28,7 +28,7 @@ export class BitPay {
   public async getFiatRates(): Promise<any | null> {
     try {
       const response = await this.get('rates/BTC');
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return null;
     }
