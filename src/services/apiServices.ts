@@ -39,7 +39,6 @@ export async function serviceRefresher(): Promise<void> {
   try {
     log.info('Refreshing Markets and Rates');
     const ratesFetched = await zelcoreRates.getAll();
-    await delay(25000);
     const marketsUSDFetched = await zelcoreMarketsUSD.getAll();
     
     if (ratesFetched && ratesFetched[0]?.length > 20 && ratesFetched[1]) {
