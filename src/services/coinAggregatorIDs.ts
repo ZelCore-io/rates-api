@@ -6,33 +6,15 @@
 const coinAggregatorIDs = {
   // Add the cryptoCompare ID at the end of this list
   cryptoCompare: [
-    'TOK', 'CONI', 'PAX', 'GUSD', 'USDC', 'ETC', 'XMR', 'DASH', 'BTC', 'ETH', 
-    'ZEC', 'USDT', 'LTC', 'BTCZ', 'RVN', 'BCH', 'BNB', 'BTX', 'OMG', 
-    'ZIL', 'ZRX', 'GNT', 'SPHTX', 'BAT', 'MKR', 'ENG', 'PAY', 'SUB', 'CVC', 
-    'STX', 'BTG', 'KCS', 'SRN', 'EVX', 'FET', 'GTO', 'GVT', 'INS', 'IOTX', 
-    'KEY', 'LUN', 'MDA', 'MITH', 'MTH', 'OAX', 'OST', 'PPT', 'QSP', 'REN', 
-    'RLC', 'SNGLS', 'TNB', 'TNT', 'VIB', 'VIBE', 'WABI', 'WPR', 'DOCK', 'FUEL', 
-    'CDT', 'CELR', 'CND', 'DATA', 'DGD', 'DLT', 'AGI', 'HUSH', 'TENT', 'BTCP', 
-    'ZEN', 'KMD', 'XZC', 'ABT', 'ADX', 'AE', 'AION', 'AST', 'BBO', 'APPC', 'BLZ', 
-    'BNT', 'ETHOS', 'COFI', 'DAI', 'DGX', 'ELEC', 'ELF', 'ENJ', 'STORJ', 'IOST', 
-    'DENT', 'LEND', 'LINK', 'MANA', 'LRC', 'QASH', 'ICN', 'MCO', 'MTL', 'POE', 
-    'POLY', 'POWR', 'RCN', 'RDN', 'REQ', 'SNT', 'SALT', 'STORM', 'EDO', 'TUSD', 
-    'DCN', 'WAX', 'WINGS', 'DTA', 'FUN', 'KIN', 'BSV', 'AOA', 'THETA', 'ADT', 
-    'MFT', 'ATL', 'ANT', 'ARNX', 'BRD', 'REP', 'QKC', 'LOOM', 'ANON', 'EURS', 
-    'AMB', 'BCPT', 'SIN', 'MER', 'ALEPH', 'QTUM', 'XEM', 'ONGAS', 
-    'ONT', 'MIOTA', 'GAS', 'TRX', 'DGB', 'XLM', 'DOGE', 'EOS', 'ADA', 'XRP', 'DOCK', 
-    'NEO', 'BTTOLD', 'SAFE', 'BTH', 'GRS', 'XCASH', 'LEO', 'USDS', 'ENQ', 'FTM', 
-    '0XBTC', 'AERGO', 'UBT', 'ILC', 'HEX', 'COMP', 'VIDT', 'DRGN', 'WBTC', 'OM', 'UNI', 
-    'JST', 'BDX', 'FIRO', 'CAKE', 'MATIC', 'VBK', 'STETH', 'AMP', 'TEL', 'ONE', 
-    'AVAX', 'ATOM', 'AXS', 'XTZ', 'BTCB', 'SHIB', 'UST', 'YFI', 'SNX', 'NEAR', 'C98', 
-    'ANKR', 'SXP', 'WRX', 'QUICK', 'SAITO', 'PLANETS', 'XET', 'OPUL',
+    "CONI", "PAX", "SPHTX", "GVT", "INS", "MDA", "QSP", "SNGLS", "TNB", "WABI", "DGD", "TENT", "BBO", "ICN", "MCO", "EDO", "WINGS", "DTA", "ADT", "ATL", 
+    "BCPT", "BTH", "USDS", "VIDT", "VBK", "UST", "GTO", "ONGAS", "MIOTA", "TOK", 'SAFE',
   ],
   /**
    * CoinGecko API ID
    * Found under the "Info" column, and part of the URL, e.g. https://www.coingecko.com/en/coins/[API-ID]
    * Add to the end of the list
    */
-  coingecko: [
+  coingecko: [... new Set([
     'solfarm', 'cope', 'bonfida', 'maps', 'media-network', 'oxygen', 'raydium', 'step-finance', 'rope-token', 'presearch', 'kyber-network', 'kyber-network-crystal', 'solana',
     'serum', 'gatechain-token', 'snowgem', 'zclassic', '1inch', 'hotbit-token', 'binance-usd', 'huobi-pool-token', 'huobi-token', 'zb-token', 'mx-token', 'bitforex',
     'okb', 'veriblock', 'dmme-app', 'suqa', 'holotoken', 'half-life', 'axe', 'safe-coin-2', 'bzedge', 'commercium', 'bitcoin-zero', 'zelcash', 'kadena',
@@ -49,57 +31,24 @@ const coinAggregatorIDs = {
     'cyclos', 'fabric', 'waggle-network', 'moonlana', 'solanax', 'cato', 'corestarter', 'sator', 'apyswap', 'sunny-aggregator', 'kurobi', 'frax', 'fio-protocol', 'avalanche-2', 'terra-luna',
     'terra-sdt', 'terra-krw', 'mirrored-amazon', 'mirrored-apple', 'mirrored-airbnb', 'mirrored-coinbase', 'mirrored-microsoft', 'mirrored-google', 'mirrored-tesla', 'mirrored-twitter', 'mirrored-netflix',
     'safemoon-2', 'bittorrent', 'elrond-erd-2', 'hollaex-token', 'zero', 'sonm', 'ergo', 'kdlaunch', 'kaddex', 'miners-of-kadenia', 'kdswap', 'algorand', 'kaspa', 'planetwatch', 'xfinite-entertainment-token',
-    'opulous', 'clore-ai', 'karate-combat', 'pepe', 'floki', 'turbo', 'arbitrum', 'alephium', 'bonk', 'render-token', 'based-brett', 'dogwifcoin', 'the-open-network', 'notcoin',
-  ],
-  // Array with coingecko IDs for cryptocompare IDs. This array will be used in markets to replace cryptocompare data.
-  cg4cc: [
-    'tokok', 'coinbene-token', 'paxos-standard', 'gemini-dollar', 'usd-coin', 'ethereum-classic', 'monero', 'dash', 'bitcoin', 'ethereum', 'zcash', 'tether', 'litecoin', 'bitcoinz', 'ravencoin', 
+    'opulous', 'clore-ai', 'karate-combat', 'pepe', 'floki', 'turbo', 'arbitrum', 'alephium', 'bonk', 'render-token', 'based-brett', 'dogwifcoin', 'the-open-network', 'notcoin', 'paxos-standard', 'gifto',
+    'loom-network','tokok', 'coinbene-token', 'gemini-dollar', 'usd-coin', 'ethereum-classic', 'monero', 'dash', 'bitcoin', 'ethereum', 'zcash', 'tether', 'litecoin', 'bitcoinz', 'ravencoin', 
     'bitcoin-cash', 'binancecoin', 'bitcore', 'omisego', 'zilliqa', '0x', 'basic-attention-token', 'maker', 'enigma', 'tenx', 'substratum', 'civic', 'blockstack', 'bitcoin-gold', 'kucoin-shares', 
-    'sirin-labs-token', 'everex', 'fetch-ai', 'gifto', 'genesis-vision', 'iotex', 'selfkey', 'lunyr', 'monetha', 'openanx', 'simple-token', 'populous', 'quantstamp', 'republic-protocol', 'iexec-rlc', 
+    'sirin-labs-token', 'everex', 'fetch-ai', 'genesis-vision', 'iotex', 'selfkey', 'lunyr', 'monetha', 'openanx', 'simple-token', 'populous', 'quantstamp', 'republic-protocol', 'iexec-rlc', 
     'singulardtv', 'viberate', 'vibe', 'wepower', 'dock', 'etherparty', 'blox', 'celer-network', 'cindicator', 'streamr', 'agrello', 'hush', 'snowgem', 'bitcoin-private', 'zencash', 'komodo', 'arcblock', 
     'aeternity', 'airswap', 'bigbom-eco', 'appcoins', 'bluzelle', 'bancor', 'coinfi', 'dai', 'digix-gold', 'electrify-asia', 'aelf', 'enjincoin', 'storj', 'iostoken', 'dent', 'chainlink', 'decentraland', 
     'loopring', 'qash', 'metal', 'poet', 'polymath', 'power-ledger', 'ripio-credit-network', 'raiden-network', 'request-network', 'status', 'salt', 'storm-token', 'true-usd', 'dentacoin', 'wings', 'data', 
-    'funfair', 'kin', 'aurora', 'theta-token', 'adtoken', 'mainframe', 'atlant', 'aragon', 'aeron', 'augur', 'quark-chain', 'loom-network', 'anon', 'stasis-eurs', 'blockmason-credit-protocol', 'suqa', 'mercurial', 
+    'funfair', 'kin', 'aurora', 'theta-token', 'adtoken', 'mainframe', 'atlant', 'aragon', 'aeron', 'augur', 'quark-chain', 'anon', 'stasis-eurs', 'blockmason-credit-protocol', 'suqa', 'mercurial', 
     'aleph', 'ontology', 'gas', 'tron', 'digibyte', 'stellar', 'dogecoin', 'eos', 'cardano', 'ripple', 'dock', 'neo', 'bittorrent-old', 'safe-coin-2', 'groestlcoin', 'leo-token', 'enq-enecuum', 'fantom', 'aergo', 
-    'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin', 'pancakeswap-token', 'matic-network', 'zclassic', 'veriblock', 'staked-ether', 
-    'amp-token', 'telcoin', 'harmony', 'avalanche-2', 'cosmos', 'axie-infinity', 'tezos', 'bitcoin-bep2', 'shiba-inu', 'yearn-finance', 'havven', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 'quick', 
-    'saito', 'planetwatch', 'xfinite-entertainment-token', 'opulous', 'clore-ai', 'karate-combat', 'pepe', 'floki-inu', 'turbo',
-  ],
+    'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin', 'pancakeswap-token', 'matic-network', 'veriblock', 'staked-ether', 
+    'amp-token', 'telcoin', 'harmony', 'avalanche-2', 'cosmos', 'axie-infinity', 'tezos', 'bitcoin-bep2', 'shiba-inu', 'yearn-finance', 'havven', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 
+    'saito', 'planetwatch', 'xfinite-entertainment-token', 'opulous', 'floki-inu', 'greentrust', 'gifto', 'mithril', 'tierion', 'delysium', 'adex', 'aion', 'ethos-3', 'ethlend', 'pnetwork',
+    'wax', 'bitcoin-cash-sv', 'bread', 'loom-network', 'loom-network-new', 'amber', 'sin-city', 'qtum', 'nem', 'ong', 'iota', 'x-cash', 'oxbitcoin', 'dragonchain', 'binance-bitcoin',
+  ])],
   // livecoinwatch api
   livecoinwatch: ['KDL'],
 };
 
-/**
- * Function that combines with commas the elements of a string array till some max length and returns the new array of strings
- * @param {string[]} elements
- * @param {number} maxLength
- * @returns string[]
- */
-function makeRequestStrings(elements: string[], maxLength: number): string[] {
-  const result: string[] = [];
-  let temp = '';
-  elements.forEach((element) => {
-    if ((`${temp + element},`).length >= maxLength) {
-      result.push(temp.replace(/,\s*$/, '')); // remove last ,
-      temp = `${element},`;
-    } else if (element === elements[elements.length - 1]) {
-      result.push(temp + element);
-    } else {
-      temp = `${temp + element},`;
-    }
-  });
-  return result;
-}
-
-const cryptoCompareIDs = makeRequestStrings(coinAggregatorIDs.cryptoCompare, 300);
-const coingeckoIDs = makeRequestStrings(coinAggregatorIDs.coingecko, 450);
-const cg4ccIDs = makeRequestStrings(coinAggregatorIDs.cg4cc, 450);
-const liveCoinWatchIDs = makeRequestStrings(coinAggregatorIDs.livecoinwatch, 400);
-
 export {
   coinAggregatorIDs,
-  cryptoCompareIDs,
-  coingeckoIDs,
-  cg4ccIDs,
-  liveCoinWatchIDs,
 };
