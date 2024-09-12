@@ -9,16 +9,16 @@ export default (app: Application): void => {
     res.redirect('/rates');
   });
 
-  app.get('/rates', cache('2 minutes'), (req: Request, res: Response) => {
+  app.get('/rates', cache('30 seconds'), (req: Request, res: Response) => {
     apiService.getRates(req, res);
   });
 
   // Uncomment if needed
-  // app.get('/markets', cache('2 minutes'), (req: Request, res: Response) => {
+  // app.get('/markets', cache('30 seconds'), (req: Request, res: Response) => {
   //   apiService.getMarkets(req, res);
   // });
 
-  app.get('/marketsusd', cache('2 minutes'), (req: Request, res: Response) => {
+  app.get('/marketsusd', cache('30 seconds'), (req: Request, res: Response) => {
     apiService.getMarketsUsd(req, res);
   });
 };

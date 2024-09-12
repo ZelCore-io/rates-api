@@ -56,11 +56,11 @@ export async function serviceRefresher(): Promise<void> {
     }
 
     log.info('Refreshment finished');
-    await delay(60000);
+    await delay(60 * 1000);
     serviceRefresher();
   } catch (error) {
     log.error(error);
-    await delay(60000);
+    await delay(30 * 1000);
     serviceRefresher();
   }
 }
