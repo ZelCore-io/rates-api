@@ -1,31 +1,7 @@
-import axios from 'axios';
 import { coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
-import { CoinGecko, CryptoCompare } from './providers';
+import { CoinGecko, CryptoCompare, LiveCoinWatch } from './providers';
 
-function apiRequestPost(url: string, coinList: string[]): Promise<any> {
-  const data = {
-    currency: 'USD',
-    codes: coinList,
-    sort: 'rank',
-    order: 'ascending',
-    offset: 0,
-    limit: 0,
-    meta: true,
-  };
-  const headers = {
-    'x-api-key': 'c9f00288-bea1-49a3-a9c3-2219d61aa0d1',
-  };
-  const axiosConfig = {
-    headers,
-  };
-  return axios.post(url, data, axiosConfig)
-    .then((response) => response.data)
-    .catch((error) => {
-      log.error(`ERROR: ${url}`);
-      return error;
-    });
-}
 
 export async function getAll(): Promise<any[]> {
   const results: any[] = [];
@@ -40,12 +16,10 @@ export async function getAll(): Promise<any[]> {
 
   const cc = CryptoCompare.getInstance();
   const cg = CoinGecko.getInstance();
+  const lcw = LiveCoinWatch.getInstance();
   const cryptocompare = await cc.getMarketData(coinAggregatorIDs.cryptoCompare, 'USD');
   const coingecko = await cg.getExchangeRates(coinAggregatorIDs.coingecko, 'usd');
-  for (const promise of postUrls) {
-    const res = await apiRequestPost(promise.url, promise.coinList);
-    results.push(res);
-  }
+  const livecoinwatch = await lcw.getExchangeRates(coinAggregatorIDs.livecoinwatch, 'USD');
 
   const markets: any[] = [];
   const cmk: Record<string, any> = {};
@@ -87,8 +61,7 @@ export async function getAll(): Promise<any[]> {
     errors.errors.coingecko = coingecko;
   }
 
-  const dataLCW = results[results.length - 1];
-  dataLCW.forEach((coin: any) => {
+  Object.values(livecoinwatch).forEach((coin: any) => {
     cmk[coin.code] = {
       rank: coin.rank,
       total_supply: coin.totalSupply,
