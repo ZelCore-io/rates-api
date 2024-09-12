@@ -22,7 +22,7 @@ function startService(): void {
   } else {
     setTimeout(() => {
       startService();
-    }, 60 * 1000);
+    }, 5 * 1000);
   }
 }
 
