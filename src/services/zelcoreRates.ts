@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { liveCoinWatchIDs, coinAggregatorIDs } from './coinAggregatorIDs';
+import { coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
 import { CoinGecko, CryptoCompare, BitPay } from './providers';
 
@@ -33,7 +33,7 @@ export async function getAll(): Promise<any[]> {
     // livecoinwatch
     {
       url: 'https://api.livecoinwatch.com/coins/map',
-      coinList: liveCoinWatchIDs,
+      coinList: coinAggregatorIDs.livecoinwatch,
     },
   ];
 
