@@ -31,7 +31,6 @@ export class CryptoCompare {
   }
 
   private async _getExchangeRates(ids: string, vsCurrency = 'BTC', ): Promise<any> {
-    console.log('gettting here');
     const response = await this.get('data/pricemulti', {
       tsyms: vsCurrency,
       fsyms: ids,
@@ -47,5 +46,23 @@ export class CryptoCompare {
       allRates = { ...allRates, ...response };
     }
     return allRates;
+  }
+
+  private async _getMarketData(ids: string, vsCurrency = 'BTC'): Promise<any> {
+    const response = await this.get('data/pricemultifull', {
+      tsyms: vsCurrency,
+      fsyms: ids,
+    });
+    return response.data.RAW;
+  }
+
+  public async getMarketData(ids: string[], vsCurrency = 'BTC'): Promise<any> {
+    const newIds = makeRequestStrings(ids, MAX_LENGTH_PER_REQUEST);
+    let allData = {};
+    for (const id of newIds) {
+      const response = await this._getMarketData(id, vsCurrency);
+      allData = { ...allData, ...response };
+    }
+    return allData;
   }
 }
