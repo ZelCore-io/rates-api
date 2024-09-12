@@ -1,19 +1,7 @@
 import axios from 'axios';
-import config from '../../config';
-import { cryptoCompareIDs, coingeckoIDs, cg4ccIDs, liveCoinWatchIDs } from './coinAggregatorIDs';
+import { liveCoinWatchIDs, coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
-
-const apiKey: string = process.env.API_KEY || config.apiKey;
-coingeckoIDs.push(...cg4ccIDs); // Adding coingecko ids for cryptocompare coins
-
-function apiRequest(url: string): Promise<any> {
-  return axios.get(url)
-    .then((response) => response.data)
-    .catch((error) => {
-      log.error(`ERROR: ${url}`);
-      return error;
-    });
-}
+import { CoinGecko, CryptoCompare } from './providers';
 
 function apiRequestPost(url: string, coinList: string[]): Promise<any> {
   const data = {
@@ -39,20 +27,9 @@ function apiRequestPost(url: string, coinList: string[]): Promise<any> {
     });
 }
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
 export async function getAll(): Promise<any[]> {
   const results: any[] = [];
-  const getUrls = [
-    // cryptocompare
-    ...cryptoCompareIDs.map((elementGroup) => `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${elementGroup}&tsyms=USD&api_key=${apiKey}`),
-    // coingecko
-    ...coingeckoIDs.map((elementGroup) => `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${elementGroup}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=7d`),
-  ];
+
   const postUrls = [
     // livecoinwatch
     {
@@ -61,20 +38,13 @@ export async function getAll(): Promise<any[]> {
     },
   ];
 
-  console.log(getUrls);
-
-  for (const promise of getUrls) {
-    const res = await apiRequest(promise);
-    console.log(res);
-    results.push(res);
-    await delay(25000);
-  }
-
+  const cc = CryptoCompare.getInstance();
+  const cg = CoinGecko.getInstance();
+  const cryptocompare = await cc.getMarketData(coinAggregatorIDs.cryptoCompare, 'USD');
+  const coingecko = await cg.getExchangeRates(coinAggregatorIDs.coingecko, 'usd');
   for (const promise of postUrls) {
     const res = await apiRequestPost(promise.url, promise.coinList);
-    console.log(res);
     results.push(res);
-    await delay(25000);
   }
 
   const markets: any[] = [];
@@ -82,55 +52,52 @@ export async function getAll(): Promise<any[]> {
   const errors: { errors: Record<string, any> } = { errors: {} };
 
   // full results from cryptocompare
-  const dataCC = results.slice(0, cryptoCompareIDs.length);
-  dataCC.forEach((subresult) => {
-    try {
-      const coinsFull = Object.keys(subresult.RAW);
-      coinsFull.forEach((coin) => {
-        const coindetail: any = {};
-        coindetail.supply = subresult.RAW[coin].USD.SUPPLY;
-        coindetail.volume = subresult.RAW[coin].USD.TOTALVOLUME24HTO;
-        coindetail.change = subresult.RAW[coin].USD.CHANGEPCT24HOUR;
-        coindetail.market = subresult.RAW[coin].USD.MKTCAP;
-        cmk[coin] = coindetail;
-      });
-    } catch (e) {
-      errors.errors.coinsFull = subresult;
-    }
-  });
+  try {
+    const coinsCC = Object.keys(cryptocompare);
+    coinsCC.forEach((coin) => {
+      cmk[coin] = {
+        supply: cryptocompare[coin].USD.SUPPLY,
+        volume: cryptocompare[coin].USD.TOTALVOLUME24HTO,
+        change: cryptocompare[coin].USD.CHANGEPCT24HOUR,
+        market: cryptocompare[coin].USD.MKTCAP,
+      };
+    });
+  } catch (e) {
+    log.error('cryptocompare error');
+    log.error(e);
+    errors.errors.coinsFull = cryptocompare;
+  }
 
   // full results from coingecko
-  const dataCG = results.slice(cryptoCompareIDs.length, cryptoCompareIDs.length + coingeckoIDs.length);
-  dataCG.forEach((subresult) => {
-    try {
-      const coinsFull = Object.keys(subresult);
-      coinsFull.forEach((coin) => {
-        const coindetail: any = {};
-        coindetail.rank = subresult[coin].market_cap_rank;
-        coindetail.total_supply = subresult[coin].total_supply;
-        coindetail.supply = subresult[coin].circulating_supply;
-        coindetail.volume = subresult[coin].total_volume;
-        coindetail.change = subresult[coin].price_change_percentage_24h;
-        coindetail.change7d = subresult[coin].price_change_percentage_7d_in_currency;
-        coindetail.market = subresult[coin].market_cap;
-        cmk[subresult[coin].symbol.toUpperCase()] = coindetail;
-      });
-    } catch (e) {
-      errors.errors.coinsFull = subresult;
-    }
-  });
+  try {
+    coingecko.forEach((coin: any) => {
+      cmk[coin.symbol.toUpperCase()] = {
+        rank: coin.market_cap_rank,
+        total_supply: coin.total_supply,
+        supply: coin.circulating_supply,
+        volume: coin.total_volume,
+        change: coin.price_change_percentage_24h,
+        change7d: coin.price_change_percentage_7d_in_currency,
+        market: coin.market_cap,
+      };
+    });
+  } catch (e) {
+    log.error('coingecko error');
+    log.error(e);
+    errors.errors.coingecko = coingecko;
+  }
 
   const dataLCW = results[results.length - 1];
   dataLCW.forEach((coin: any) => {
-    const coindetail: any = {};
-    coindetail.rank = coin.rank;
-    coindetail.total_supply = coin.totalSupply;
-    coindetail.supply = coin.circulatingSupply;
-    coindetail.volume = coin.volume;
-    coindetail.change = coin.delta.day ? (1 - coin.delta.day) * 100 : 0;
-    coindetail.change7d = coin.delta.week ? (1 - coin.delta.week) * 100 : 0;
-    coindetail.market = coin.cap ? coin.cap : coin.circulatingSupply * coin.rate;
-    cmk[coin.code] = coindetail;
+    cmk[coin.code] = {
+      rank: coin.rank,
+      total_supply: coin.totalSupply,
+      supply: coin.circulatingSupply,
+      volume: coin.volume,
+      change: coin.delta.day ? (1 - coin.delta.day) * 100 : 0,
+      change7d: coin.delta.week ? (1 - coin.delta.week) * 100 : 0,
+      market: coin.cap ? coin.cap : coin.circulatingSupply * coin.rate,
+    };
   });
 
   // Some wrapped assets and flux
