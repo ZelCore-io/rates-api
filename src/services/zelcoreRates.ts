@@ -1,53 +1,19 @@
-import axios from 'axios';
 import { coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
-import { CoinGecko, CryptoCompare, BitPay } from './providers';
+import { CoinGecko, CryptoCompare, BitPay, LiveCoinWatch } from './providers';
 
-function apiRequestPost(url: string, coinList: string[]): Promise<any> {
-  const data = {
-    currency: 'BTC',
-    codes: coinList,
-    sort: 'rank',
-    order: 'ascending',
-    offset: 0,
-    limit: 0,
-    meta: true,
-  };
-  const headers = {
-    'x-api-key': 'c9f00288-bea1-49a3-a9c3-2219d61aa0d1',
-  };
-  const axiosConfig = {
-    headers,
-  };
-  return axios.post(url, data, axiosConfig)
-    .then((response) => response.data)
-    .catch((error) => {
-      log.error(`ERROR: ${url}`);
-      return error;
-    });
-}
 
 export async function getAll(): Promise<any[]> {
   const results: any[] = [];
-  const postUrls = [
-    // livecoinwatch
-    {
-      url: 'https://api.livecoinwatch.com/coins/map',
-      coinList: coinAggregatorIDs.livecoinwatch,
-    },
-  ];
 
   const cc = CryptoCompare.getInstance();
   const cg = CoinGecko.getInstance();
   const bp = BitPay.getInstance();
+  const lcw = LiveCoinWatch.getInstance();
   const bitpay = await bp.getFiatRates();
   const cryptocompare = await cc.getExchangeRates(coinAggregatorIDs.cryptoCompare);
   const coingecko = await cg.getExchangeRates(coinAggregatorIDs.coingecko);
-
-  for (const promise of postUrls) {
-    const res = await apiRequestPost(promise.url, promise.coinList);
-    results.push(res);
-  }
+  const livecoinwatch = await lcw.getExchangeRates(coinAggregatorIDs.livecoinwatch);
 
   const rates: any[] = [];
   const efg: Record<string, any> = {};
@@ -84,8 +50,7 @@ export async function getAll(): Promise<any[]> {
     errors.errors.coinsCC = cryptocompare;
   }
 
-  const dataLCW = results[results.length - 1];
-  dataLCW.forEach((coin: any) => {
+  Object.values(livecoinwatch).forEach((coin: any) => {
     efg[coin.code] = coin.rate;
   });
 
