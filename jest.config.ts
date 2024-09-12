@@ -6,5 +6,6 @@ export default async (): Promise<Config> => {
     transform: {
       '^.+.tsx?$': ['ts-jest', {}],
     },
+    rootDir: './tests',
   };
 }
