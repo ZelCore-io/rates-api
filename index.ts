@@ -8,9 +8,6 @@ import apiServices from './src/services/apiServices';
 const server = http.createServer(app);
 const { port } = config.server;
 
-log.info('Starting services');
-apiServices.serviceRefresher();
-
 function startService(): void {
   const data = apiServices.getData();
   console.log("startService -> data", !!data.rates[0][0], !!data.marketsUSD[0])
@@ -27,4 +24,11 @@ function startService(): void {
   }
 }
 
-startService();
+log.info('Starting data refresher');
+// First init by fetching data from repositories
+apiServices.dataRefresher().then(() => {
+  // Then start services
+  log.info('Starting services');
+  apiServices.serviceRefresher();
+  startService();
+});

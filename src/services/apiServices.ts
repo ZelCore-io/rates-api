@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as log from '../lib/log';
 import zelcoreRates from './zelcoreRates';
 import zelcoreMarketsUSD from './zelcoreMarketsUSD';
+import { getLatestCoinInfo } from './coinAggregatorIDs';
 
 let rates: any[] = [[], {}, {}]; // btc to fiat, alts to fiat, errors
 let marketsUSD: any[] = [];
@@ -33,6 +34,23 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+}
+
+export async function dataRefresher(): Promise<void> {
+  try {
+    log.info('Refreshing Coin Info and Aggregator IDs');
+    await getLatestCoinInfo();
+    log.info('Refreshment finished');
+    setTimeout(() => {
+      dataRefresher();
+    }, 60 * 60 * 1000);
+  } catch (error) {
+    log.error("Error in dataRefresher");
+    log.error(error);
+    setTimeout(() => {
+      dataRefresher();
+    }, 30 * 60 * 1000);
+  }
 }
 
 export async function serviceRefresher(): Promise<void> {
@@ -68,6 +86,7 @@ export async function serviceRefresher(): Promise<void> {
 export default {
   getRates,
   getMarketsUsd,
+  dataRefresher,
   serviceRefresher,
   getData,
 };

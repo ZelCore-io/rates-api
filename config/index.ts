@@ -1,5 +1,3 @@
-import { LiveCoinWatch } from "../src/services/providers/livecoinwatch";
-
 export const config = {
   server: {
     port: 3333,
@@ -10,6 +8,8 @@ export const config = {
   bitPayUrl: 'https://bitpay.com/',
   cryptoCompareUrl: 'https://min-api.cryptocompare.com/',
   liveCoinWatchUrl: 'https://api.livecoinwatch.com/',
+  zelCoinsUrl: 'https://raw.githubusercontent.com/ZelCore-io/Zelcore/master/coins.json',
+  zelCoinInfoUrl: 'https://raw.githubusercontent.com/ZelCore-io/Zelcore/master/coininfo.json',
 };
 
 export default config;
