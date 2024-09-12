@@ -4,16 +4,18 @@ import { CoinGecko, CryptoCompare, BitPay, LiveCoinWatch } from './providers';
 
 
 export async function getAll(): Promise<any[]> {
-  const results: any[] = [];
-
   const cc = CryptoCompare.getInstance();
   const cg = CoinGecko.getInstance();
   const bp = BitPay.getInstance();
   const lcw = LiveCoinWatch.getInstance();
-  const bitpay = await bp.getFiatRates();
-  const cryptocompare = await cc.getExchangeRates(coinAggregatorIDs.cryptoCompare);
-  const coingecko = await cg.getExchangeRates(coinAggregatorIDs.coingecko);
-  const livecoinwatch = await lcw.getExchangeRates(coinAggregatorIDs.livecoinwatch);
+  const ccPromise = cc.getExchangeRates(coinAggregatorIDs.cryptoCompare);
+  const cgPromise = cg.getExchangeRates(coinAggregatorIDs.coingecko);
+  const lcwPromise = lcw.getExchangeRates(coinAggregatorIDs.livecoinwatch);
+  const bpPromise = bp.getFiatRates();
+  const bitpay = await bpPromise;
+  const cryptocompare = await ccPromise;
+  const coingecko = await cgPromise;
+  const livecoinwatch = await lcwPromise;
 
   const rates: any[] = [];
   const efg: Record<string, any> = {};
@@ -37,6 +39,8 @@ export async function getAll(): Promise<any[]> {
       efg[value.symbol.toUpperCase()] = value.current_price;
     });
   } catch (e) {
+    log.error('coingecko error');
+    log.error(e);
     errors.errors.coinsCG = coingecko;
   }
 
@@ -47,6 +51,8 @@ export async function getAll(): Promise<any[]> {
       efg[coin] = cryptocompare[coin].BTC;
     });
   } catch (e) {
+    log.error('cryptocompare error');
+    log.error(e);
     errors.errors.coinsCC = cryptocompare;
   }
 

@@ -4,22 +4,16 @@ import { CoinGecko, CryptoCompare, LiveCoinWatch } from './providers';
 
 
 export async function getAll(): Promise<any[]> {
-  const results: any[] = [];
-
-  const postUrls = [
-    // livecoinwatch
-    {
-      url: 'https://api.livecoinwatch.com/coins/map',
-      coinList: coinAggregatorIDs.livecoinwatch,
-    },
-  ];
 
   const cc = CryptoCompare.getInstance();
   const cg = CoinGecko.getInstance();
   const lcw = LiveCoinWatch.getInstance();
-  const cryptocompare = await cc.getMarketData(coinAggregatorIDs.cryptoCompare, 'USD');
-  const coingecko = await cg.getExchangeRates(coinAggregatorIDs.coingecko, 'usd');
-  const livecoinwatch = await lcw.getExchangeRates(coinAggregatorIDs.livecoinwatch, 'USD');
+  const ccPromise = cc.getMarketData(coinAggregatorIDs.cryptoCompare, 'USD');
+  const cgPromise = cg.getExchangeRates(coinAggregatorIDs.coingecko, 'usd');
+  const lcwPromise = lcw.getExchangeRates(coinAggregatorIDs.livecoinwatch, 'USD');
+  const cryptocompare = await ccPromise;
+  const coingecko = await cgPromise;
+  const livecoinwatch = await lcwPromise;
 
   const markets: any[] = [];
   const cmk: Record<string, any> = {};
