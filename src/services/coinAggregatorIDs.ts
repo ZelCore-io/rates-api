@@ -1,9 +1,37 @@
+import axios from "axios";
 
+import * as log from '../lib/log';
+import config from '../../config';
 
+type CoinInfo = {
+  description: string;
+  total_supply: number | null;
+  circulating_supply: number | null;
+  websites: string[];
+  explorers: string[];
+  medium: string;
+  discord: string;
+  telegram: string;
+  bitcointalk: string;
+  facebook: string;
+  twitter: string;
+  reddit: string;
+  repository: string;
+  youtube: string;
+  instagram: string;
+  tiktok: string;
+  twitch: string;
+  linkedin: string;
+  cryptoCompareID: string;
+  coinMarketCapID: string;
+  coingeckoID: string;
+  auditInfos: string[];
+  whitepaper: string[];
+};
 /**
  * @const { cryptoCompare:String[], coingecko:String[] } dictionary with Cryptocompare and Congecko IDS
  */
-const coinAggregatorIDs = {
+export const coinAggregatorIDs = {
   // Add the cryptoCompare ID at the end of this list
   cryptoCompare: [
     "CONI", "PAX", "SPHTX", "GVT", "INS", "MDA", "QSP", "SNGLS", "TNB", "WABI", "DGD", "TENT", "BBO", "ICN", "MCO", "EDO", "WINGS", "DTA", "ADT", "ATL", 
@@ -49,6 +77,16 @@ const coinAggregatorIDs = {
   livecoinwatch: ['KDL'],
 };
 
-export {
-  coinAggregatorIDs,
-};
+export async function getLatestCoinInfo() {
+  try {
+    const coinInfo: Record<string, CoinInfo> = (await axios.get(config.zelCoinInfoUrl)).data;
+    const coinGeckoKeys = Object.values(coinInfo).map((coin) => coin.coingeckoID).filter((id) => !!id);
+    const uniqueCoinGeckoKeys = [...new Set(coinGeckoKeys)];
+    // console.log(uniqueCoinGeckoKeys.filter((id) => !coinAggregatorIDs.coingecko.includes(id)));
+    // console.log(coinAggregatorIDs.coingecko.filter((id) => !uniqueCoinGeckoKeys.includes(id)));
+    coinAggregatorIDs.coingecko = [...new Set([...coinAggregatorIDs.coingecko, ...uniqueCoinGeckoKeys])];
+  } catch (error) {
+    log.error('Error fetching coin info');
+    log.error(error);
+  } 
+}
