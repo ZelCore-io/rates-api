@@ -1,3 +1,5 @@
+import { LiveCoinWatch } from "../src/services/providers/livecoinwatch";
+
 export const config = {
   server: {
     port: 3333,
@@ -7,6 +9,7 @@ export const config = {
   coinGeckoUrl: 'https://pro-api.coingecko.com/api/v3/',
   bitPayUrl: 'https://bitpay.com/',
   cryptoCompareUrl: 'https://min-api.cryptocompare.com/',
+  liveCoinWatchUrl: 'https://api.livecoinwatch.com/',
 };
 
 export default config;
