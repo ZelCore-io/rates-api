@@ -54,18 +54,24 @@ export async function getAll(): Promise<any[]> {
     log.error(e);
     errors.errors.coingecko = coingecko;
   }
-
-  Object.values(livecoinwatch).forEach((coin: any) => {
-    cmk[coin.code] = {
-      rank: coin.rank,
-      total_supply: coin.totalSupply,
-      supply: coin.circulatingSupply,
-      volume: coin.volume,
-      change: coin.delta.day ? (1 - coin.delta.day) * 100 : 0,
-      change7d: coin.delta.week ? (1 - coin.delta.week) * 100 : 0,
-      market: coin.cap ? coin.cap : coin.circulatingSupply * coin.rate,
-    };
-  });
+  
+  try {
+    Object.values(livecoinwatch).forEach((coin: any) => {
+      cmk[coin.code] = {
+        rank: coin.rank,
+        total_supply: coin.totalSupply,
+        supply: coin.circulatingSupply,
+        volume: coin.volume,
+        change: coin.delta.day ? (1 - coin.delta.day) * 100 : 0,
+        change7d: coin.delta.week ? (1 - coin.delta.week) * 100 : 0,
+        market: coin.cap ? coin.cap : coin.circulatingSupply * coin.rate,
+      };
+    });
+  } catch (e) {
+    log.error('livecoinwatch error');
+    log.error(e);
+    errors.errors.livecoinwatch = livecoinwatch;
+  }
 
   // Some wrapped assets and flux
   cmk.ONG = cmk.ONGAS;
