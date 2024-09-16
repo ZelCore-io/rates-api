@@ -61,7 +61,7 @@ export const coinAggregatorIDs = {
     'storm-token', 'dentacoin', 'funfair', 'kin', 'aurora', 'theta-token', 'mainframe', 'aragon', 'aeron', 'augur', 'quark-chain', 'anon', 'stasis-eurs', 'mercurial', 'aleph', 'ontology', 'gas', 'tron', 'digibyte', 'stellar', 'dogecoin', 'eos',
     'cardano', 'ripple', 'neo', 'bittorrent-old', 'groestlcoin', 'leo-token', 'enq-enecuum', 'fantom', 'aergo', 'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin',
     'pancakeswap-token', 'matic-network', 'staked-ether', 'amp-token', 'cosmos', 'tezos', 'shiba-inu', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 'saito', 'greentrust', 'mithril', 'tierion', 'delysium', 'adex', 'aion', 'ethos-3', 'ethlend',
-    'pnetwork', 'wax', 'bitcoin-cash-sv', 'bread', 'loom-network-new', 'amber', 'sin-city', 'qtum', 'nem', 'ong', 'iota', 'x-cash', 'oxbitcoin', 'dragonchain', 'binance-bitcoin'])],
+    'wax', 'bread', 'loom-network-new', 'ong', 'iota', 'oxbitcoin', 'dragonchain', 'binance-bitcoin'])],
   // livecoinwatch api
   livecoinwatch: ['KDL'],
 };
