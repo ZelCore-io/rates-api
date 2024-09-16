@@ -45,11 +45,11 @@ export const coinAggregatorIDs = {
   coingecko: [... new Set([
     'solfarm', 'cope', 'bonfida', 'maps', 'media-network', 'oxygen', 'raydium', 'step-finance', 'rope-token', 'presearch', 'kyber-network', 'kyber-network-crystal', 'solana',
     'serum', 'gatechain-token', 'snowgem', 'zclassic', '1inch', 'hotbit-token', 'binance-usd', 'huobi-pool-token', 'huobi-token', 'zb-token', 'mx-token', 'bitforex',
-    'okb', 'veriblock', 'dmme-app', 'suqa', 'holotoken', 'half-life', 'axe', 'safe-coin-2', 'bzedge', 'commercium', 'bitcoin-zero', 'zelcash', 'kadena',
+    'okb', 'veriblock', 'suqa', 'holotoken', 'axe', 'safe-coin-2', 'bzedge', 'commercium', 'zelcash', 'kadena',
     'whale', 'alpha-finance', 'polkadot', 'kusama', 'nxm', 'just-stablecoin', 'sun-token', 'chiliz', 'gnosis', 'cybervein', 'husd', 'ocean-protocol', 'quant-network',
     'hedgetrade', 'terrausd', 'reserve-rights-token', 'ampleforth', 'swissborg', 'renbtc', 'uma', 'crypto-com-chain', 'celsius-degree-token', 'sushi', 'the-graph', 'ftx-token',
     'yearn-finance', 'havven', 'aave', 'revain', 'xdai-stake', 'dai', 'nexo', 'true-usd', 'thorchain', 'bitcoin-bep2', 'maidsafecoin', 'bakerytoken', 'safemoon', 'huplife',
-    'raptoreum', 'axie-infinity', 'vertcoin', 'lido-staked-ether', 'amp', 'telcoin', 'harmony', 'waves', 'perpetual-protocol', 'audius', 'curve-dao-token', 'the-sandbox',
+    'raptoreum', 'axie-infinity', 'vertcoin', 'telcoin', 'harmony', 'waves', 'perpetual-protocol', 'audius', 'curve-dao-token', 'the-sandbox',
     'fetch-ai', 'golem', 'neutrino', 'skale', 'numeraire', 'livepeer', 'my-neighbor-alice', 'fei-protocol', 'origin-protocol', 'injective-protocol', 'singularitynet',
     'pax-gold', 'band-protocol', 'storm', 'reef-finance', 'cartesi', 'nkn', 'quick', 'woo-network', 'polycat-finance', 'stratis', 'energy-web-token',
     'prometeus', 'coti', 'orchid-protocol', 'tomochain', 'orbs', 'ultra', 'badger-dao', 'pha', 'smooth-love-potion', 'mass-vehicle-ledger', 'nucypher', 'dodo', 'xyo-network', 'utrust',
@@ -70,7 +70,7 @@ export const coinAggregatorIDs = {
     'aleph', 'ontology', 'gas', 'tron', 'digibyte', 'stellar', 'dogecoin', 'eos', 'cardano', 'ripple', 'dock', 'neo', 'bittorrent-old', 'safe-coin-2', 'groestlcoin', 'leo-token', 'enq-enecuum', 'fantom', 'aergo', 
     'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin', 'pancakeswap-token', 'matic-network', 'veriblock', 'staked-ether', 
     'amp-token', 'telcoin', 'harmony', 'avalanche-2', 'cosmos', 'axie-infinity', 'tezos', 'bitcoin-bep2', 'shiba-inu', 'yearn-finance', 'havven', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 
-    'saito', 'planetwatch', 'xfinite-entertainment-token', 'opulous', 'floki-inu', 'greentrust', 'gifto', 'mithril', 'tierion', 'delysium', 'adex', 'aion', 'ethos-3', 'ethlend', 'pnetwork',
+    'saito', 'planetwatch', 'xfinite-entertainment-token', 'opulous', 'greentrust', 'gifto', 'mithril', 'tierion', 'delysium', 'adex', 'aion', 'ethos-3', 'ethlend', 'pnetwork',
     'wax', 'bitcoin-cash-sv', 'bread', 'loom-network', 'loom-network-new', 'amber', 'sin-city', 'qtum', 'nem', 'ong', 'iota', 'x-cash', 'oxbitcoin', 'dragonchain', 'binance-bitcoin',
   ])],
   // livecoinwatch api
