@@ -2,6 +2,7 @@ import axios from "axios";
 
 import * as log from '../lib/log';
 import config from '../../config';
+import cgCoins from '../../config/allCoins.json';
 
 type CoinInfo = {
   description: string;
@@ -64,6 +65,15 @@ export const coinAggregatorIDs = {
     'wax', 'bread', 'loom-network-new', 'ong', 'iota', 'oxbitcoin', 'dragonchain', 'binance-bitcoin'])],
   // livecoinwatch api
   livecoinwatch: ['KDL'],
+
+  // CoinGecko Coins list
+  cgCoins,
+};
+
+export const zelData: {
+  coinInfo: Record<string, CoinInfo>,
+} = {
+  coinInfo: {},
 };
 
 export async function getLatestCoinInfo() {
@@ -71,9 +81,8 @@ export async function getLatestCoinInfo() {
     const coinInfo: Record<string, CoinInfo> = (await axios.get(config.zelCoinInfoUrl)).data;
     const coinGeckoKeys = Object.values(coinInfo).map((coin) => coin.coingeckoID).filter((id) => !!id);
     const uniqueCoinGeckoKeys = [...new Set(coinGeckoKeys)];
-    // console.log(uniqueCoinGeckoKeys.filter((id) => !coinAggregatorIDs.coingecko.includes(id)));
-    // console.log(coinAggregatorIDs.coingecko.filter((id) => !uniqueCoinGeckoKeys.includes(id)));
     coinAggregatorIDs.coingecko = [...new Set([...coinAggregatorIDs.coingecko, ...uniqueCoinGeckoKeys])];
+    zelData.coinInfo = coinInfo;
   } catch (error) {
     log.error('Error fetching coin info');
     log.error(error);
