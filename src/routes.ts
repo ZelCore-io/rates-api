@@ -13,12 +13,15 @@ export default (app: Application): void => {
     apiService.getRates(req, res);
   });
 
-  // Uncomment if needed
-  // app.get('/markets', cache('30 seconds'), (req: Request, res: Response) => {
-  //   apiService.getMarkets(req, res);
-  // });
-
   app.get('/marketsusd', cache('30 seconds'), (req: Request, res: Response) => {
     apiService.getMarketsUsd(req, res);
+  });
+
+  app.get('/v2/rates', cache('30 seconds'), (req: Request, res: Response) => {
+    apiService.getRatesV2(req, res);
+  });
+
+  app.get('/v2/rates-compressed', cache('30 seconds'), (req: Request, res: Response) => {
+    apiService.getRatesV2Compressed(req, res);
   });
 };
