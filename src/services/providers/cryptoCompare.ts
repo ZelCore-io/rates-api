@@ -2,6 +2,7 @@ import AxiosWrapper from "../../lib/axios";
 import config from "../../../config";
 import { makeRequestStrings } from "../../lib/utils";
 import { LRUCache as LRU } from 'lru-cache';
+import { CryptoCompareMarkets, CryptoComparePrice } from "../../types";
 
 const MAX_LENGTH_PER_REQUEST = 300;
 
@@ -39,9 +40,9 @@ export class CryptoCompare {
     });
   }
 
-  private async _getExchangeRates(ids: string, vsCurrency = 'BTC'): Promise<any> {
+  private async _getExchangeRates(ids: string, vsCurrency = 'BTC'): Promise<CryptoComparePrice> {
     const cacheKey = `exchangeRates_${ids}_${vsCurrency}`;
-    const cachedData = this.cache.get(cacheKey);
+    const cachedData = this.cache.get(cacheKey) as CryptoComparePrice;
 
     if (cachedData) {
       return cachedData;
@@ -52,7 +53,7 @@ export class CryptoCompare {
       fsyms: ids,
     });
 
-    const data = response.data;
+    const data: CryptoComparePrice = response.data;
 
     // Store in cache
     this.cache.set(cacheKey, data);
@@ -60,9 +61,9 @@ export class CryptoCompare {
     return data;
   }
 
-  public async getExchangeRates(ids: string[], vsCurrency = 'BTC'): Promise<any> {
+  public async getExchangeRates(ids: string[], vsCurrency = 'BTC'): Promise<CryptoComparePrice> {
     const newIds = makeRequestStrings(ids, MAX_LENGTH_PER_REQUEST);
-    let allRates = {};
+    let allRates: CryptoComparePrice = {};
 
     for (const id of newIds) {
       const response = await this._getExchangeRates(id, vsCurrency);
@@ -73,9 +74,9 @@ export class CryptoCompare {
   }
 
   // Caching market data
-  private async _getMarketData(ids: string, vsCurrency = 'BTC'): Promise<any> {
+  private async _getMarketData(ids: string, vsCurrency = 'BTC'): Promise<CryptoCompareMarkets> {
     const cacheKey = `marketData_${ids}_${vsCurrency}`;
-    const cachedData = this.cache.get(cacheKey);
+    const cachedData = this.cache.get(cacheKey) as CryptoCompareMarkets;
 
     if (cachedData) {
       return cachedData;
@@ -86,16 +87,16 @@ export class CryptoCompare {
       fsyms: ids,
     });
 
-    const data = response.data.RAW;
+    const data: CryptoCompareMarkets = response.data.RAW;
 
     this.cache.set(cacheKey, data);
 
     return data;
   }
 
-  public async getMarketData(ids: string[], vsCurrency = 'BTC'): Promise<any> {
+  public async getMarketData(ids: string[], vsCurrency = 'BTC'): Promise<CryptoCompareMarkets> {
     const newIds = makeRequestStrings(ids, MAX_LENGTH_PER_REQUEST);
-    let allData = {};
+    let allData: CryptoCompareMarkets = {};
 
     for (const id of newIds) {
       const response = await this._getMarketData(id, vsCurrency);
