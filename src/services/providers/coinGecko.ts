@@ -2,6 +2,7 @@ import AxiosWrapper from "../../lib/axios";
 import config from "../../../config";
 import { arraySplit } from "../../lib/utils";
 import { LRUCache as LRU } from 'lru-cache';
+import { CoinGeckoPrice } from "../../types";
 
 const MAX_IDS_PER_REQUEST = 250;
 
@@ -87,7 +88,7 @@ export class CoinGecko {
     }
   }
 
-  private async _getExchangeRates(ids: string, vsCurrency = 'btc'): Promise<any> {
+  private async _getExchangeRates(ids: string, vsCurrency = 'btc'): Promise<CoinGeckoPrice[]> {
     const cacheKey = `exchangeRates_${ids}_${vsCurrency}`;
     const cachedData = this.cache.get(cacheKey);
 
@@ -112,15 +113,15 @@ export class CoinGecko {
     return data;
   }
 
-  public async getExchangeRates(ids: string[], vsCurrency = 'btc'): Promise<any> {
+  public async getExchangeRates(ids: string[], vsCurrency = 'btc'): Promise<CoinGeckoPrice[]> {
     const newIds = arraySplit([...new Set(ids)], MAX_IDS_PER_REQUEST).map((id) => id.join(','));
-    const allRates: any[] = [];
+    const allRates: CoinGeckoPrice[] = [];
 
     for (const id of newIds) {
       const response = await this._getExchangeRates(id, vsCurrency);
-      allRates.push(response);
+      allRates.push(...response);
     }
 
-    return allRates.reduce((acc, val) => acc.concat(val), []);
+    return allRates;
   }
 }
