@@ -2,6 +2,7 @@ import AxiosWrapper from "../../lib/axios";
 import config from "../../../config";
 import { makeRequestStrings } from "../../lib/utils";
 import { LRUCache as LRU } from 'lru-cache';
+import { LiveCoinWatchMarket } from "../../types";
 
 const MAX_LENGTH_PER_REQUEST = 300;
 
@@ -39,9 +40,9 @@ export class LiveCoinWatch {
     });
   }
 
-  private async _getExchangeRates(ids: string, vsCurrency = 'BTC'): Promise<any> {
+  private async _getExchangeRates(ids: string, vsCurrency = 'BTC'): Promise<LiveCoinWatchMarket[]> {
     const cacheKey = `exchangeRates_${ids}_${vsCurrency}`;
-    const cachedData = this.cache.get(cacheKey);
+    const cachedData = this.cache.get(cacheKey) as LiveCoinWatchMarket[];
 
     if (cachedData) {
       return cachedData;
@@ -58,20 +59,20 @@ export class LiveCoinWatch {
     };
 
     const response = await this.post('coins/map', data);
-    const responseData = response.data;
+    const responseData: LiveCoinWatchMarket[] = response.data;
 
     this.cache.set(cacheKey, responseData);
 
     return responseData;
   }
 
-  public async getExchangeRates(ids: string[], vsCurrency = 'BTC'): Promise<any> {
+  public async getExchangeRates(ids: string[], vsCurrency = 'BTC'): Promise<LiveCoinWatchMarket[]> {
     const newIds = makeRequestStrings(ids, MAX_LENGTH_PER_REQUEST);
-    let allRates = {};
+    let allRates: LiveCoinWatchMarket[] = [];
     
     for (const id of newIds) {
       const response = await this._getExchangeRates(id, vsCurrency);
-      allRates = { ...allRates, ...response };
+      allRates = [ ...allRates, ...response ];
     }
 
     return allRates;

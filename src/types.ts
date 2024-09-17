@@ -117,3 +117,52 @@ export type CryptoCompareMarkets = {
     }
   };
 };
+
+export type LiveCoinWatchMarket = {
+  name: string;
+  rank: number;
+  age: number;
+  color: string;
+  png32: string;
+  png64: string;
+  webp32: string;
+  webp64: string;
+  exchanges: number;
+  markets: number;
+  pairs: number;
+  categories: string[];
+  allTimeHighUSD: number;
+  circulatingSupply: number | null;
+  totalSupply: number;
+  maxSupply: number | null;
+  links: {
+    website: string | null;
+    whitepaper: string | null;
+    twitter: string | null;
+    reddit: string | null;
+    telegram: string | null;
+    discord: string | null;
+    medium: string | null;
+    instagram: string | null;
+    tiktok: string | null;
+    youtube: string | null;
+    linkedin: string | null;
+    twitch: string | null;
+    spotify: string | null;
+    naver: string | null;
+    wechat: string | null;
+    soundcloud: string | null;
+  };
+  code: string;
+  rate: number | null;
+  volume: number | null;
+  cap: number | null;
+  delta: {
+    hour: number | null;
+    day: number | null;
+    week: number | null;
+    month: number | null;
+    quarter: number | null;
+    year: number | null;
+  };
+};
