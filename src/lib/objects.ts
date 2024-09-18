@@ -1,12 +1,28 @@
 export function mergeDeep(target: any, source: any) {
-  if (source && typeof source === 'object') {
-    Object.keys(source).forEach((key) => {
-      if (source[key] && typeof source[key] === 'object') {
-        if (!target[key]) target[key] = {}; // Ensure the target key exists
-        mergeDeep(target[key], source[key]); // Recurse into deeper objects
+  if (Array.isArray(source)) {
+    if (!Array.isArray(target)) {
+      target = [];
+    }
+    source.forEach((item, index) => {
+      if (typeof item === 'object') {
+        target[index] = mergeDeep(target[index], item);
       } else {
-        target[key] = source[key]; // Directly set the value if it's not an object
+        target[index] = item;
       }
     });
+  } else if (source && typeof source === 'object') {
+    if (!target || typeof target !== 'object' || Array.isArray(target)) {
+      target = {};
+    }
+    Object.keys(source).forEach((key) => {
+      if (typeof source[key] === 'object') {
+        target[key] = mergeDeep(target[key], source[key]);
+      } else {
+        target[key] = source[key];
+      }
+    });
+  } else {
+    target = source;
   }
+  return target;
 }
