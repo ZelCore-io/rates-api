@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import zlib from 'zlib';
 import * as log from '../lib/log';
+import { mergeDeep } from '../lib/objects';
 import zelcoreRates from './zelcoreRates';
 import zelcoreMarketsUSD from './zelcoreMarketsUSD';
 import zelcoreRatesV2 from './zelcoreRatesV2';
@@ -84,7 +85,8 @@ export async function serviceRefresher(): Promise<void> {
     
     if (ratesFetched && ratesFetched[0]?.length > 20 && ratesFetched[1]) {
       if (Object.keys(ratesFetched[1]).length > 300) {
-        rates = ratesFetched;
+        rates = mergeDeep(rates, ratesFetched);
+        rates[2] = ratesFetched[2]; // replace errors
       }
     }
     
@@ -92,13 +94,15 @@ export async function serviceRefresher(): Promise<void> {
       log.info(Object.keys(marketsUSDFetched[0]));
       log.info(Object.keys(marketsUSDFetched[0]).length);
       if (Object.keys(marketsUSDFetched[0]).length > 300) {
-        marketsUSD = marketsUSDFetched;
+        marketsUSD = mergeDeep(marketsUSD, marketsUSDFetched);
+        marketsUSD[1] = marketsUSDFetched[1]; // replace errors
       }
     }
 
     if (ratesV2Fetched && ratesV2Fetched.fiat.length > 20 && ratesV2Fetched.crypto.length > 300) {
-      ratesV2.crypto = ratesV2Fetched.crypto;
-      ratesV2.fiat = ratesV2Fetched.fiat;
+      ratesV2.fiat = mergeDeep(ratesV2.fiat, ratesV2Fetched.fiat);
+      ratesV2.crypto = mergeDeep(ratesV2.crypto, ratesV2Fetched.crypto);
+      ratesV2.errors = ratesV2Fetched.errors;
     }
 
     log.info('Refreshment finished');
