@@ -21,6 +21,7 @@ export type FiatPrice = {
 export type PricesResponse = {
   crypto: CryptoPrice[];
   fiat: FiatPrice[];
+  errors?: Record<string, any>;
 };
 
 
