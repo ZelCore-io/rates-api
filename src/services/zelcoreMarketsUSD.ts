@@ -5,22 +5,13 @@ import { CoinGecko, CryptoCompare, LiveCoinWatch } from './providers';
 
 export async function getAll(): Promise<any[]> {
 
-  const cc = CryptoCompare.getInstance();
-  const cg = CoinGecko.getInstance();
-  const lcw = LiveCoinWatch.getInstance();
-  const ccPromise = cc.getMarketData(coinAggregatorIDs.cryptoCompare, 'USD');
-  const cgPromise = cg.getExchangeRates(coinAggregatorIDs.coingecko, 'usd');
-  const lcwPromise = lcw.getExchangeRates(coinAggregatorIDs.livecoinwatch, 'USD');
-  const cryptocompare = await ccPromise;
-  const coingecko = await cgPromise;
-  const livecoinwatch = await lcwPromise;
-
   const markets: any[] = [];
   const cmk: Record<string, any> = {};
   const errors: { errors: Record<string, any> } = { errors: {} };
 
   // full results from cryptocompare
   try {
+    const cryptocompare = await CryptoCompare.getInstance().getMarketData(coinAggregatorIDs.cryptoCompare, 'USD');
     const coinsCC = Object.keys(cryptocompare);
     coinsCC.forEach((coin) => {
       cmk[coin] = {
@@ -33,11 +24,13 @@ export async function getAll(): Promise<any[]> {
   } catch (e) {
     log.error('cryptocompare error');
     log.error(e);
-    errors.errors.coinsFull = cryptocompare;
+    errors.errors.cryptocompare = true;
   }
 
   // full results from coingecko
   try {
+    const coingecko = await CoinGecko.getInstance().getExchangeRates(coinAggregatorIDs.coingecko, 'usd');
+
     coingecko.forEach((coin: any) => {
       cmk[coin.symbol.toUpperCase()] = {
         rank: coin.market_cap_rank,
@@ -52,10 +45,12 @@ export async function getAll(): Promise<any[]> {
   } catch (e) {
     log.error('coingecko error');
     log.error(e);
-    errors.errors.coingecko = coingecko;
+    errors.errors.coingecko = true;
   }
   
   try {
+    const livecoinwatch = await LiveCoinWatch.getInstance().getExchangeRates(coinAggregatorIDs.livecoinwatch, 'USD');
+
     Object.values(livecoinwatch).forEach((coin: any) => {
       cmk[coin.code] = {
         rank: coin.rank,
@@ -70,7 +65,7 @@ export async function getAll(): Promise<any[]> {
   } catch (e) {
     log.error('livecoinwatch error');
     log.error(e);
-    errors.errors.livecoinwatch = livecoinwatch;
+    errors.errors.livecoinwatch = true;
   }
 
   // Some wrapped assets and flux
