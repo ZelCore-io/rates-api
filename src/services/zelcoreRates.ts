@@ -4,18 +4,6 @@ import { CoinGecko, CryptoCompare, BitPay, LiveCoinWatch } from './providers';
 
 
 export async function getAll(): Promise<any[]> {
-  const cc = CryptoCompare.getInstance();
-  const cg = CoinGecko.getInstance();
-  const bp = BitPay.getInstance();
-  const lcw = LiveCoinWatch.getInstance();
-  const ccPromise = cc.getExchangeRates(coinAggregatorIDs.cryptoCompare);
-  const cgPromise = cg.getExchangeRates(coinAggregatorIDs.coingecko);
-  const lcwPromise = lcw.getExchangeRates(coinAggregatorIDs.livecoinwatch);
-  const bpPromise = bp.getFiatRates();
-  const bitpay = await bpPromise;
-  const cryptocompare = await ccPromise;
-  const coingecko = await cgPromise;
-  const livecoinwatch = await lcwPromise;
 
   const rates: any[] = [];
   const efg: Record<string, any> = {};
@@ -24,28 +12,35 @@ export async function getAll(): Promise<any[]> {
 
   // results from bitpay (fiat rates)
   try {
-    const dummyTest = bitpay[1].code;
-    if (!dummyTest) {
+    const bitpay = await BitPay.getInstance().getFiatRates();
+
+    if (!bitpay[1].code) {
       throw new Error('Bitpay does not work correctly');
     }
     bitpayData = bitpay;
   } catch (e) {
-    errors.errors.bitPayData = bitpay;
+    log.error('bitpay error');
+    log.error(e);
+    errors.errors.bitpay = true;
   }
 
   // results from coingecko (prices)
   try {
+    const coingecko = await CoinGecko.getInstance().getExchangeRates(coinAggregatorIDs.coingecko);
+
     coingecko.forEach((value: any) => {
       efg[value.symbol.toUpperCase()] = value.current_price;
     });
   } catch (e) {
     log.error('coingecko error');
     log.error(e);
-    errors.errors.coinsCG = coingecko;
+    errors.errors.coingecko = true;
   }
 
   // results from cryptocompare (prices)
   try {
+    const cryptocompare = await CryptoCompare.getInstance().getExchangeRates(coinAggregatorIDs.cryptoCompare);;
+
     const coinsCC = Object.keys(cryptocompare);
     coinsCC.forEach((coin) => {
       efg[coin] = cryptocompare[coin].BTC;
@@ -53,12 +48,20 @@ export async function getAll(): Promise<any[]> {
   } catch (e) {
     log.error('cryptocompare error');
     log.error(e);
-    errors.errors.coinsCC = cryptocompare;
+    errors.errors.cryptocompare = true;
   }
 
-  Object.values(livecoinwatch).forEach((coin: any) => {
-    efg[coin.code] = coin.rate;
-  });
+  try {
+    const livecoinwatch = await LiveCoinWatch.getInstance().getExchangeRates(coinAggregatorIDs.livecoinwatch);
+
+    Object.values(livecoinwatch).forEach((coin: any) => {
+      efg[coin.code] = coin.rate;
+    });
+  } catch (e) {
+    log.error('livecoinwatch error');
+    log.error(e);
+    errors.errors.livecoinwatch = true;
+  }
 
   // assets with zero value or no usable API
   efg.TESTZEL = 0;
