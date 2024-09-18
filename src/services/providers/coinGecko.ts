@@ -1,5 +1,6 @@
 import AxiosWrapper from "../../lib/axios";
 import config from "../../../config";
+import * as log from "../../lib/log";
 import { arraySplit } from "../../lib/utils";
 import { LRUCache as LRU } from 'lru-cache';
 import { CoinGeckoPrice } from "../../types";
@@ -64,6 +65,8 @@ export class CoinGecko {
 
       return data;
     } catch (error) {
+      log.error('Error getting key usage from CoinGecko');
+      log.error(error);
       return null;
     }
   }
@@ -84,6 +87,8 @@ export class CoinGecko {
 
       return data;
     } catch (error) {
+      log.error('Error getting coins list from CoinGecko');
+      log.error(error);
       return null;
     }
   }
