@@ -2,7 +2,6 @@ import { coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
 import { CoinGecko, CryptoCompare, LiveCoinWatch } from './providers';
 
-
 export async function getAll(): Promise<any[]> {
 
   const markets: any[] = [];
@@ -32,15 +31,17 @@ export async function getAll(): Promise<any[]> {
     const coingecko = await CoinGecko.getInstance().getExchangeRates(coinAggregatorIDs.coingecko, 'usd');
 
     coingecko.forEach((coin: any) => {
-      cmk[coin.symbol.toUpperCase()] = {
-        rank: coin.market_cap_rank,
-        total_supply: coin.total_supply,
-        supply: coin.circulating_supply,
-        volume: coin.total_volume,
-        change: coin.price_change_percentage_24h,
-        change7d: coin.price_change_percentage_7d_in_currency,
-        market: coin.market_cap,
-      };
+      if (!cmk[coin.symbol.toUpperCase()]) {
+        cmk[coin.symbol.toUpperCase()] = {
+          rank: coin.market_cap_rank,
+          total_supply: coin.total_supply,
+          supply: coin.circulating_supply,
+          volume: coin.total_volume,
+          change: coin.price_change_percentage_24h,
+          change7d: coin.price_change_percentage_7d_in_currency,
+          market: coin.market_cap,
+        };
+      }
     });
   } catch (e) {
     log.error('coingecko error');
