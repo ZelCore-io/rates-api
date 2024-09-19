@@ -93,6 +93,28 @@ export class CoinGecko {
     }
   }
 
+  public async getAssetPlatformData(): Promise<any | null> {
+    const cacheKey = 'assetPlatformData';
+    const cachedData = this.cache.get(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
+    }
+
+    try {
+      const response = await this.get('asset_platforms');
+      const data = response.data;
+
+      this.cache.set(cacheKey, data);
+
+      return data;
+    } catch (error) {
+      log.error('Error getting asset platform data from CoinGecko');
+      log.error(error);
+      return null;
+    }
+  }
+
   private async _getExchangeRates(ids: string, vsCurrency = 'btc'): Promise<CoinGeckoPrice[]> {
     const cacheKey = `exchangeRates_${ids}_${vsCurrency}`;
     const cachedData = this.cache.get(cacheKey);
