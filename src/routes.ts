@@ -1,10 +1,20 @@
 import apicache from 'apicache';
+import expressPrometheusMiddleware from 'express-prometheus-middleware';
 import { Request, Response, Application } from 'express';
 import apiService from './services/apiServices';
 
 const cache = apicache.middleware;
 
 export default (app: Application): void => {
+  // Add the Prometheus middleware
+  app.use(
+    expressPrometheusMiddleware({
+      metricsPath: '/metrics',
+      collectDefaultMetrics: true,
+      requestDurationBuckets: [0.1, 0.5, 1, 1.5],
+    })
+  );
+
   app.get('/', (req: Request, res: Response) => {
     res.redirect('/rates');
   });
