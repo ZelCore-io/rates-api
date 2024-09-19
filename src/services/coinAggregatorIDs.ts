@@ -3,6 +3,7 @@ import axios from 'axios';
 import * as log from '../lib/log';
 import config from '../../config';
 import cgCoins from '../../config/allCoins.json';
+import { CoinGecko } from './providers';
 
 type CoinInfo = {
   description: string;
@@ -85,6 +86,10 @@ export async function getLatestCoinInfo() {
     const uniqueCoinGeckoKeys = [...new Set(coinGeckoKeys)];
     coinAggregatorIDs.coingecko = [...new Set([...coinAggregatorIDs.coingecko, ...uniqueCoinGeckoKeys])];
     zelData.coinInfo = coinInfo;
+    const cgCoins = await CoinGecko.getInstance().getCoinsList();
+    if (cgCoins) {
+      coinAggregatorIDs.cgCoins = cgCoins;
+    }
   } catch (error) {
     log.error('Error fetching coin info');
     log.error(error);
