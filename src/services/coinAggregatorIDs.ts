@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 import * as log from '../lib/log';
 import config from '../../config';
@@ -35,12 +35,13 @@ type CoinInfo = {
 export const coinAggregatorIDs = {
   // Add the cryptoCompare ID at the end of this list
   cryptoCompare: [
-    "CONI", "PAX", "SPHTX", "GVT", "INS", "MDA", "QSP", "SNGLS", "TNB", "WABI", "DGD", "TENT", "BBO", "ICN", "MCO", "EDO", "WINGS", "DTA", "ADT", "ATL", 
-    "BCPT", "BTH", "USDS", "VIDT", "VBK", "UST", "GTO", "ONGAS", "MIOTA", "TOK", 'SAFE',
+    'CONI', 'PAX', 'SPHTX', 'GVT', 'INS', 'MDA', 'QSP', 'SNGLS', 'TNB', 'WABI', 'DGD', 'TENT', 'BBO', 'ICN', 'MCO', 'EDO', 'WINGS', 'DTA', 'ADT', 'ATL', 
+    'BCPT', 'BTH', 'USDS', 'VIDT', 'VBK', 'UST', 'GTO', 'ONGAS', 'MIOTA', 'TOK',
+    'GNT', 'AGI', 'ETHOS', 'BSV', 'AMB', 'SIN', 'QTUM', 'XEM', 'XCASH',  // This are not actually used in zelcore or some tickers just for testing untill merge
   ],
   /**
    * CoinGecko API ID
-   * Found under the "Info" column, and part of the URL, e.g. https://www.coingecko.com/en/coins/[API-ID]
+   * Found under the 'Info' column, and part of the URL, e.g. https://www.coingecko.com/en/coins/[API-ID]
    * Add to the end of the list
    */
   coingecko: [... new Set([
@@ -62,6 +63,7 @@ export const coinAggregatorIDs = {
     'storm-token', 'dentacoin', 'funfair', 'kin', 'aurora', 'theta-token', 'mainframe', 'aragon', 'aeron', 'augur', 'quark-chain', 'anon', 'stasis-eurs', 'mercurial', 'aleph', 'ontology', 'gas', 'tron', 'digibyte', 'stellar', 'dogecoin', 'eos',
     'cardano', 'ripple', 'neo', 'bittorrent-old', 'groestlcoin', 'leo-token', 'enq-enecuum', 'fantom', 'aergo', 'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin',
     'pancakeswap-token', 'matic-network', 'staked-ether', 'amp-token', 'cosmos', 'tezos', 'shiba-inu', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 'saito', 'mithril', 'tierion', 'adex', 'aion', 'ethlend',
+    'frax', 'smooth-love-potion', // This are not actually used in zelcore or some tickers just for testing untill merge
     'wax', 'bread', 'loom-network-new', 'ong', 'iota', 'oxbitcoin', 'dragonchain', 'binance-bitcoin'])],
   // livecoinwatch api
   livecoinwatch: ['KDL'],
