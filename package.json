@@ -4,7 +4,7 @@
   "description": "A service that supplies market info for Zelcore assets and conversions to other currencies",
   "main": "index.ts",
   "scripts": {
-    "start": "nodemon index.ts",
+    "start": "npx nodemon index.ts",
     "test": "jest",
     "lint": "eslint ./ --fix"
   },
