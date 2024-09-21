@@ -24,6 +24,19 @@ export type PricesResponse = {
   errors?: Record<string, any>;
 };
 
+export type ContractWithType = {
+  address: string;
+  type: string;
+};
+
+export type CoinGeckoToken = {
+  id: string;
+  symbol: string;
+  name: string;
+  platforms: Record<string, string>;
+};
+
+export type FoundContractStore = Record<string, { zel: ContractWithType, cg: CoinGeckoToken, count: number }>;
 
 export type CoinGeckoPrice = {
   id: string;
