@@ -1,12 +1,13 @@
 import { coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
 import { CoinGecko, CryptoCompare, LiveCoinWatch } from './providers';
+import { MarketsData, IErrorObject, CoinGeckoPrice, LiveCoinWatchMarket, CurrencyMap } from '../types';
 
-export async function getAll(): Promise<any[]> {
+export async function getAll(): Promise<MarketsData> {
 
-  const markets: any[] = [];
-  const cmk: Record<string, any> = {};
-  const errors: { errors: Record<string, any> } = { errors: {} };
+  const markets: MarketsData = [{}, { errors: {} }];
+  const cmk: CurrencyMap = {};
+  const errors: IErrorObject = { errors: {} };
 
   // full results from cryptocompare
   try {
@@ -30,7 +31,7 @@ export async function getAll(): Promise<any[]> {
   try {
     const coingecko = await CoinGecko.getInstance().getExchangeRates(coinAggregatorIDs.coingecko, 'usd');
 
-    coingecko.forEach((coin: any) => {
+    coingecko.forEach((coin: CoinGeckoPrice) => {
       if (!cmk[coin.symbol.toUpperCase()]) {
         cmk[coin.symbol.toUpperCase()] = {
           rank: coin.market_cap_rank,
@@ -52,15 +53,18 @@ export async function getAll(): Promise<any[]> {
   try {
     const livecoinwatch = await LiveCoinWatch.getInstance().getExchangeRates(coinAggregatorIDs.livecoinwatch, 'USD');
 
-    Object.values(livecoinwatch).forEach((coin: any) => {
+    Object.values(livecoinwatch).forEach((coin: LiveCoinWatchMarket) => {
+      const supply = coin.circulatingSupply || 0;
+      const rate = coin.rate || 0;
+      const volume = coin.volume || 0;
       cmk[coin.code] = {
         rank: coin.rank,
         total_supply: coin.totalSupply,
-        supply: coin.circulatingSupply,
-        volume: coin.volume,
+        supply,
+        volume,
         change: coin.delta.day ? (1 - coin.delta.day) * 100 : 0,
         change7d: coin.delta.week ? (1 - coin.delta.week) * 100 : 0,
-        market: coin.cap ? coin.cap : coin.circulatingSupply * coin.rate,
+        market: coin.cap ? coin.cap : supply * rate,
       };
     });
   } catch (e) {
