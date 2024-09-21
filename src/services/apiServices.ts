@@ -7,10 +7,10 @@ import zelcoreMarketsUSD from './zelcoreMarketsUSD';
 import zelcoreRatesV2 from './zelcoreRatesV2';
 import { getLatestCoinInfo } from './coinAggregatorIDs';
 import { checkContracts, foundContracts } from './newContracts';
-import { PricesResponse, FoundContractStore } from '../types';
+import { PricesResponse, FoundContractStore, MarketsData, RatesData } from '../types';
 
-let rates: any[] = [[], {}, {}]; // btc to fiat, alts to fiat, errors
-let marketsUSD: any[] = [];
+let rates: RatesData = [[], {}, { errors: {} }]; // btc to fiat, alts to fiat, errors
+let marketsUSD: MarketsData = [{}, { errors: {} }]; // btc to usd, alts to usd, errors
 
 const ratesV2: PricesResponse = {} as PricesResponse;
 
