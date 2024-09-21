@@ -6,7 +6,8 @@ import zelcoreRates from './zelcoreRates';
 import zelcoreMarketsUSD from './zelcoreMarketsUSD';
 import zelcoreRatesV2 from './zelcoreRatesV2';
 import { getLatestCoinInfo } from './coinAggregatorIDs';
-import { PricesResponse } from '../types';
+import { checkContracts, foundContracts } from './newContracts';
+import { PricesResponse, FoundContractStore } from '../types';
 
 let rates: any[] = [[], {}, {}]; // btc to fiat, alts to fiat, errors
 let marketsUSD: any[] = [];
@@ -48,6 +49,19 @@ export function getData() {
 export async function getMarketsUsd(req: Request, res: Response): Promise<void> {
   try {
     res.json(marketsUSD);
+  } catch (error) {
+    log.error(error);
+  }
+}
+
+export function getFoundContracts(): FoundContractStore {
+  return foundContracts;
+}
+export async function checkContractsV2(req: Request, res: Response): Promise<void> {
+  try {
+    const contracts = req.body.contracts;
+    const success = checkContracts(contracts);
+    res.json({ success });
   } catch (error) {
     log.error(error);
   }
@@ -123,4 +137,6 @@ export default {
   getData,
   getRatesV2,
   getRatesV2Compressed,
+  getFoundContracts,
+  checkContractsV2,
 };
