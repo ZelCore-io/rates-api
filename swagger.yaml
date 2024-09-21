@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: Rates API
+  description: API documentation for the Rates API.
+  version: 3.0.0
+
+paths:
+  /:
+    get:
+      summary: Redirect to /rates
+      description: Redirects the root path to the /rates endpoint.
+      responses:
+        '302':
+          description: Redirection to /rates.
+
+  /rates:
+    get:
+      summary: Get exchange rates
+      description: Retrieves exchange rates.
+      responses:
+        '200':
+          description: A list of exchange rates.
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /marketsusd:
+    get:
+      summary: Get market data in USD
+      description: Retrieves market data in USD.
+      responses:
+        '200':
+          description: A list of market data in USD.
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v2/rates:
+    get:
+      summary: Get exchange rates (v2)
+      description: Retrieves version 2 of the exchange rates.
+      responses:
+        '200':
+          description: A list of exchange rates (v2).
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v2/rates-compressed:
+    get:
+      summary: Get compressed exchange rates (v2)
+      description: Retrieves a compressed version of the exchange rates (v2).
+      responses:
+        '200':
+          description: Compressed exchange rates (v2).
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v2/found-contracts:
+    get:
+      summary: Get found contracts
+      description: Retrieves a list of found contracts.
+      responses:
+        '200':
+          description: A list of found contracts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /v2/check-contracts:
+    post:
+      summary: Check and update contracts
+      description: Checks contracts and updates the store.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Contracts checked and store updated.
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /metrics:
+    get:
+      summary: Get metrics data
+      description: Provides metrics data using Prometheus middleware.
+      responses:
+        '200':
+          description: Prometheus metrics data.
