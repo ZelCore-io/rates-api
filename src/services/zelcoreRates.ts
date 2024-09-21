@@ -1,13 +1,13 @@
 import { coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
 import { CoinGecko, CryptoCompare, BitPay, LiveCoinWatch } from './providers';
+import { ICurrencyRate, RatesData, CodeRates, CoinGeckoPrice, LiveCoinWatchMarket } from '../types';
 
+export async function getAll(): Promise<RatesData> {
 
-export async function getAll(): Promise<any[]> {
-
-  const rates: any[] = [];
-  const efg: Record<string, any> = {};
-  let bitpayData: any[] = [{ code: 'USD', rate: 22000 }];
+  const rates: RatesData = [[], {}, { errors: {} }];
+  const efg: CodeRates = {};
+  let bitpayData: ICurrencyRate[] = [{ code: 'USD', name: 'US Dollar', rate: 22000 }];
   const errors: { errors: Record<string, any> } = { errors: {} };
 
   // results from bitpay (fiat rates)
@@ -28,7 +28,7 @@ export async function getAll(): Promise<any[]> {
   try {
     const coingecko = await CoinGecko.getInstance().getExchangeRates(coinAggregatorIDs.coingecko);
 
-    coingecko.forEach((value: any) => {
+    coingecko.forEach((value: CoinGeckoPrice) => {
       efg[value.symbol.toUpperCase()] = value.current_price;
     });
   } catch (e) {
@@ -54,7 +54,7 @@ export async function getAll(): Promise<any[]> {
   try {
     const livecoinwatch = await LiveCoinWatch.getInstance().getExchangeRates(coinAggregatorIDs.livecoinwatch);
 
-    Object.values(livecoinwatch).forEach((coin: any) => {
+    Object.values(livecoinwatch).forEach((coin: LiveCoinWatchMarket) => {
       efg[coin.code] = coin.rate;
     });
   } catch (e) {
@@ -99,16 +99,16 @@ export async function getAll(): Promise<any[]> {
   efg.TESTWND = 0;
   efg.TESTBTC = 0;
   efg.TESTETH = 0;
-  efg.MSRM = efg.SRM * 1000000;
+  efg.MSRM = (efg.SRM || 0) * 1000000;
   efg.WSOL = efg.SOL;
   efg.WETH = efg.ETH;
   efg.WMATIC = efg.MATIC;
   efg.kFRAX = efg.FRAX;
   efg.GLINK = efg.TENT;
-  efg.BABE = efg.KDA / 4.2;
-  efg.KDX = efg.KDA / 28;
-  efg.SKDX = efg.KDA / 28;
-  efg.MOK = efg.KDA / 125;
+  efg.BABE = (efg.KDA || 0) / 4.2;
+  efg.KDX = (efg.KDA || 0) / 28;
+  efg.SKDX = (efg.KDA || 0) / 28;
+  efg.MOK = (efg.KDA || 0) / 125;
   efg.zUSD = efg.USDC;
   efg.TUSDOLD = efg.TUSD;
   efg['USDC.E'] = efg.USDC;
