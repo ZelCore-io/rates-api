@@ -4,6 +4,7 @@ import * as log from '../lib/log';
 import config from '../../config';
 import cgCoins from '../../config/allCoins.json';
 import { CoinGecko } from './providers';
+import { CoinGeckoToken } from '../types';
 
 type CoinInfo = {
   description: string;
@@ -68,9 +69,6 @@ export const coinAggregatorIDs = {
     'wax', 'bread', 'loom-network-new', 'ong', 'iota', 'oxbitcoin', 'dragonchain', 'binance-bitcoin'])],
   // livecoinwatch api
   livecoinwatch: ['KDL'],
-
-  // CoinGecko Coins list
-  cgCoins,
 };
 
 export const zelData: {
@@ -78,6 +76,9 @@ export const zelData: {
 } = {
   coinInfo: {},
 };
+
+export let cgTokens: CoinGeckoToken[] = cgCoins;
+export const cgContractMap: Record<string, CoinGeckoToken>= {}; 
 
 export async function getLatestCoinInfo() {
   try {
@@ -88,7 +89,14 @@ export async function getLatestCoinInfo() {
     zelData.coinInfo = coinInfo;
     const cgCoins = await CoinGecko.getInstance().getCoinsList();
     if (cgCoins) {
-      coinAggregatorIDs.cgCoins = cgCoins;
+      cgTokens = cgCoins as CoinGeckoToken[];
+      cgCoins.forEach((coin: CoinGeckoToken) => {
+        for (const _contract of Object.values(coin.platforms)) {
+          if (_contract) {
+            cgContractMap[_contract] = coin;
+          }
+        }
+      });  
     }
   } catch (error) {
     log.error('Error fetching coin info');
