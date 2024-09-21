@@ -1,11 +1,11 @@
 import { coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
 import { CoinGecko, BitPay, CryptoCompare, LiveCoinWatch } from './providers';
-import { PricesResponse, CryptoPrice } from '../types';
+import { PricesResponse, CryptoPrice, ICurrencyRate } from '../types';
 
 export async function getAll(): Promise<PricesResponse> {
   const processed: CryptoPrice[] = [];
-  const fiat: any[] = [];
+  const fiat: ICurrencyRate[] = [];
   const errors: Record<string, any> = {};
   
   try {
