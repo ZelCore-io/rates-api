@@ -1,3 +1,22 @@
+/**
+ * Deeply merges two objects or arrays.
+ *
+ * This function takes a target and a source and recursively merges properties.
+ * - For arrays, it merges each item recursively.
+ * - For objects, it merges each key recursively.
+ *
+ * @param target - The target object or array to merge into.
+ * @param source - The source object or array to merge from.
+ * @returns The merged object or array.
+ *
+ * @example
+ * ```typescript
+ * const obj1 = { a: 1, b: { c: 2 } };
+ * const obj2 = { b: { d: 3 }, e: 4 };
+ * const result = mergeDeep(obj1, obj2);
+ * // result: { a: 1, b: { c: 2, d: 3 }, e: 4 }
+ * ```
+ */
 export function mergeDeep(target: any, source: any) {
   if (Array.isArray(source)) {
     if (!Array.isArray(target)) {
