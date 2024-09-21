@@ -29,6 +29,32 @@ export type ContractWithType = {
   type: string;
 };
 
+export type CoinInfo = {
+  description: string;
+  total_supply: number | null;
+  circulating_supply: number | null;
+  websites: string[];
+  explorers: string[];
+  medium: string;
+  discord: string;
+  telegram: string;
+  bitcointalk: string;
+  facebook: string;
+  twitter: string;
+  reddit: string;
+  repository: string;
+  youtube: string;
+  instagram: string;
+  tiktok: string;
+  twitch: string;
+  linkedin: string;
+  cryptoCompareID: string;
+  coinMarketCapID: string;
+  coingeckoID: string;
+  auditInfos: string[];
+  whitepaper: string[];
+};
+
 export type CoinGeckoToken = {
   id: string;
   symbol: string;
