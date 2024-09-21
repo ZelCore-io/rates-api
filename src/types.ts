@@ -38,6 +38,34 @@ export type CoinGeckoToken = {
 
 export type FoundContractStore = Record<string, { zel: ContractWithType, cg: CoinGeckoToken, count: number }>;
 
+export interface ICurrencyRate {
+  code: string;
+  name: string;
+  rate: number;
+}
+
+export type CodeRates = { [code: string]: number | null };
+
+export interface IErrorObject {
+  errors: { [key: string]: any };
+}
+
+export type RatesData = [ICurrencyRate[], CodeRates, IErrorObject];
+
+export interface ICurrencyData {
+  supply: number;
+  volume: number;
+  change: number;
+  market: number;
+  rank?: number;
+  total_supply?: number;
+  change7d?: number;
+}
+
+export type CurrencyMap = { [code: string]: ICurrencyData };
+
+export type MarketsData = [CurrencyMap, IErrorObject];
+
 export type CoinGeckoPrice = {
   id: string;
   symbol: string;
