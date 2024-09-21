@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[src/types.ts:84](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/types.ts#L84)
+[src/types.ts:84](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/types.ts#L84)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[src/types.ts:88](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/types.ts#L88)
+[src/types.ts:88](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/types.ts#L88)
 
 ***
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[src/types.ts:85](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/types.ts#L85)
+[src/types.ts:85](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/types.ts#L85)
 
 ***
 
@@ -44,7 +44,7 @@
 
 #### Defined in
 
-[src/types.ts:86](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/types.ts#L86)
+[src/types.ts:86](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/types.ts#L86)
 
 ***
 
@@ -54,7 +54,7 @@
 
 #### Defined in
 
-[src/types.ts:82](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/types.ts#L82)
+[src/types.ts:82](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/types.ts#L82)
 
 ***
 
@@ -64,7 +64,7 @@
 
 #### Defined in
 
-[src/types.ts:87](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/types.ts#L87)
+[src/types.ts:87](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/types.ts#L87)
 
 ***
 
@@ -74,4 +74,4 @@
 
 #### Defined in
 
-[src/types.ts:83](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/types.ts#L83)
+[src/types.ts:83](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/types.ts#L83)

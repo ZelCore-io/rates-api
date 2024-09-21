@@ -45,7 +45,7 @@ If an instance already exists.
 
 #### Defined in
 
-[src/services/providers/liveCoinWatch.ts:69](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/liveCoinWatch.ts#L69)
+[src/services/providers/liveCoinWatch.ts:69](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/liveCoinWatch.ts#L69)
 
 ## Methods
 
@@ -83,7 +83,7 @@ console.log('Exchange Rates:', rates);
 
 #### Defined in
 
-[src/services/providers/liveCoinWatch.ts:164](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/liveCoinWatch.ts#L164)
+[src/services/providers/liveCoinWatch.ts:164](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/liveCoinWatch.ts#L164)
 
 ***
 
@@ -107,4 +107,4 @@ const liveCoinWatch = LiveCoinWatch.getInstance();
 
 #### Defined in
 
-[src/services/providers/liveCoinWatch.ts:92](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/liveCoinWatch.ts#L92)
+[src/services/providers/liveCoinWatch.ts:92](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/liveCoinWatch.ts#L92)

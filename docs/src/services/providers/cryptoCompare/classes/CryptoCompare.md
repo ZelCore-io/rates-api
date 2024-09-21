@@ -45,7 +45,7 @@ If an instance already exists.
 
 #### Defined in
 
-[src/services/providers/cryptoCompare.ts:69](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/cryptoCompare.ts#L69)
+[src/services/providers/cryptoCompare.ts:69](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/cryptoCompare.ts#L69)
 
 ## Methods
 
@@ -83,7 +83,7 @@ console.log('Exchange Rates:', rates);
 
 #### Defined in
 
-[src/services/providers/cryptoCompare.ts:163](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/cryptoCompare.ts#L163)
+[src/services/providers/cryptoCompare.ts:163](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/cryptoCompare.ts#L163)
 
 ***
 
@@ -121,7 +121,7 @@ console.log('Market Data:', marketData);
 
 #### Defined in
 
-[src/services/providers/cryptoCompare.ts:226](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/cryptoCompare.ts#L226)
+[src/services/providers/cryptoCompare.ts:226](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/cryptoCompare.ts#L226)
 
 ***
 
@@ -145,4 +145,4 @@ const cryptoCompare = CryptoCompare.getInstance();
 
 #### Defined in
 
-[src/services/providers/cryptoCompare.ts:92](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/cryptoCompare.ts#L92)
+[src/services/providers/cryptoCompare.ts:92](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/cryptoCompare.ts#L92)

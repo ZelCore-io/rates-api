@@ -63,7 +63,7 @@ const apiClient = new AxiosWrapper('https://api.example.com', 5, 10000);
 
 #### Defined in
 
-[src/lib/axios.ts:43](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/lib/axios.ts#L43)
+[src/lib/axios.ts:43](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/lib/axios.ts#L43)
 
 ## Methods
 
@@ -99,7 +99,7 @@ apiClient.delete('/users/123')
 
 #### Defined in
 
-[src/lib/axios.ts:171](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/lib/axios.ts#L171)
+[src/lib/axios.ts:171](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/lib/axios.ts#L171)
 
 ***
 
@@ -135,7 +135,7 @@ apiClient.get('/users')
 
 #### Defined in
 
-[src/lib/axios.ts:115](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/lib/axios.ts#L115)
+[src/lib/axios.ts:115](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/lib/axios.ts#L115)
 
 ***
 
@@ -175,7 +175,7 @@ apiClient.post('/users', { name: 'John Doe' })
 
 #### Defined in
 
-[src/lib/axios.ts:134](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/lib/axios.ts#L134)
+[src/lib/axios.ts:134](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/lib/axios.ts#L134)
 
 ***
 
@@ -215,4 +215,4 @@ apiClient.put('/users/123', { name: 'Jane Doe' })
 
 #### Defined in
 
-[src/lib/axios.ts:153](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/lib/axios.ts#L153)
+[src/lib/axios.ts:153](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/lib/axios.ts#L153)

@@ -26,4 +26,4 @@ dataRefresher();
 
 ## Defined in
 
-[src/services/apiServices.ts:195](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/apiServices.ts#L195)
+[src/services/apiServices.ts:195](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/apiServices.ts#L195)

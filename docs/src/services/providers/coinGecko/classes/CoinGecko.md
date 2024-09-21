@@ -45,7 +45,7 @@ If an instance already exists.
 
 #### Defined in
 
-[src/services/providers/coinGecko.ts:81](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/coinGecko.ts#L81)
+[src/services/providers/coinGecko.ts:81](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/coinGecko.ts#L81)
 
 ## Methods
 
@@ -71,7 +71,7 @@ console.log('Asset Platforms:', assetPlatforms);
 
 #### Defined in
 
-[src/services/providers/coinGecko.ts:207](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/coinGecko.ts#L207)
+[src/services/providers/coinGecko.ts:207](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/coinGecko.ts#L207)
 
 ***
 
@@ -103,7 +103,7 @@ console.log('Coins List:', coinsList);
 
 #### Defined in
 
-[src/services/providers/coinGecko.ts:173](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/coinGecko.ts#L173)
+[src/services/providers/coinGecko.ts:173](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/coinGecko.ts#L173)
 
 ***
 
@@ -141,7 +141,7 @@ console.log('Exchange Rates:', rates);
 
 #### Defined in
 
-[src/services/providers/coinGecko.ts:278](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/coinGecko.ts#L278)
+[src/services/providers/coinGecko.ts:278](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/coinGecko.ts#L278)
 
 ***
 
@@ -170,7 +170,7 @@ console.log('API Key Usage:', usage);
 
 #### Defined in
 
-[src/services/providers/coinGecko.ts:138](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/coinGecko.ts#L138)
+[src/services/providers/coinGecko.ts:138](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/coinGecko.ts#L138)
 
 ***
 
@@ -194,4 +194,4 @@ const coinGecko = CoinGecko.getInstance();
 
 #### Defined in
 
-[src/services/providers/coinGecko.ts:104](https://github.com/ZelCore-io/rates-api/blob/6685e3f3773638f4d641af3eec276ce5ce2b0d4c/src/services/providers/coinGecko.ts#L104)
+[src/services/providers/coinGecko.ts:104](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/coinGecko.ts#L104)
