@@ -4,49 +4,31 @@ import * as log from '../lib/log';
 import config from '../../config';
 import cgCoins from '../../config/allCoins.json';
 import { CoinGecko } from './providers';
-import { CoinGeckoToken } from '../types';
+import { CoinGeckoToken, CoinInfo } from '../types';
 
-type CoinInfo = {
-  description: string;
-  total_supply: number | null;
-  circulating_supply: number | null;
-  websites: string[];
-  explorers: string[];
-  medium: string;
-  discord: string;
-  telegram: string;
-  bitcointalk: string;
-  facebook: string;
-  twitter: string;
-  reddit: string;
-  repository: string;
-  youtube: string;
-  instagram: string;
-  tiktok: string;
-  twitch: string;
-  linkedin: string;
-  cryptoCompareID: string;
-  coinMarketCapID: string;
-  coingeckoID: string;
-  auditInfos: string[];
-  whitepaper: string[];
-};
 /**
- * @const { cryptoCompare:String[], coingecko:String[] } dictionary with Cryptocompare and Congecko IDS
+ * An object containing arrays of cryptocurrency IDs used by different data aggregators.
+ *
+ * @const
  */
 export const coinAggregatorIDs = {
-  // Add the cryptoCompare ID at the end of this list
+  /**
+   * CryptoCompare API IDs.
+   *
+   * Add the CryptoCompare IDs at the end of this list.
+   */
   cryptoCompare: [
     'CONI', 'PAX', 'SPHTX', 'GVT', 'INS', 'MDA', 'QSP', 'SNGLS', 'TNB', 'WABI', 'DGD', 'TENT', 'BBO', 'ICN', 'MCO', 'EDO', 'WINGS', 'DTA', 'ADT', 'ATL', 
     'BCPT', 'BTH', 'USDS', 'VIDT', 'VBK', 'UST', 'GTO', 'ONGAS', 'MIOTA', 'TOK',
-    'GNT', 'AGI', 'ETHOS', 'BSV', 'AMB', 'SIN', 'QTUM', 'XEM', 'XCASH',  // This are not actually used in zelcore or some tickers just for testing untill merge
+    'GNT', 'AGI', 'ETHOS', 'BSV', 'AMB', 'SIN', 'QTUM', 'XEM', 'XCASH',  // These are not actually used in ZelCore or some tickers; just for testing until merge
   ],
   /**
-   * CoinGecko API ID
-   * Found under the 'Info' column, and part of the URL, e.g. https://www.coingecko.com/en/coins/[API-ID]
-   * Add to the end of the list
+   * CoinGecko API IDs.
+   *
+   * Found under the 'Info' column and part of the URL, e.g., https://www.coingecko.com/en/coins/[API-ID].
+   * Add to the end of the list.
    */
-  coingecko: [... new Set([
+  coingecko: [...new Set([
     'solfarm', 'cope', 'bonfida', 'maps', 'media-network', 'oxygen', 'raydium', 'step-finance', 'rope-token', 'presearch', 'kyber-network', 'kyber-network-crystal', 'solana', 'serum', 'gatechain-token', 'zclassic', '1inch',
     'binance-usd', 'huobi-token', 'mx-token', 'bitforex', 'okb', 'holotoken', 'axe', 'safe-coin-2', 'bzedge', 'zelcash', 'kadena', 'whale', 'alpha-finance', 'polkadot', 'kusama', 'nxm', 'just-stablecoin', 'sun-token', 'chiliz',
     'gnosis', 'cybervein', 'husd', 'ocean-protocol', 'quant-network', 'hedgetrade', 'terrausd', 'reserve-rights-token', 'ampleforth', 'swissborg', 'renbtc', 'uma', 'crypto-com-chain', 'celsius-degree-token', 'sushi', 'the-graph',
@@ -65,25 +47,54 @@ export const coinAggregatorIDs = {
     'storm-token', 'dentacoin', 'funfair', 'kin', 'aurora', 'theta-token', 'mainframe', 'aragon', 'aeron', 'augur', 'quark-chain', 'anon', 'stasis-eurs', 'mercurial', 'aleph', 'ontology', 'gas', 'tron', 'digibyte', 'stellar', 'dogecoin', 'eos',
     'cardano', 'ripple', 'neo', 'bittorrent-old', 'groestlcoin', 'leo-token', 'enq-enecuum', 'fantom', 'aergo', 'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin',
     'pancakeswap-token', 'matic-network', 'staked-ether', 'amp-token', 'cosmos', 'tezos', 'shiba-inu', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 'saito', 'mithril', 'tierion', 'adex', 'aion', 'ethlend',
-    'frax', 'smooth-love-potion', // This are not actually used in zelcore or some tickers just for testing untill merge
+    'frax', 'smooth-love-potion', // These are not actually used in ZelCore or some tickers; just for testing until merge
     'wax', 'bread', 'loom-network-new', 'ong', 'iota', 'oxbitcoin', 'dragonchain', 'binance-bitcoin'])],
-  // livecoinwatch api
+  /**
+   * LiveCoinWatch API IDs.
+   */
   livecoinwatch: ['KDL'],
 };
 
+/**
+ * Global object to store coin information.
+ */
 export const zelData: {
   coinInfo: Record<string, CoinInfo>,
 } = {
   coinInfo: {},
 };
 
+/**
+ * Array of CoinGecko tokens.
+ */
 export let cgTokens: CoinGeckoToken[] = cgCoins;
-export const cgContractMap: Record<string, CoinGeckoToken>= {}; 
 
-export async function getLatestCoinInfo() {
+/**
+ * Map of contract addresses to CoinGecko tokens.
+ */
+export const cgContractMap: Record<string, CoinGeckoToken> = {};
+
+/**
+ * Fetches the latest coin information and updates the global data.
+ *
+ * This function retrieves coin information from a specified URL, updates the CoinGecko IDs,
+ * and populates the contract map with CoinGecko tokens.
+ *
+ * @async
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ *
+ * @example
+ * ```typescript
+ * await getLatestCoinInfo();
+ * console.log(zelData.coinInfo);
+ * ```
+ */
+export async function getLatestCoinInfo(): Promise<void> {
   try {
     const coinInfo: Record<string, CoinInfo> = (await axios.get(config.zelCoinInfoUrl)).data;
-    const coinGeckoKeys = Object.values(coinInfo).map((coin) => coin.coingeckoID).filter((id) => !!id);
+    const coinGeckoKeys = Object.values(coinInfo)
+      .map((coin) => coin.coingeckoID)
+      .filter((id) => !!id);
     const uniqueCoinGeckoKeys = [...new Set(coinGeckoKeys)];
     coinAggregatorIDs.coingecko = [...new Set([...coinAggregatorIDs.coingecko, ...uniqueCoinGeckoKeys])];
     zelData.coinInfo = coinInfo;
@@ -96,10 +107,10 @@ export async function getLatestCoinInfo() {
             cgContractMap[_contract] = coin;
           }
         }
-      });  
+      });
     }
   } catch (error) {
     log.error('Error fetching coin info');
     log.error(error);
-  } 
+  }
 }
