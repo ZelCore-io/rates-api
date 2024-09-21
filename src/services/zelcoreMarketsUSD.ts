@@ -128,8 +128,8 @@ export async function getAll(): Promise<MarketsData> {
   };
   cmk['USDC.E'] = cmk.USDC;
 
-  markets.push(cmk);
-  markets.push(errors);
+  markets[0] = cmk;
+  markets[1] = errors;
 
   return markets;
 }

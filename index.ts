@@ -16,8 +16,8 @@ const { port } = config.server;
  */
 function startService(): void {
   const data = apiServices.getData();
-  console.log("startService -> data", !!data.rates[0][0], !!data.marketsUSD[0]);
-  if (data.rates[0][0] && data.marketsUSD[0]) {
+  console.log("startService -> data", !!data.rates[0][0], !!Object.keys(data.marketsUSD[0]).length);
+  if (data.rates[0][0] && Object.keys(data.marketsUSD[0]).length) {
     setTimeout(() => {
       server.listen(port, () => {
         log.info(`rates-api launched, listening on port ${port}!`);

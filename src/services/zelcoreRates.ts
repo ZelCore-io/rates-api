@@ -82,7 +82,7 @@ export async function getAll(): Promise<RatesData> {
   try {
     const livecoinwatch = await LiveCoinWatch.getInstance().getExchangeRates(coinAggregatorIDs.livecoinwatch);
 
-    livecoinwatch.forEach((coin: LiveCoinWatchMarket) => {
+    Object.values(livecoinwatch).forEach((coin: LiveCoinWatchMarket) => {
       efg[coin.code] = coin.rate;
     });
   } catch (e) {
@@ -127,7 +127,7 @@ export async function getAll(): Promise<RatesData> {
   efg.TESTWND = 0;
   efg.TESTBTC = 0;
   efg.TESTETH = 0;
-  efg.MSRM = (efg.SRM || 0) * 1_000_000;
+  efg.MSRM = (efg.SRM || 0) * 1000000;
   efg.WSOL = efg.SOL;
   efg.WETH = efg.ETH;
   efg.WMATIC = efg.MATIC;
@@ -141,9 +141,9 @@ export async function getAll(): Promise<RatesData> {
   efg.TUSDOLD = efg.TUSD;
   efg['USDC.E'] = efg.USDC;
 
-  rates.push(bitpayData);
-  rates.push(efg);
-  rates.push(errors);
+  rates[0] = bitpayData;
+  rates[1] = efg;
+  rates[2] = errors;
 
   return rates;
 }
