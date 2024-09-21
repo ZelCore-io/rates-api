@@ -3,13 +3,28 @@ import * as log from '../lib/log';
 import { CoinGecko, CryptoCompare, LiveCoinWatch } from './providers';
 import { MarketsData, IErrorObject, CoinGeckoPrice, LiveCoinWatchMarket, CurrencyMap } from '../types';
 
+/**
+ * Fetches market data from multiple providers and aggregates it.
+ *
+ * This function retrieves market data from CryptoCompare, CoinGecko, and LiveCoinWatch,
+ * processes it, and returns an aggregated `MarketsData` object.
+ *
+ * @async
+ * @returns {Promise<MarketsData>} The aggregated market data.
+ *
+ * @example
+ * ```typescript
+ * const marketData = await getAll();
+ * console.log(marketData);
+ * ```
+ */
 export async function getAll(): Promise<MarketsData> {
 
   const markets: MarketsData = [{}, { errors: {} }];
   const cmk: CurrencyMap = {};
   const errors: IErrorObject = { errors: {} };
 
-  // full results from cryptocompare
+  // Fetch results from CryptoCompare
   try {
     const cryptocompare = await CryptoCompare.getInstance().getMarketData(coinAggregatorIDs.cryptoCompare, 'USD');
     const coinsCC = Object.keys(cryptocompare);
@@ -22,12 +37,12 @@ export async function getAll(): Promise<MarketsData> {
       };
     });
   } catch (e) {
-    log.error('cryptocompare error');
+    log.error('CryptoCompare error');
     log.error(e);
     errors.errors.cryptocompare = true;
   }
 
-  // full results from coingecko
+  // Fetch results from CoinGecko
   try {
     const coingecko = await CoinGecko.getInstance().getExchangeRates(coinAggregatorIDs.coingecko, 'usd');
 
@@ -45,11 +60,12 @@ export async function getAll(): Promise<MarketsData> {
       }
     });
   } catch (e) {
-    log.error('coingecko error');
+    log.error('CoinGecko error');
     log.error(e);
     errors.errors.coingecko = true;
   }
   
+  // Fetch results from LiveCoinWatch
   try {
     const livecoinwatch = await LiveCoinWatch.getInstance().getExchangeRates(coinAggregatorIDs.livecoinwatch, 'USD');
 
@@ -68,12 +84,12 @@ export async function getAll(): Promise<MarketsData> {
       };
     });
   } catch (e) {
-    log.error('livecoinwatch error');
+    log.error('LiveCoinWatch error');
     log.error(e);
     errors.errors.livecoinwatch = true;
   }
 
-  // Some wrapped assets and flux
+  // Map wrapped assets and Flux tokens to their equivalents
   cmk.ONG = cmk.ONGAS;
   cmk.SAI = cmk.DAI;
   cmk.WBNB = cmk.BNB;
