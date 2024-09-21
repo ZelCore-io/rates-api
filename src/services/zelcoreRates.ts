@@ -1,30 +1,57 @@
 import { coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
 import { CoinGecko, CryptoCompare, BitPay, LiveCoinWatch } from './providers';
-import { ICurrencyRate, RatesData, CodeRates, CoinGeckoPrice, LiveCoinWatchMarket } from '../types';
+import {
+  ICurrencyRate,
+  RatesData,
+  CodeRates,
+  CoinGeckoPrice,
+  LiveCoinWatchMarket,
+} from '../types';
 
+/**
+ * Fetches exchange rates and price data from various providers and aggregates them.
+ *
+ * This function retrieves fiat rates from BitPay and cryptocurrency prices from CoinGecko,
+ * CryptoCompare, and LiveCoinWatch. It handles errors gracefully and returns an aggregated
+ * `RatesData` object containing the data and any errors that occurred.
+ *
+ * @async
+ * @returns {Promise<RatesData>} The aggregated rates data.
+ *
+ * @example
+ * ```typescript
+ * import { getAll } from './zelcoreRates';
+ *
+ * async function fetchRates() {
+ *   const rates = await getAll();
+ *   console.log('Rates Data:', rates);
+ * }
+ *
+ * fetchRates();
+ * ```
+ */
 export async function getAll(): Promise<RatesData> {
-
   const rates: RatesData = [[], {}, { errors: {} }];
   const efg: CodeRates = {};
   let bitpayData: ICurrencyRate[] = [{ code: 'USD', name: 'US Dollar', rate: 22000 }];
   const errors: { errors: Record<string, any> } = { errors: {} };
 
-  // results from bitpay (fiat rates)
+  // Fetch fiat rates from BitPay
   try {
     const bitpay = await BitPay.getInstance().getFiatRates();
 
-    if (!bitpay[1].code) {
-      throw new Error('Bitpay does not work correctly');
+    if (!bitpay[1]?.code) {
+      throw new Error('BitPay did not return expected data');
     }
     bitpayData = bitpay;
   } catch (e) {
-    log.error('bitpay error');
+    log.error('BitPay error');
     log.error(e);
     errors.errors.bitpay = true;
   }
 
-  // results from coingecko (prices)
+  // Fetch cryptocurrency prices from CoinGecko
   try {
     const coingecko = await CoinGecko.getInstance().getExchangeRates(coinAggregatorIDs.coingecko);
 
@@ -32,38 +59,39 @@ export async function getAll(): Promise<RatesData> {
       efg[value.symbol.toUpperCase()] = value.current_price;
     });
   } catch (e) {
-    log.error('coingecko error');
+    log.error('CoinGecko error');
     log.error(e);
     errors.errors.coingecko = true;
   }
 
-  // results from cryptocompare (prices)
+  // Fetch cryptocurrency prices from CryptoCompare
   try {
-    const cryptocompare = await CryptoCompare.getInstance().getExchangeRates(coinAggregatorIDs.cryptoCompare);;
+    const cryptocompare = await CryptoCompare.getInstance().getExchangeRates(coinAggregatorIDs.cryptoCompare);
 
     const coinsCC = Object.keys(cryptocompare);
     coinsCC.forEach((coin) => {
       efg[coin] = cryptocompare[coin].BTC;
     });
   } catch (e) {
-    log.error('cryptocompare error');
+    log.error('CryptoCompare error');
     log.error(e);
     errors.errors.cryptocompare = true;
   }
 
+  // Fetch cryptocurrency prices from LiveCoinWatch
   try {
     const livecoinwatch = await LiveCoinWatch.getInstance().getExchangeRates(coinAggregatorIDs.livecoinwatch);
 
-    Object.values(livecoinwatch).forEach((coin: LiveCoinWatchMarket) => {
+    livecoinwatch.forEach((coin: LiveCoinWatchMarket) => {
       efg[coin.code] = coin.rate;
     });
   } catch (e) {
-    log.error('livecoinwatch error');
+    log.error('LiveCoinWatch error');
     log.error(e);
     errors.errors.livecoinwatch = true;
   }
 
-  // assets with zero value or no usable API
+  // Handle assets with zero value or no usable API
   efg.TESTZEL = 0;
   efg.DIBI = 0;
   efg.POR = 0;
@@ -99,7 +127,7 @@ export async function getAll(): Promise<RatesData> {
   efg.TESTWND = 0;
   efg.TESTBTC = 0;
   efg.TESTETH = 0;
-  efg.MSRM = (efg.SRM || 0) * 1000000;
+  efg.MSRM = (efg.SRM || 0) * 1_000_000;
   efg.WSOL = efg.SOL;
   efg.WETH = efg.ETH;
   efg.WMATIC = efg.MATIC;
