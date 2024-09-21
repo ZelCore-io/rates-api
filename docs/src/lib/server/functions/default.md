@@ -59,7 +59,7 @@ app.listen(port, () => {
 
 ### Defined in
 
-[src/lib/server.ts:32](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/lib/server.ts#L32)
+[src/lib/server.ts:32](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/server.ts#L32)
 
 ## default(req, res, next)
 
@@ -97,4 +97,4 @@ app.listen(port, () => {
 
 ### Defined in
 
-[src/lib/server.ts:32](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/lib/server.ts#L32)
+[src/lib/server.ts:32](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/server.ts#L32)

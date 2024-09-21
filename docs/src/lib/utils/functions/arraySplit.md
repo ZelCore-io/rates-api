@@ -36,4 +36,4 @@ const chunks = arraySplit(array, 2);
 
 ## Defined in
 
-[src/lib/utils.ts:15](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/lib/utils.ts#L15)
+[src/lib/utils.ts:15](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/utils.ts#L15)

@@ -43,4 +43,4 @@ fetchRates();
 
 ## Defined in
 
-[src/services/zelcoreRates.ts:151](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/zelcoreRates.ts#L151)
+[src/services/zelcoreRates.ts:151](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/zelcoreRates.ts#L151)

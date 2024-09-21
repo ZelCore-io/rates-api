@@ -41,4 +41,4 @@ const result = mergeDeep(obj1, obj2);
 
 ## Defined in
 
-[src/lib/objects.ts:20](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/lib/objects.ts#L20)
+[src/lib/objects.ts:20](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/objects.ts#L20)

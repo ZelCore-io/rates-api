@@ -50,3 +50,5 @@ LIVE_COIN_WATCH_KEY='YOUR_LIVECOINWATCH_API_KEY'  # LiveCoinWatch API key (place
 NODE_ENV=development            # Node environment (can be 'development', 'production', or 'test')
 BASE_URL=http://localhost:3333  # Base URL for the local development server
 ```
+
+# Swagger docs at /docs

@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[src/types.ts:68](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/types.ts#L68)
+[src/types.ts:68](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/types.ts#L68)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[src/types.ts:69](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/types.ts#L69)
+[src/types.ts:69](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/types.ts#L69)
 
 ***
 
@@ -34,4 +34,4 @@
 
 #### Defined in
 
-[src/types.ts:70](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/types.ts#L70)
+[src/types.ts:70](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/types.ts#L70)

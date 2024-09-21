@@ -45,7 +45,7 @@ If an instance already exists.
 
 #### Defined in
 
-[src/services/providers/bitpay.ts:58](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/bitpay.ts#L58)
+[src/services/providers/bitpay.ts:58](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/providers/bitpay.ts#L58)
 
 ## Methods
 
@@ -74,7 +74,7 @@ console.log(rates);
 
 #### Defined in
 
-[src/services/providers/bitpay.ts:115](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/bitpay.ts#L115)
+[src/services/providers/bitpay.ts:115](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/providers/bitpay.ts#L115)
 
 ***
 
@@ -98,4 +98,4 @@ const bitPay = BitPay.getInstance();
 
 #### Defined in
 
-[src/services/providers/bitpay.ts:81](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/providers/bitpay.ts#L81)
+[src/services/providers/bitpay.ts:81](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/providers/bitpay.ts#L81)

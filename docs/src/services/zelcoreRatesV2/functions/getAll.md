@@ -37,4 +37,4 @@ fetchPrices();
 
 ## Defined in
 
-[src/services/zelcoreRatesV2.ts:28](https://github.com/ZelCore-io/rates-api/blob/691ee3db71a277710156f53a41c1ecb57cce5d58/src/services/zelcoreRatesV2.ts#L28)
+[src/services/zelcoreRatesV2.ts:28](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/zelcoreRatesV2.ts#L28)
