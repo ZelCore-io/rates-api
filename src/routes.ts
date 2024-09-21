@@ -1,6 +1,6 @@
 import apicache from 'apicache';
 import expressPrometheusMiddleware from 'express-prometheus-middleware';
-import { Request, Response, Application } from 'express';
+import express, { Request, Response, Application } from 'express';
 import apiService from './services/apiServices';
 
 const cache = apicache.middleware;
@@ -33,5 +33,14 @@ export default (app: Application): void => {
 
   app.get('/v2/rates-compressed', cache('30 seconds'), (req: Request, res: Response) => {
     apiService.getRatesV2Compressed(req, res);
+  });
+
+  app.get('/v2/found-contracts', cache('30 seconds'), (req: Request, res: Response) => {
+    res.json(apiService.getFoundContracts());
+  });
+
+  app.use(express.json({ limit: '50kb' }));
+  app.post('/v2/check-contracts', (req: Request, res: Response) => {
+    apiService.checkContractsV2(req, res);
   });
 };
