@@ -155,6 +155,7 @@ async function getAll() {
   efg['FLUX-ERGO'] = efg.FLUX;
   efg['FLUX-ALGO'] = efg.FLUX;
   efg['FLUX-MATIC'] = efg.FLUX;
+  efg['FLUX-POL'] = efg.FLUX;
   efg['FLUX-BASE'] = efg.FLUX;
   efg['AVAX-C'] = efg.AVAX;
   efg['AVAX-P'] = efg.AVAX;
@@ -166,6 +167,8 @@ async function getAll() {
   efg.WSOL = efg.SOL;
   efg.WETH = efg.ETH;
   efg.WMATIC = efg.MATIC;
+  efg.WPOL = efg.MATIC;
+  efg.POL = efg.MATIC;
   efg.kFRAX = efg.FRAX;
   efg.GLINK = efg.TENT;
   efg.BABE = efg.KDA / 4.2;
