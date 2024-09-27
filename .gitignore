@@ -15,6 +15,7 @@ yarn.lock
 *.ntvs*
 *.njsproj
 *.sln
+.env
 
 dist/electron/*
 dist/web/*

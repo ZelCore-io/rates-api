@@ -1,3 +1,7 @@
+**rates-api v3.0.0** • [**Docs**](modules.md)
+
+***
+
 # zelcore-rates-api
 
 A Service that supplies rates and market conversion for ZelCore assets to other currencies

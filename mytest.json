@@ -1,0 +1,1385 @@
+[
+  [
+      {
+          "code": "BTC",
+          "name": "Bitcoin",
+          "rate": 1
+      },
+      {
+          "code": "BCH",
+          "name": "Bitcoin Cash",
+          "rate": 172.09
+      },
+      {
+          "code": "USD",
+          "name": "US Dollar",
+          "rate": 57518.51
+      },
+      {
+          "code": "EUR",
+          "name": "Eurozone Euro",
+          "rate": 52230.42
+      },
+      {
+          "code": "GBP",
+          "name": "Pound Sterling",
+          "rate": 44075.34
+      },
+      {
+          "code": "JPY",
+          "name": "Japanese Yen",
+          "rate": 8195079.92
+      },
+      {
+          "code": "CAD",
+          "name": "Canadian Dollar",
+          "rate": 78082.41
+      },
+      {
+          "code": "AUD",
+          "name": "Australian Dollar",
+          "rate": 86074.03
+      },
+      {
+          "code": "CNY",
+          "name": "Chinese Yuan",
+          "rate": 409577.77
+      },
+      {
+          "code": "CHF",
+          "name": "Swiss Franc",
+          "rate": 49111.54
+      },
+      {
+          "code": "SEK",
+          "name": "Swedish Krona",
+          "rate": 596051.61
+      },
+      {
+          "code": "NZD",
+          "name": "New Zealand Dollar",
+          "rate": 93732.56
+      },
+      {
+          "code": "KRW",
+          "name": "South Korean Won",
+          "rate": 77202916.75
+      },
+      {
+          "code": "ETH",
+          "name": "Ether",
+          "rate": 24.49
+      },
+      {
+          "code": "MATIC_e",
+          "name": "Matic",
+          "rate": 151803.92
+      },
+      {
+          "code": "MATIC",
+          "name": "Matic",
+          "rate": 151803.92
+      },
+      {
+          "code": "ETH_m",
+          "name": "Ether",
+          "rate": 24.49
+      },
+      {
+          "code": "ETH_arb",
+          "name": "Ether",
+          "rate": 24.49
+      },
+      {
+          "code": "ETH_op",
+          "name": "Ether",
+          "rate": 24.49
+      },
+      {
+          "code": "ETH_base",
+          "name": "Ether",
+          "rate": 24.49
+      },
+      {
+          "code": "LTC",
+          "name": "Litecoin",
+          "rate": 930.72
+      },
+      {
+          "code": "XRP",
+          "name": "Ripple",
+          "rate": 107036.17
+      },
+      {
+          "code": "AED",
+          "name": "UAE Dirham",
+          "rate": 211261.73
+      },
+      {
+          "code": "AFN",
+          "name": "Afghan Afghani",
+          "rate": 4009380.37
+      },
+      {
+          "code": "ALL",
+          "name": "Albanian Lek",
+          "rate": 5193767.94
+      },
+      {
+          "code": "AMD",
+          "name": "Armenian Dram",
+          "rate": 22283623.01
+      },
+      {
+          "code": "ANG",
+          "name": "Netherlands Antillean Guilder",
+          "rate": 103687.92
+      },
+      {
+          "code": "AOA",
+          "name": "Angolan Kwanza",
+          "rate": 53336909.69
+      },
+      {
+          "code": "APE",
+          "name": "ApeCoin",
+          "rate": 76691.34
+      },
+      {
+          "code": "ARS",
+          "name": "Argentine Peso",
+          "rate": 55089084
+      },
+      {
+          "code": "AWG",
+          "name": "Aruban Florin",
+          "rate": 103677.11
+      },
+      {
+          "code": "AZN",
+          "name": "Azerbaijani Manat",
+          "rate": 97781.46
+      },
+      {
+          "code": "BAM",
+          "name": "Bosnia-Herzegovina Convertible Mark",
+          "rate": 102089.25
+      },
+      {
+          "code": "BBD",
+          "name": "Barbadian Dollar",
+          "rate": 115037.01
+      },
+      {
+          "code": "BDT",
+          "name": "Bangladeshi Taka",
+          "rate": 6875547.14
+      },
+      {
+          "code": "BGN",
+          "name": "Bulgarian Lev",
+          "rate": 102090.17
+      },
+      {
+          "code": "BHD",
+          "name": "Bahraini Dinar",
+          "rate": 21679.01
+      },
+      {
+          "code": "BIF",
+          "name": "Burundian Franc",
+          "rate": 166695919.51
+      },
+      {
+          "code": "BMD",
+          "name": "Bermudan Dollar",
+          "rate": 57518.51
+      },
+      {
+          "code": "BND",
+          "name": "Brunei Dollar",
+          "rate": 75092.36
+      },
+      {
+          "code": "BOB",
+          "name": "Bolivian Boliviano",
+          "rate": 397545.13
+      },
+      {
+          "code": "BRL",
+          "name": "Brazilian Real",
+          "rate": 326095.41
+      },
+      {
+          "code": "BSD",
+          "name": "Bahamian Dollar",
+          "rate": 57518.51
+      },
+      {
+          "code": "BTN",
+          "name": "Bhutanese Ngultrum",
+          "rate": 4830465.77
+      },
+      {
+          "code": "BUSD",
+          "name": "Binance USD",
+          "rate": 57518.51
+      },
+      {
+          "code": "BUSD_m",
+          "name": "Binance USD",
+          "rate": 57518.51
+      },
+      {
+          "code": "BWP",
+          "name": "Botswanan Pula",
+          "rate": 771235.44
+      },
+      {
+          "code": "BYN",
+          "name": "Belarusian Ruble",
+          "rate": 188285.85
+      },
+      {
+          "code": "BZD",
+          "name": "Belize Dollar",
+          "rate": 115969.79
+      },
+      {
+          "code": "CDF",
+          "name": "Congolese Franc",
+          "rate": 163392045.77
+      },
+      {
+          "code": "CLF",
+          "name": "Chilean Unit of Account (UF)",
+          "rate": 1961.84
+      },
+      {
+          "code": "CLP",
+          "name": "Chilean Peso",
+          "rate": 54060492.48
+      },
+      {
+          "code": "COP",
+          "name": "Colombian Peso",
+          "rate": 245660040.41
+      },
+      {
+          "code": "CRC",
+          "name": "Costa Rican Colón",
+          "rate": 29763411.6
+      },
+      {
+          "code": "CUP",
+          "name": "Cuban Peso",
+          "rate": 1481101.5
+      },
+      {
+          "code": "CVE",
+          "name": "Cape Verdean Escudo",
+          "rate": 5755636.31
+      },
+      {
+          "code": "CZK",
+          "name": "Czech Koruna",
+          "rate": 1311836.16
+      },
+      {
+          "code": "DAI",
+          "name": "Dai",
+          "rate": 57518.51
+      },
+      {
+          "code": "DAI_m",
+          "name": "Dai",
+          "rate": 57518.51
+      },
+      {
+          "code": "DJF",
+          "name": "Djiboutian Franc",
+          "rate": 10245038.22
+      },
+      {
+          "code": "DKK",
+          "name": "Danish Krone",
+          "rate": 389488.45
+      },
+      {
+          "code": "DOGE",
+          "name": "Dogecoin",
+          "rate": 563945.06
+      },
+      {
+          "code": "DOP",
+          "name": "Dominican Peso",
+          "rate": 3438326.87
+      },
+      {
+          "code": "DZD",
+          "name": "Algerian Dinar",
+          "rate": 7624363.88
+      },
+      {
+          "code": "EGP",
+          "name": "Egyptian Pound",
+          "rate": 2784982.74
+      },
+      {
+          "code": "ETB",
+          "name": "Ethiopian Birr",
+          "rate": 6550209.02
+      },
+      {
+          "code": "EUROC",
+          "name": "EURC",
+          "rate": 52195.11
+      },
+      {
+          "code": "FJD",
+          "name": "Fijian Dollar",
+          "rate": 127765.86
+      },
+      {
+          "code": "FKP",
+          "name": "Falkland Islands Pound",
+          "rate": 44075.34
+      },
+      {
+          "code": "GEL",
+          "name": "Georgian Lari",
+          "rate": 155012.37
+      },
+      {
+          "code": "GHS",
+          "name": "Ghanaian Cedi",
+          "rate": 903302.18
+      },
+      {
+          "code": "GIP",
+          "name": "Gibraltar Pound",
+          "rate": 44075.34
+      },
+      {
+          "code": "GMD",
+          "name": "Gambian Dalasi",
+          "rate": 4083813.86
+      },
+      {
+          "code": "GNF",
+          "name": "Guinean Franc",
+          "rate": 497241982.82
+      },
+      {
+          "code": "GTQ",
+          "name": "Guatemalan Quetzal",
+          "rate": 445045.92
+      },
+      {
+          "code": "GUSD",
+          "name": "Gemini US Dollar",
+          "rate": 57518.51
+      },
+      {
+          "code": "GYD",
+          "name": "Guyanaese Dollar",
+          "rate": 12037017.76
+      },
+      {
+          "code": "HKD",
+          "name": "Hong Kong Dollar",
+          "rate": 448784.05
+      },
+      {
+          "code": "HNL",
+          "name": "Honduran Lempira",
+          "rate": 1426054.97
+      },
+      {
+          "code": "HRK",
+          "name": "Croatian Kuna",
+          "rate": 393257.35
+      },
+      {
+          "code": "HTG",
+          "name": "Haitian Gourde",
+          "rate": 7574549.34
+      },
+      {
+          "code": "HUF",
+          "name": "Hungarian Forint",
+          "rate": 20690629.84
+      },
+      {
+          "code": "IDR",
+          "name": "Indonesian Rupiah",
+          "rate": 888165728.55
+      },
+      {
+          "code": "ILS",
+          "name": "Israeli Shekel",
+          "rate": 215854.3
+      },
+      {
+          "code": "INR",
+          "name": "Indian Rupee",
+          "rate": 4829573.25
+      },
+      {
+          "code": "IQD",
+          "name": "Iraqi Dinar",
+          "rate": 75369735.8
+      },
+      {
+          "code": "IRR",
+          "name": "Iranian Rial",
+          "rate": 2421816653.03
+      },
+      {
+          "code": "ISK",
+          "name": "Icelandic Króna",
+          "rate": 7949057.39
+      },
+      {
+          "code": "JEP",
+          "name": "Jersey Pound",
+          "rate": 44075.34
+      },
+      {
+          "code": "JMD",
+          "name": "Jamaican Dollar",
+          "rate": 9039165.18
+      },
+      {
+          "code": "JOD",
+          "name": "Jordanian Dinar",
+          "rate": 40763.36
+      },
+      {
+          "code": "KES",
+          "name": "Kenyan Shilling",
+          "rate": 7408958.63
+      },
+      {
+          "code": "KGS",
+          "name": "Kyrgystani Som",
+          "rate": 4843058.12
+      },
+      {
+          "code": "KHR",
+          "name": "Cambodian Riel",
+          "rate": 233587180.69
+      },
+      {
+          "code": "KMF",
+          "name": "Comorian Franc",
+          "rate": 25707890.06
+      },
+      {
+          "code": "KPW",
+          "name": "North Korean Won",
+          "rate": 51766654.5
+      },
+      {
+          "code": "KWD",
+          "name": "Kuwaiti Dinar",
+          "rate": 17569.49
+      },
+      {
+          "code": "KYD",
+          "name": "Cayman Islands Dollar",
+          "rate": 47944.49
+      },
+      {
+          "code": "KZT",
+          "name": "Kazakhstani Tenge",
+          "rate": 27583341.65
+      },
+      {
+          "code": "LAK",
+          "name": "Laotian Kip",
+          "rate": 1273082042.94
+      },
+      {
+          "code": "LBP",
+          "name": "Lebanese Pound",
+          "rate": 5151897321.72
+      },
+      {
+          "code": "LKR",
+          "name": "Sri Lankan Rupee",
+          "rate": 17353531.17
+      },
+      {
+          "code": "LRD",
+          "name": "Liberian Dollar",
+          "rate": 11258823.44
+      },
+      {
+          "code": "LSL",
+          "name": "Lesotho Loti",
+          "rate": 1036342.08
+      },
+      {
+          "code": "LYD",
+          "name": "Libyan Dinar",
+          "rate": 274144.99
+      },
+      {
+          "code": "MAD",
+          "name": "Moroccan Dirham",
+          "rate": 562660.11
+      },
+      {
+          "code": "MDL",
+          "name": "Moldovan Leu",
+          "rate": 1005972.94
+      },
+      {
+          "code": "MGA",
+          "name": "Malagasy Ariary",
+          "rate": 261671019.61
+      },
+      {
+          "code": "MKD",
+          "name": "Macedonian Denar",
+          "rate": 3216031.71
+      },
+      {
+          "code": "MMK",
+          "name": "Myanma Kyat",
+          "rate": 120673823.49
+      },
+      {
+          "code": "MNT",
+          "name": "Mongolian Tugrik",
+          "rate": 195447879.99
+      },
+      {
+          "code": "MOP",
+          "name": "Macanese Pataca",
+          "rate": 462367.56
+      },
+      {
+          "code": "MRU",
+          "name": "Mauritanian Ouguiya",
+          "rate": 2277146.63
+      },
+      {
+          "code": "MUR",
+          "name": "Mauritian Rupee",
+          "rate": 2654479.06
+      },
+      {
+          "code": "MVR",
+          "name": "Maldivian Rufiyaa",
+          "rate": 883484.24
+      },
+      {
+          "code": "MWK",
+          "name": "Malawian Kwacha",
+          "rate": 99762037.87
+      },
+      {
+          "code": "MXN",
+          "name": "Mexican Peso",
+          "rate": 1136200.42
+      },
+      {
+          "code": "MYR",
+          "name": "Malaysian Ringgit",
+          "rate": 249302.46
+      },
+      {
+          "code": "MZN",
+          "name": "Mozambican Metical",
+          "rate": 3672556.6
+      },
+      {
+          "code": "NAD",
+          "name": "Namibian Dollar",
+          "rate": 1036332.65
+      },
+      {
+          "code": "NGN",
+          "name": "Nigerian Naira",
+          "rate": 95206930.22
+      },
+      {
+          "code": "NIO",
+          "name": "Nicaraguan Córdoba",
+          "rate": 2117159.14
+      },
+      {
+          "code": "NOK",
+          "name": "Norwegian Krone",
+          "rate": 622475.44
+      },
+      {
+          "code": "NPR",
+          "name": "Nepalese Rupee",
+          "rate": 7728744.61
+      },
+      {
+          "code": "OMR",
+          "name": "Omani Rial",
+          "rate": 22142.78
+      },
+      {
+          "code": "PAB",
+          "name": "Panamanian Balboa",
+          "rate": 57518.51
+      },
+      {
+          "code": "PAX",
+          "name": "Paxos Standard USD",
+          "rate": 57518.51
+      },
+      {
+          "code": "PEN",
+          "name": "Peruvian Nuevo Sol",
+          "rate": 217556.9
+      },
+      {
+          "code": "PGK",
+          "name": "Papua New Guinean Kina",
+          "rate": 228053.91
+      },
+      {
+          "code": "PHP",
+          "name": "Philippine Peso",
+          "rate": 3230613.05
+      },
+      {
+          "code": "PKR",
+          "name": "Pakistani Rupee",
+          "rate": 16017149.62
+      },
+      {
+          "code": "PLN",
+          "name": "Polish Zloty",
+          "rate": 224423.52
+      },
+      {
+          "code": "PYG",
+          "name": "Paraguayan Guarani",
+          "rate": 445462567.84
+      },
+      {
+          "code": "QAR",
+          "name": "Qatari Rial",
+          "rate": 209748.02
+      },
+      {
+          "code": "RON",
+          "name": "Romanian Leu",
+          "rate": 259628.47
+      },
+      {
+          "code": "RSD",
+          "name": "Serbian Dinar",
+          "rate": 6109102.42
+      },
+      {
+          "code": "RUB",
+          "name": "Russian Ruble",
+          "rate": 5267235.58
+      },
+      {
+          "code": "RWF",
+          "name": "Rwandan Franc",
+          "rate": 76747994.21
+      },
+      {
+          "code": "SAR",
+          "name": "Saudi Riyal",
+          "rate": 215852.34
+      },
+      {
+          "code": "SBD",
+          "name": "Solomon Islands Dollar",
+          "rate": 479395.8
+      },
+      {
+          "code": "SCR",
+          "name": "Seychellois Rupee",
+          "rate": 757319.06
+      },
+      {
+          "code": "SDG",
+          "name": "Sudanese Pound",
+          "rate": 34597380.76
+      },
+      {
+          "code": "SGD",
+          "name": "Singapore Dollar",
+          "rate": 75073.27
+      },
+      {
+          "code": "SHIB",
+          "name": "Shiba Inu",
+          "rate": 4305277320.36
+      },
+      {
+          "code": "SHIB_m",
+          "name": "Shiba Inu",
+          "rate": 4305277320.36
+      },
+      {
+          "code": "SHP",
+          "name": "Saint Helena Pound",
+          "rate": 44075.34
+      },
+      {
+          "code": "SLL",
+          "name": "Sierra Leonean Leone",
+          "rate": 1206134290.6
+      },
+      {
+          "code": "SOS",
+          "name": "Somali Shilling",
+          "rate": 32879630.41
+      },
+      {
+          "code": "SRD",
+          "name": "Surinamese Dollar",
+          "rate": 1683336.57
+      },
+      {
+          "code": "STN",
+          "name": "São Tomé and Príncipe Dobra",
+          "rate": 1278867.59
+      },
+      {
+          "code": "SVC",
+          "name": "Salvadoran Colón",
+          "rate": 503399.48
+      },
+      {
+          "code": "SYP",
+          "name": "Syrian Pound",
+          "rate": 144516969.37
+      },
+      {
+          "code": "SZL",
+          "name": "Swazi Lilangeni",
+          "rate": 1035991.85
+      },
+      {
+          "code": "THB",
+          "name": "Thai Baht",
+          "rate": 1940588.08
+      },
+      {
+          "code": "TJS",
+          "name": "Tajikistani Somoni",
+          "rate": 613302.79
+      },
+      {
+          "code": "TMT",
+          "name": "Turkmenistani Manat",
+          "rate": 201314.77
+      },
+      {
+          "code": "TND",
+          "name": "Tunisian Dinar",
+          "rate": 175521.69
+      },
+      {
+          "code": "TOP",
+          "name": "Tongan Paʻanga",
+          "rate": 135444.58
+      },
+      {
+          "code": "TRY",
+          "name": "Turkish Lira",
+          "rate": 1953651.4
+      },
+      {
+          "code": "TTD",
+          "name": "Trinidad and Tobago Dollar",
+          "rate": 390132.89
+      },
+      {
+          "code": "TWD",
+          "name": "New Taiwan Dollar",
+          "rate": 1849910.33
+      },
+      {
+          "code": "TZS",
+          "name": "Tanzanian Shilling",
+          "rate": 156782447
+      },
+      {
+          "code": "UAH",
+          "name": "Ukrainian Hryvnia",
+          "rate": 2376526.75
+      },
+      {
+          "code": "UGX",
+          "name": "Ugandan Shilling",
+          "rate": 214014453.25
+      },
+      {
+          "code": "USDC",
+          "name": "USDC",
+          "rate": 57518.51
+      },
+      {
+          "code": "USDC_m",
+          "name": "USDC.e",
+          "rate": 57518.51
+      },
+      {
+          "code": "USDCn_m",
+          "name": "USDC",
+          "rate": 57518.51
+      },
+      {
+          "code": "USDC_arb",
+          "name": "USDC",
+          "rate": 57518.51
+      },
+      {
+          "code": "USDC_op",
+          "name": "USDC",
+          "rate": 57518.51
+      },
+      {
+          "code": "USDC_base",
+          "name": "USDC",
+          "rate": 57518.51
+      },
+      {
+          "code": "USDT",
+          "name": "Tether",
+          "rate": 57524.83
+      },
+      {
+          "code": "USDT_m",
+          "name": "Tether",
+          "rate": 57524.83
+      },
+      {
+          "code": "USDTe_arb",
+          "name": "Tether",
+          "rate": 57524.83
+      },
+      {
+          "code": "USDTe_op",
+          "name": "Tether",
+          "rate": 57524.83
+      },
+      {
+          "code": "PYUSD",
+          "name": "PayPal USD",
+          "rate": 57518.51
+      },
+      {
+          "code": "UYU",
+          "name": "Uruguayan Peso",
+          "rate": 2327517.88
+      },
+      {
+          "code": "UZS",
+          "name": "Uzbekistan Som",
+          "rate": 731558615.61
+      },
+      {
+          "code": "VES",
+          "name": "Venezuelan Bolívar Soberano",
+          "rate": 2113424.23
+      },
+      {
+          "code": "VND",
+          "name": "Vietnamese Dong",
+          "rate": 1414273885.19
+      },
+      {
+          "code": "VUV",
+          "name": "Vanuatu Vatu",
+          "rate": 6828711.95
+      },
+      {
+          "code": "WBTC",
+          "name": "Wrapped BTC",
+          "rate": 0.99
+      },
+      {
+          "code": "WBTC_m",
+          "name": "Wrapped BTC",
+          "rate": 0.99
+      },
+      {
+          "code": "WST",
+          "name": "Samoan Tala",
+          "rate": 161051.81
+      },
+      {
+          "code": "XAF",
+          "name": "CFA Franc BEAC",
+          "rate": 34237757.18
+      },
+      {
+          "code": "XAG",
+          "name": "Silver (troy ounce)",
+          "rate": 1999.81
+      },
+      {
+          "code": "XAU",
+          "name": "Gold (troy ounce)",
+          "rate": 22.86
+      },
+      {
+          "code": "XCD",
+          "name": "East Caribbean Dollar",
+          "rate": 155446.64
+      },
+      {
+          "code": "XPF",
+          "name": "CFP Franc",
+          "rate": 6228535.11
+      },
+      {
+          "code": "XOF",
+          "name": "CFA Franc BCEAO",
+          "rate": 34237757.18
+      },
+      {
+          "code": "YER",
+          "name": "Yemeni Rial",
+          "rate": 14399761.52
+      },
+      {
+          "code": "ZAR",
+          "name": "South African Rand",
+          "rate": 1034212
+      },
+      {
+          "code": "ZMW",
+          "name": "Zambian Kwacha",
+          "rate": 1511673.68
+      },
+      {
+          "code": "ZWL",
+          "name": "Zimbabwean Dollar",
+          "rate": 18520958.61
+      }
+  ],
+  {
+      "0XBTC": 8.3E-07,
+      "1INCH": 4.34E-06,
+      "AAVE": 0.00253142,
+      "ABR": 1.86E-06,
+      "ABT": 2.928E-05,
+      "ADA": 6.15E-06,
+      "ADT": 1E-08,
+      "ADX": 2.56E-06,
+      "AE": 4.7E-07,
+      "AERGO": 1.68E-06,
+      "AGI": 2.16E-06,
+      "AGIX": 1.051E-05,
+      "AION": 3E-08,
+      "ALEPH": 2.8E-06,
+      "ALGO": 2.2E-06,
+      "ALICE": 1.713E-05,
+      "ALPH": 2.79E-05,
+      "ALPHA": 9.74169E-07,
+      "AMB": 1.2E-07,
+      "AMP": 6E-08,
+      "AMPL": 2.068E-05,
+      "ANKR": 4.4E-07,
+      "ANON": 7.6E-07,
+      "ANT": 0.0001013,
+      "AOA": 2E-09,
+      "APPC": 7E-09,
+      "APYS": 7.6053E-08,
+      "ARB": 8.9E-06,
+      "ARN": 1.6E-07,
+      "ARNX": 1.6E-07,
+      "ASD": 6.05119E-07,
+      "AST": 1.45E-06,
+      "ATL": 3.99E-06,
+      "ATLAS": 3.5037E-08,
+      "ATOM": 7.046E-05,
+      "AUDIO": 2.18E-06,
+      "AURY": 4.26E-06,
+      "AVAX": 0.0004063,
+      "AVAX-C": 0.0004063,
+      "AVAX-P": 0.0004063,
+      "AVAX-X": 0.0004063,
+      "AXE": 1E-08,
+      "AXS": 7.944E-05,
+      "BABE": 2.15238095238095E-06,
+      "BADGER": 4.687E-05,
+      "BAKE": 4.29E-06,
+      "BAL": 3.228E-05,
+      "BAND": 1.881E-05,
+      "BAT": 2.92E-06,
+      "BCH": 0.005753,
+      "BCPT": 2E-08,
+      "BDX": 9.3E-07,
+      "BF": 1.8881E-08,
+      "BLZ": 2.1E-06,
+      "BNB": 0.00938,
+      "BNT": 8.1E-06,
+      "BONK": 2.94588E-10,
+      "BORA": 1.44E-06,
+      "BORG": 2.51E-06,
+      "BRD": 7.882E-05,
+      "BRETT": 1.39E-06,
+      "BSV": 0.0008414,
+      "BTC": 1,
+      "BTCB": 0.76,
+      "BTCZ": 1E-09,
+      "BTG": 0.0003664,
+      "BTH": 7.3E-07,
+      "BTT": 1.5098E-11,
+      "BTTOLD": 1E-08,
+      "BTX": 6.5E-07,
+      "BUSD": 1.717E-05,
+      "BXY": 1.249E-05,
+      "BZE": 1.1092E-08,
+      "C98": 2.04E-06,
+      "CAKE": 3.045E-05,
+      "CATO": 1.8582E-08,
+      "CDT": 3.29E-06,
+      "CEL": 2.26E-06,
+      "CELR": 2E-07,
+      "CHZ": 9.00295E-07,
+      "CLORE": 9.34233E-07,
+      "CND": 5E-09,
+      "COFI": 9E-09,
+      "COMP": 0.0007313,
+      "COPE": 1.84306E-07,
+      "COTI": 1.74E-06,
+      "CRO": 1.37E-06,
+      "CRP": 5.1752E-08,
+      "CRV": 4.71E-06,
+      "CRWNY": 3.9449E-08,
+      "CSTR": 9.211E-09,
+      "CTSI": 2.22E-06,
+      "CVC": 1.9E-06,
+      "CVT": 2.567E-09,
+      "CYS": 6.8706E-08,
+      "DAI": 1.722E-05,
+      "DASH": 0.0004166,
+      "DATA": 6.4E-07,
+      "DCN": 2E-11,
+      "DENT": 1E-08,
+      "DFL": 8.372E-09,
+      "DGB": 1.1E-07,
+      "DGD": 0.011,
+      "DGX": 0.007246,
+      "DIBI": 0,
+      "DLT": 5E-09,
+      "DOCK": 3E-08,
+      "DODO": 1.83E-06,
+      "DOGE": 1.75E-06,
+      "DOT": 7.262E-05,
+      "DRGN": 2.5E-07,
+      "DTA": 6E-11,
+      "DXL": 8.3421E-08,
+      "EGLD": 0.00045766,
+      "ELEC": 3E-09,
+      "ELF": 6.4E-06,
+      "EMAID": 7.35E-06,
+      "ENG": 1.6E-07,
+      "ENJ": 2.46E-06,
+      "ENQ": 4E-09,
+      "EOS": 8.5E-06,
+      "ERG": 1.256E-05,
+      "ETC": 0.000318,
+      "ETH": 0.04042,
+      "ETHDYDX": 1.538E-05,
+      "ETHOS": 5E-08,
+      "EURS": 1.896E-05,
+      "EVX": 1E-08,
+      "EWT": 2.42E-05,
+      "FAB": 1.4732E-11,
+      "FET": 2.412E-05,
+      "FIDA": 3.79E-06,
+      "FIO": 4.75291E-07,
+      "FIRO": 1.917E-05,
+      "FISH": 0,
+      "FLOKI": 2.132E-09,
+      "FLUX": 1.017E-05,
+      "FLUX-ALGO": 1.017E-05,
+      "FLUX-AVAX": 1.017E-05,
+      "FLUX-BASE": 1.017E-05,
+      "FLUX-BNB": 1.017E-05,
+      "FLUX-BSC": 1.017E-05,
+      "FLUX-ERG": 1.017E-05,
+      "FLUX-ERGO": 1.017E-05,
+      "FLUX-ETH": 1.017E-05,
+      "FLUX-KDA": 1.017E-05,
+      "FLUX-MATIC": 1.017E-05,
+      "FLUX-SOL": 1.017E-05,
+      "FLUX-TRX": 1.017E-05,
+      "FRAX": 1.716E-05,
+      "FTM": 8.36E-06,
+      "FTT": 2.237E-05,
+      "FUEL": 0.0003797,
+      "FUN": 6E-08,
+      "FX": 2.38E-06,
+      "GAS": 5.7E-05,
+      "GCBEST": 1.721E-05,
+      "GCHD": 1.721E-05,
+      "GCLOWE": 1.721E-05,
+      "GCSTAR": 1.721E-05,
+      "GCSWAL": 1.721E-05,
+      "GCTGT": 1.721E-05,
+      "GLINK": 3E-07,
+      "GLM": 4.72E-06,
+      "GNO": 0.00256909,
+      "GNT": 2E-13,
+      "GODS": 2.85E-06,
+      "GRAPE": 6.613E-09,
+      "GRS": 4.85E-06,
+      "GRT": 2.43E-06,
+      "GT": 0.0001357,
+      "GTO": 1.21E-06,
+      "GUNTHY": 0,
+      "GUSD": 1.72E-05,
+      "GVT": 0.0001234,
+      "HAPI": 0.00015897,
+      "HEDG": 3.6116E-08,
+      "HEX": 2E-08,
+      "HOT": 2.7849E-08,
+      "HT": 8.01E-06,
+      "HUSD": 4.24917E-07,
+      "HUSH": 5.07E-06,
+      "ICN": 2.5E-06,
+      "ILC": 5E-08,
+      "INJ": 0.00033117,
+      "INS": 2.47E-05,
+      "IOST": 8E-08,
+      "IOTX": 5.9E-07,
+      "IVN": 2.24E-06,
+      "JET": 1.79E-09,
+      "JST": 4.9E-07,
+      "KARATE": 9.6E-09,
+      "KAS": 2.91E-06,
+      "KCS": 0.0001394,
+      "KDA": 9.04E-06,
+      "KDL": null,
+      "KDS": 5.0133E-08,
+      "KDX": 3.22857142857143E-07,
+      "KEY": 8E-08,
+      "kFRAX": 1.716E-05,
+      "KIN": 3E-10,
+      "KMD": 4.3E-06,
+      "KNC": 7.48E-06,
+      "KNCL": 7.47E-06,
+      "KSM": 0.00033701,
+      "KURO": 5.42124E-10,
+      "LEND": 4.681E-05,
+      "LEO": 9.614E-05,
+      "LIKE": 4.49173E-07,
+      "LINK": 0.0001827,
+      "LIQ": 2.0617E-08,
+      "LOOM": 7.6E-07,
+      "LPT": 0.00020479,
+      "LRC": 2.09E-06,
+      "LTC": 0.001064,
+      "LUN": 2.1E-07,
+      "LUNC": 1.433E-09,
+      "MANA": 4.68E-06,
+      "MAPS": 2.59429E-07,
+      "MATIC": 6.54E-06,
+      "MCO": 1.455E-05,
+      "MDA": 1.4E-07,
+      "MEDIA": 0.0001893,
+      "MER": 3.6E-07,
+      "MFT": 1.6E-07,
+      "MIOTA": 2.19E-06,
+      "MITH": 2E-09,
+      "MKR": 0.02772,
+      "MLN": 0.00025942,
+      "MNDE": 1.63E-06,
+      "MNGO": 2.53119E-07,
+      "MOK": 7.232E-08,
+      "MOLA": 4.68729E-10,
+      "MSOL": 0.00282299,
+      "MSRM": 0.464069,
+      "MTH": 2E-08,
+      "MTL": 1.565E-05,
+      "MVL": 5.9552E-08,
+      "MX": 6.568E-05,
+      "NEAR": 7.271E-05,
+      "NEO": 0.0001628,
+      "NEXO": 1.668E-05,
+      "NINJA": 1.98613E-07,
+      "NKN": 1.19E-06,
+      "NMR": 0.00024733,
+      "NOT": 1.3248E-07,
+      "NU": 1.19E-06,
+      "NXM": 0.00091794,
+      "OAX": 2.36E-06,
+      "OCEAN": 1.05E-05,
+      "OGN": 1.39E-06,
+      "OKB": 0.00067545,
+      "OM": 1.855E-05,
+      "OMG": 3.74E-06,
+      "ONE": 2E-07,
+      "ONG": 4.72E-06,
+      "ONGAS": 4.72E-06,
+      "ONT": 2.94E-06,
+      "OPUL": 1.14E-06,
+      "ORBS": 3.99658E-07,
+      "ORCA": 3.21E-05,
+      "ORE": 3.67E-16,
+      "OST": 3E-09,
+      "OXT": 1.22E-06,
+      "OXY": 4.16208E-07,
+      "PAXG": 0.0434285,
+      "PAY": 1.6E-07,
+      "PBX": 1.1448E-08,
+      "PEPE": 1.25864E-10,
+      "PERP": 9.98E-06,
+      "PHA": 1.85E-06,
+      "PLANETS": 8E-10,
+      "POLIS": 2.72E-06,
+      "POLY": 1E-06,
+      "POR": 0,
+      "PORT": 5.5083E-08,
+      "POWR": 3.34E-06,
+      "PPT": 4.2E-07,
+      "PRE": 1.5316E-07,
+      "PROM": 9.014E-05,
+      "QASH": 2E-07,
+      "QKC": 1.5E-07,
+      "QNT": 0.00124773,
+      "QSP": 2E-08,
+      "QTUM": 3.886E-05,
+      "QUICK": 7.3E-07,
+      "RAY": 2.559E-05,
+      "RCN": 2E-08,
+      "RDN": 6E-08,
+      "REN": 6.4E-07,
+      "RENBTC": 0.99602454,
+      "RENDER": 9.06E-05,
+      "REP": 5.5E-06,
+      "REQ": 1.75E-06,
+      "REV": 4.63066E-10,
+      "RIN": 1.06525E-07,
+      "RLC": 2.536E-05,
+      "ROPE": 3.3945E-08,
+      "RSR": 9.7531E-08,
+      "RTM": 1.3017E-08,
+      "RUNE": 6.754E-05,
+      "RVN": 3.1E-07,
+      "SAFE": 1.245E-05,
+      "SAI": 1.722E-05,
+      "SAITO": 8E-08,
+      "SALT": 3E-07,
+      "SAMO": 1.06239E-07,
+      "SAND": 4.43E-06,
+      "SAO": 8.632E-09,
+      "SBR": 2.6587E-08,
+      "SFM": 5.15735E-10,
+      "SHIB": 2E-10,
+      "SIN": 7E-08,
+      "SKDX": 3.22857142857143E-07,
+      "SKL": 5.6354E-07,
+      "SLIM": 1.91E-06,
+      "SLND": 1.014E-05,
+      "SLP": 4.0819E-08,
+      "SNGLS": 7E-10,
+      "SNM": 3.231E-08,
+      "SNT": 3.7E-07,
+      "SNX": 2.389E-05,
+      "SNY": 5.1725E-08,
+      "SOL": 0.00232272,
+      "SPHTX": 2.1E-07,
+      "SRM": 4.64069E-07,
+      "SRN": 9E-10,
+      "STAKE": 1.91E-06,
+      "STEP": 7.68785E-07,
+      "STETH": 0.04041,
+      "STMX": 1.02385E-07,
+      "STORJ": 6.16E-06,
+      "STORM": 8E-08,
+      "STRAX": 7.79454E-07,
+      "STRIKE": 0.00010626,
+      "STSOL": 0.00280081,
+      "STX": 2.821E-05,
+      "SUN": 4.21247E-07,
+      "SUNNY": 5.83698E-10,
+      "SUSHI": 1.089E-05,
+      "SXP": 3.51E-06,
+      "TEL": 2E-08,
+      "TENT": 3E-07,
+      "TESTBTC": 0,
+      "TESTETH": 0,
+      "TESTWND": 0,
+      "TESTZEL": 0,
+      "THETA": 2.071E-05,
+      "TNB": 4E-10,
+      "TNT": 1.6E-07,
+      "TOK": 7E-08,
+      "TON": 9.272E-05,
+      "TRIBE": 7.47E-06,
+      "TRX": 2.65E-06,
+      "TULIP": 2.41E-06,
+      "TURBO": 6.3368E-08,
+      "TUSD": 1.718E-05,
+      "TUSDOLD": 1.718E-05,
+      "UBT": 4.7E-07,
+      "UMA": 3.882E-05,
+      "UNI": 0.0001154,
+      "UOS": 1.44E-06,
+      "USDC": 1.721E-05,
+      "USDC.E": 1.721E-05,
+      "USDJ": 1.947E-05,
+      "USDS": 1.3E-07,
+      "USDT": 1.721E-05,
+      "USTC": 2.91662E-07,
+      "UTK": 8.0059E-07,
+      "VBK": 1E-08,
+      "VIB": 1.2E-06,
+      "VIBE": 1E-08,
+      "VIC": 7.56E-06,
+      "VIDT": 8.2E-07,
+      "VLX": 8.6727E-08,
+      "VTC": 9.8737E-07,
+      "WABI": 3E-08,
+      "WAG": 1.6815E-08,
+      "WAVES": 1.765E-05,
+      "WBNB": 0.00938,
+      "WBTC": 0.9993,
+      "WETH": 0.04042,
+      "WHALE": 6.88E-06,
+      "WIF": 2.651E-05,
+      "WINGS": 1E-10,
+      "WMATIC": 6.54E-06,
+      "WOO": 2.84E-06,
+      "WPR": 7.1E-07,
+      "WRX": 2.28E-06,
+      "WSOL": 0.00232272,
+      "XCASH": 2E-09,
+      "XDB": 5.002E-09,
+      "XEM": 2.9E-07,
+      "XET": 5E-09,
+      "XLM": 1.6E-06,
+      "XMR": 0.002933,
+      "XRP": 9.25E-06,
+      "XTN": 4.09821E-07,
+      "XTZ": 1.098E-05,
+      "XYO": 7.5452E-08,
+      "YFI": 0.08326,
+      "YFII": 0.00641675,
+      "ZCL": 7.2E-07,
+      "ZEC": 0.0005104,
+      "ZEL": 1.017E-05,
+      "ZEN": 0.000135,
+      "ZER": 3.9E-07,
+      "ZIL": 2.3E-07,
+      "ZRX": 4.84E-06,
+      "zUSD": 1.721E-05
+  },
+  {
+      "errors": {
+      }
+  }
+]
