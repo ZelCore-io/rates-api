@@ -42,7 +42,7 @@ export class CoinGecko {
    * The API key for authenticating with the CoinGecko API.
    * @private
    */
-  private readonly apiKey: string = process.env['coinGeckoKey'] || config.coinGeckoKey;
+  private readonly apiKey: string = process.env['COIN_GECKO_KEY'] || config.coinGeckoApiKey;
 
   /**
    * The singleton instance of the CoinGecko class.

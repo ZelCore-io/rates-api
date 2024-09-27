@@ -30,7 +30,7 @@ export class LiveCoinWatch {
    * The API key for authenticating with the LiveCoinWatch API.
    * @private
    */
-  private readonly apiKey: string = process.env['liveCoinWatchKey'] || config.apiKey;
+  private readonly apiKey: string = process.env['LIVE_COIN_WATCH_KEY'] || config.liveCoinWatchApiKey;
 
   /**
    * The singleton instance of the LiveCoinWatch class.

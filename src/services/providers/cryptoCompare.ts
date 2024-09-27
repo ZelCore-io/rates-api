@@ -30,7 +30,7 @@ export class CryptoCompare {
    * The API key for authenticating with the CryptoCompare API.
    * @private
    */
-  private readonly apiKey: string = process.env['cryptoCompareKey'] || config.apiKey;
+  private readonly apiKey: string = process.env['CRYPTO_COMPARE_KEY'] || config.cryptoCompareApiKey;
 
   /**
    * The singleton instance of the CryptoCompare class.
