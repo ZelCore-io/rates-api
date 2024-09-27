@@ -106,6 +106,7 @@ export async function getAll(): Promise<MarketsData> {
   cmk['FLUX-ERGO'] = cmk.FLUX;
   cmk['FLUX-ALGO'] = cmk.FLUX;
   cmk['FLUX-MATIC'] = cmk.FLUX;
+  cmk['FLUX-POL'] = cmk.FLUX;
   cmk['FLUX-BASE'] = cmk.FLUX;
   cmk['AVAX-C'] = cmk.AVAX;
   cmk['AVAX-P'] = cmk.AVAX;
@@ -114,6 +115,7 @@ export async function getAll(): Promise<MarketsData> {
   cmk.WSOL = cmk.SOL;
   cmk.WETH = cmk.ETH;
   cmk.WMATIC = cmk.MATIC;
+  cmk.POL = cmk.MATIC;
   cmk.kFRAX = cmk.FRAX;
   cmk.GLINK = cmk.TENT;
   cmk.zUSD = cmk.USDC;

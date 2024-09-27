@@ -120,6 +120,7 @@ export async function getAll(): Promise<RatesData> {
   efg['FLUX-ERGO'] = efg.FLUX;
   efg['FLUX-ALGO'] = efg.FLUX;
   efg['FLUX-MATIC'] = efg.FLUX;
+  efg['FLUX-POL'] = efg.FLUX;
   efg['FLUX-BASE'] = efg.FLUX;
   efg['AVAX-C'] = efg.AVAX;
   efg['AVAX-P'] = efg.AVAX;
@@ -131,6 +132,7 @@ export async function getAll(): Promise<RatesData> {
   efg.WSOL = efg.SOL;
   efg.WETH = efg.ETH;
   efg.WMATIC = efg.MATIC;
+  efg.POL = efg.MATIC;
   efg.kFRAX = efg.FRAX;
   efg.GLINK = efg.TENT;
   efg.BABE = (efg.KDA || 0) / 4.2;
