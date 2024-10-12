@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import compression from 'compression';
 
 // Import route handlers written in TypeScript
 import routes from '../routes';
@@ -53,6 +54,11 @@ if (nodeEnv !== 'test') {
  * @see https://github.com/expressjs/cors
  */
 app.use(cors());
+
+/**
+ * Use compression plugin
+ */
+app.use(compression());
 
 /**
  * Loads the Swagger documentation from the YAML file and configures the Swagger UI middleware.
