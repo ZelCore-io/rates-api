@@ -52,7 +52,7 @@ export const coinAggregatorIDs = {
   /**
    * LiveCoinWatch API IDs.
    */
-  livecoinwatch: ['KDL'],
+  livecoinwatch: ['KDL', 'TLS'],
 };
 
 /**
