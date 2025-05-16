@@ -34,6 +34,13 @@ export default (app: Application): void => {
   );
 
   /**
+   * Health check endpoint
+   */
+  app.get('/health', (req: Request, res: Response) => {
+    res.status(200).json({ status: 'ok' });
+  });
+
+  /**
    * Redirects the root path to the /rates endpoint.
    *
    * @route GET /
