@@ -48,7 +48,7 @@ export const coinAggregatorIDs = {
     'cardano', 'ripple', 'neo', 'bittorrent-old', 'groestlcoin', 'leo-token', 'enq-enecuum', 'fantom', 'aergo', 'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin',
     'pancakeswap-token', 'matic-network', 'staked-ether', 'amp-token', 'cosmos', 'tezos', 'shiba-inu', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 'saito', 'mithril', 'tierion', 'adex', 'aion', 'ethlend',
     'frax', 'smooth-love-potion', // These are not actually used in ZelCore or some tickers; just for testing until merge
-    'wax', 'bread', 'loom-network-new', 'ong', 'iota', 'oxbitcoin', 'dragonchain', 'binance-bitcoin'])],
+    'wax', 'bread', 'loom-network-new', 'ong', 'iota', 'oxbitcoin', 'dragonchain', 'binance-bitcoin', 'telestai'])],
   /**
    * LiveCoinWatch API IDs.
    */
