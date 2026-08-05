@@ -62,13 +62,34 @@ export class Binance {
   private quoteCache = new LRU<string, any>({ max: 50, ttl: 60 * 1000 });
 
   /**
-   * Last-known-good ticker per symbol, independent of `quoteCache`'s TTL. Used to
-   * backfill a symbol that a refresh omitted or that an entire refresh request
-   * failed for (e.g. a CEX trading halt during a stock split), so a transient
-   * gap upstream never drops the symbol from the response.
+   * Last-known-good ticker per symbol, independent of `quoteCache`'s TTL, with
+   * the epoch-ms timestamp at which it was accepted. Used to backfill a symbol
+   * whose fresh value is unusable — a halted symbol priced at zero, a symbol
+   * omitted from the batch, or an entire request that failed — so a transient
+   * gap upstream never drops the symbol or fabricates a price for it.
    * @private
    */
-  private lastGoodTicker = new Map<string, BinanceTicker>();
+  private lastGoodTicker = new Map<string, { ticker: BinanceTicker; at: number }>();
+
+  /**
+   * Whether a freshly-fetched ticker carries a usable price.
+   *
+   * Binance does NOT omit a halted symbol from the ticker response: it returns
+   * the symbol present with `lastPrice: "0.00000000"`. Measured against live
+   * data, 20 of 20 requested BREAK-status symbols came back present and 9 of
+   * those 20 were priced at zero. So a presence check alone never triggers the
+   * last-known-good fallback, and accepting the zero would both serve $0 and
+   * overwrite the good value — worse than dropping the entry.
+   *
+   * @private
+   * @param ticker - A ticker straight from Binance.
+   * @returns True when the ticker has a finite, strictly positive last price.
+   */
+  private static isUsable(ticker: BinanceTicker | undefined): ticker is BinanceTicker {
+    if (!ticker) return false;
+    const px = parseFloat(String(ticker.lastPrice));
+    return Number.isFinite(px) && px > 0;
+  }
 
   /**
    * Returns the singleton instance of the Binance class.
@@ -114,11 +135,32 @@ export class Binance {
    * @returns One ticker per requested symbol that has ever been seen; halted/never-seen symbols are omitted.
    */
   private mergeTickers(symbols: string[], fetched: BinanceTicker[]): BinanceTicker[] {
-    fetched.forEach((t) => this.lastGoodTicker.set(t.symbol, t));
-    const bySymbol = new Map(fetched.map((t) => [t.symbol, t]));
+    const now = Date.now();
+    const bySymbol = new Map<string, BinanceTicker>();
+    fetched.forEach((t) => {
+      // Only a usable price is allowed to become the new last-known-good.
+      // A halted symbol comes back present but priced at zero; letting it
+      // through would overwrite the real price and serve $0 from then on.
+      if (!Binance.isUsable(t)) return;
+      bySymbol.set(t.symbol, t);
+      this.lastGoodTicker.set(t.symbol, { ticker: t, at: now });
+    });
     return symbols
-      .map((s) => bySymbol.get(s) ?? this.lastGoodTicker.get(s))
+      .map((s) => bySymbol.get(s) ?? this.lastGoodTicker.get(s)?.ticker)
       .filter((t): t is BinanceTicker => !!t);
+  }
+
+  /**
+   * Age in milliseconds of the last-known-good price for a symbol, or null if
+   * none has ever been recorded. Lets a caller distinguish a live price from
+   * one carried through a long halt, which the ticker itself cannot express.
+   *
+   * @param symbol - The Binance symbol, e.g. `TSLABUSDT`.
+   * @returns Age in ms, or null when the symbol has never priced successfully.
+   */
+  lastGoodAgeMs(symbol: string): number | null {
+    const entry = this.lastGoodTicker.get(symbol);
+    return entry ? Date.now() - entry.at : null;
   }
 
   /**
@@ -187,7 +229,7 @@ export class Binance {
    * @returns One ticker per requested symbol that has ever been seen.
    */
   async getTicker24h(symbols: string[]): Promise<BinanceTicker[]> {
-    const key = `t24:${symbols.join(',')}`;
+    const key = `t24:${[...symbols].sort().join(',')}`;
     if (this.quoteCache.has(key)) return this.quoteCache.get(key) as BinanceTicker[];
 
     let fetched: BinanceTicker[] = [];
@@ -217,7 +259,7 @@ export class Binance {
    * @returns One ticker per requested symbol that has ever been seen.
    */
   async getTicker7d(symbols: string[]): Promise<BinanceTicker[]> {
-    const key = `t7d:${symbols.join(',')}`;
+    const key = `t7d:${[...symbols].sort().join(',')}`;
     if (this.quoteCache.has(key)) return this.quoteCache.get(key) as BinanceTicker[];
 
     const chunks = this.chunkSymbols(symbols);

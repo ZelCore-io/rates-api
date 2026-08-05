@@ -108,14 +108,51 @@ describe('Binance provider', () => {
       const first = await binance.getTicker24h(['MSTRBUSDT']);
       expect(first).toEqual([good]);
 
-      // second request (different symbol set -> new cache key) halts MSTRBUSDT: Binance
-      // omits it from the payload entirely, as happens on trading breaks/splits
+      // second request (different symbol set -> new cache key) omits MSTRBUSDT.
+      // NOTE: omission is NOT what a real halt looks like -- see the zero-price
+      // test below. This covers the genuinely-absent case only.
       const other: BinanceTicker = { symbol: 'AMDBUSDT', lastPrice: '150.00000000', priceChangePercent: '2.0', quoteVolume: '500000' };
       getSpy.mockResolvedValueOnce(axiosResponse([other]));
       const second = await binance.getTicker24h(['MSTRBUSDT', 'AMDBUSDT']);
 
       expect(second).toEqual(expect.arrayContaining([good, other]));
       expect(second.find((t) => t.symbol === 'MSTRBUSDT')).toEqual(good);
+    });
+
+    it('treats a halted symbol priced at zero as unusable and keeps the last-known-good price', async () => {
+      // Measured against live Binance data: requesting 20 BREAK-status symbols
+      // returned all 20 PRESENT, and 9 of them carried lastPrice "0.00000000".
+      // Binance does not omit a halted symbol -- so a presence check alone never
+      // triggers the fallback, and accepting the zero would both serve $0 and
+      // overwrite the real price for good.
+      const good: BinanceTicker = { symbol: 'GOOGLBUSDT', lastPrice: '180.00000000', priceChangePercent: '1.0', quoteVolume: '900000' };
+      const getSpy = jest.spyOn(AxiosWrapper.prototype, 'get');
+
+      getSpy.mockResolvedValueOnce(axiosResponse([good]));
+      expect(await binance.getTicker24h(['GOOGLBUSDT'])).toEqual([good]);
+
+      // The halt: symbol present, price zeroed.
+      const halted: BinanceTicker = { symbol: 'GOOGLBUSDT', lastPrice: '0.00000000', priceChangePercent: '0.0', quoteVolume: '0' };
+      const filler: BinanceTicker = { symbol: 'METABUSDT', lastPrice: '500.00000000', priceChangePercent: '0.2', quoteVolume: '100000' };
+      getSpy.mockResolvedValueOnce(axiosResponse([halted, filler]));
+      const during = await binance.getTicker24h(['GOOGLBUSDT', 'METABUSDT']);
+      expect(during.find((t) => t.symbol === 'GOOGLBUSDT')).toEqual(good);
+
+      // ...and the zero must not have poisoned the store: a later total failure
+      // still serves the real price rather than $0.
+      getSpy.mockRejectedValueOnce(new Error('network down'));
+      const after = await binance.getTicker24h(['GOOGLBUSDT', 'AMZNBUSDT']);
+      expect(after.find((t) => t.symbol === 'GOOGLBUSDT')).toEqual(good);
+    });
+
+    it('reports the age of a last-known-good price, and null for a symbol never priced', async () => {
+      const good: BinanceTicker = { symbol: 'ORCLBUSDT', lastPrice: '120.00000000', priceChangePercent: '1.0', quoteVolume: '10000' };
+      const getSpy = jest.spyOn(AxiosWrapper.prototype, 'get');
+      getSpy.mockResolvedValueOnce(axiosResponse([good]));
+      await binance.getTicker24h(['ORCLBUSDT']);
+
+      expect(binance.lastGoodAgeMs('ORCLBUSDT')).toBeGreaterThanOrEqual(0);
+      expect(binance.lastGoodAgeMs('NEVERSEENUSDT')).toBeNull();
     });
 
     it('serves the last-known-good ticker for requested symbols when the whole refresh request rejects', async () => {
