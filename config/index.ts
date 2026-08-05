@@ -11,6 +11,9 @@ export const config = {
   liveCoinWatchUrl: 'https://api.livecoinwatch.com/',
   zelCoinsUrl: 'https://raw.githubusercontent.com/ZelCore-io/Zelcore/master/coins.json',
   zelCoinInfoUrl: 'https://raw.githubusercontent.com/ZelCore-io/Zelcore/master/coininfo.json',
+  binanceApiUrl: 'https://api.binance.com/',
+  binanceAssetUrl: 'https://www.binance.com/',
+  bStocksEnabled: true,
 };
 
 export default config;
