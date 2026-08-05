@@ -253,7 +253,17 @@ export async function serviceRefresher(): Promise<void> {
       : 0;
     if (ratesV2Fetched && ratesV2Fetched.fiat.length > 20 && providerCryptoCount > 300) {
       ratesV2.fiat = mergeDeep(ratesV2.fiat, ratesV2Fetched.fiat);
-      ratesV2.crypto = replaceCryptoByKey(ratesV2Fetched.crypto);
+      // Carry forward only the rows belonging to providers that errored THIS
+      // cycle, then key-merge with the fresh fetch last so fresh data always
+      // wins. Without this, a provider whose block failed (CryptoCompare,
+      // LiveCoinWatch) simply vanishes from /v2/rates the moment the
+      // remaining providers alone still clear the >300 floor -- there is no
+      // positional stale tail to fall back on any more (replaceCryptoByKey
+      // rebuilds from `source` alone). `ratesV2.crypto` is genuinely
+      // undefined on the first cycle, hence the `??`.
+      const failedProviders = new Set(Object.keys(ratesV2Fetched.errors ?? {}));
+      const carried = (ratesV2.crypto ?? []).filter((c) => failedProviders.has(c.provider));
+      ratesV2.crypto = replaceCryptoByKey([...carried, ...ratesV2Fetched.crypto]);
       ratesV2.errors = ratesV2Fetched.errors;
     }
 

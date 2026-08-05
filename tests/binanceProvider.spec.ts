@@ -189,4 +189,63 @@ describe('Binance provider', () => {
       expect(result.map((t) => t.symbol).sort()).toEqual([...symbols].sort());
     });
   });
+
+  // Regression coverage for the shared last-known-good store colliding across
+  // windows: `mergeTickers` used to key solely on `symbol`, so whichever of
+  // getTicker24h/getTicker7d ran (and priced successfully) LAST would silently
+  // overwrite the other window's fallback value -- serving a 7-day change
+  // and ~7x-inflated volume as the 24-hour figure, or vice versa.
+  describe('24h/7d last-known-good isolation', () => {
+    it('does not let a 7d last-known-good leak into a failed 24h fetch, or vice versa', async () => {
+      const getSpy = jest.spyOn(AxiosWrapper.prototype, 'get');
+
+      // Establish a 24h last-known-good for NVDAB: small change/volume.
+      const t24: BinanceTicker = {
+        symbol: 'NVDABUSDT', lastPrice: '120.00', priceChangePercent: '3.0', quoteVolume: '500000',
+      };
+      getSpy.mockResolvedValueOnce(axiosResponse([t24]));
+      await binance.getTicker24h(['NVDABUSDT']);
+
+      // Establish a 7d last-known-good for the SAME symbol: much larger
+      // (window-scoped) change/volume, as Binance's real 7d ticker would report.
+      const t7d: BinanceTicker = {
+        symbol: 'NVDABUSDT', lastPrice: '120.00', priceChangePercent: '9.0', quoteVolume: '3500000',
+      };
+      getSpy.mockResolvedValueOnce(axiosResponse([t7d]));
+      await binance.getTicker7d(['NVDABUSDT']);
+
+      // A fresh 24h fetch (different symbol combo -> new quoteCache key) now
+      // fails outright and must fall back to the 24h store -- NOT the 7d one.
+      getSpy.mockRejectedValueOnce(new Error('network down'));
+      const during24 = await binance.getTicker24h(['NVDABUSDT', 'FILLER1USDT']);
+      const fallback24 = during24.find((t) => t.symbol === 'NVDABUSDT');
+      expect(fallback24?.priceChangePercent).toBe('3.0');
+      expect(fallback24?.quoteVolume).toBe('500000');
+
+      // Symmetric check: a fresh 7d fetch failing must fall back to the 7d
+      // store, not whatever the 24h store now holds.
+      getSpy.mockRejectedValueOnce(new Error('network down'));
+      const during7d = await binance.getTicker7d(['NVDABUSDT', 'FILLER2USDT']);
+      const fallback7d = during7d.find((t) => t.symbol === 'NVDABUSDT');
+      expect(fallback7d?.priceChangePercent).toBe('9.0');
+      expect(fallback7d?.quoteVolume).toBe('3500000');
+    });
+
+    it('lastGoodAgeMs reports a per-window age, and the freshest of the two when no window is given', async () => {
+      const getSpy = jest.spyOn(AxiosWrapper.prototype, 'get');
+
+      const t24: BinanceTicker = {
+        symbol: 'AMDBUSDT', lastPrice: '150.00', priceChangePercent: '2.0', quoteVolume: '500000',
+      };
+      getSpy.mockResolvedValueOnce(axiosResponse([t24]));
+      await binance.getTicker24h(['AMDBUSDT']);
+
+      // No 7d price has ever been recorded for AMDBUSDT.
+      expect(binance.lastGoodAgeMs('AMDBUSDT', '24h')).toBeGreaterThanOrEqual(0);
+      expect(binance.lastGoodAgeMs('AMDBUSDT', '7d')).toBeNull();
+      // Falls back to whichever window exists when unspecified.
+      expect(binance.lastGoodAgeMs('AMDBUSDT')).toBeGreaterThanOrEqual(0);
+      expect(binance.lastGoodAgeMs('NEVERSEENUSDT')).toBeNull();
+    });
+  });
 });
