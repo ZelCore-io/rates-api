@@ -1,7 +1,7 @@
-import { mergeDeep, mergeCryptoByKey } from '../src/lib/objects';
+import { mergeDeep, replaceCryptoByKey } from '../src/lib/objects';
 import { CryptoPrice } from '../src/types';
 
-describe('mergeCryptoByKey', () => {
+describe('replaceCryptoByKey', () => {
   it('replaces entries by provider-id key, not by index', () => {
     const target = [
       { id: 'bitcoin', provider: 'coingecko', rates: { btc: 1 } },
@@ -11,7 +11,7 @@ describe('mergeCryptoByKey', () => {
       { id: 'bstock-tslab', provider: 'coingecko', rates: { btc: 0.005 } },
       { id: 'bitcoin', provider: 'coingecko', rates: { btc: 1.0001 } },
     ];
-    const merged = mergeCryptoByKey(target, source);
+    const merged = replaceCryptoByKey(source);
     expect(merged).toHaveLength(2);
     expect(merged.find((e) => e.id === 'bitcoin')!.rates.btc).toBe(1.0001);
     expect(merged.find((e) => e.id === 'stale')).toBeUndefined(); // stale tails dropped
@@ -78,8 +78,8 @@ describe('positional-merge bug (apiServices.ts crypto merge)', () => {
     expect(merged.find((e) => e.id === 'litecoin')).toBeDefined();
   });
 
-  it('mergeCryptoByKey (fixed) replaces wholesale: no stale fields, no stale tail', () => {
-    const merged = mergeCryptoByKey(JSON.parse(JSON.stringify(target)), source);
+  it('replaceCryptoByKey (fixed) replaces wholesale: no stale fields, no stale tail', () => {
+    const merged = replaceCryptoByKey(source);
     expect(merged).toHaveLength(1);
     const [only] = merged;
     expect(only.id).toBe('CONI');
@@ -94,7 +94,7 @@ describe('positional-merge bug (apiServices.ts crypto merge)', () => {
  * key-based merge must produce output identical to the old positional one so
  * existing consumers see no behavioural change.
  */
-describe('mergeCryptoByKey vs mergeDeep -- identical for well-ordered input', () => {
+describe('replaceCryptoByKey vs mergeDeep -- identical for well-ordered input', () => {
   it('produces the same array for a normal, non-corrupting refresh', () => {
     const target: CryptoPrice[] = [
       {
@@ -113,7 +113,35 @@ describe('mergeCryptoByKey vs mergeDeep -- identical for well-ordered input', ()
       },
     ];
     const viaMergeDeep = mergeDeep(JSON.parse(JSON.stringify(target)), source);
-    const viaKeyMerge = mergeCryptoByKey(JSON.parse(JSON.stringify(target)), source);
+    const viaKeyMerge = replaceCryptoByKey(source);
     expect(viaKeyMerge).toEqual(viaMergeDeep);
+  });
+});
+
+describe('replaceCryptoByKey -- the key is provider AND id, last write wins', () => {
+  // A mutation run showed `return [...source]` passed every earlier test here:
+  // none of them pinned that provider is part of the key, that duplicates
+  // collapse, or that the LAST duplicate wins. These two do.
+  it('keeps the same id under two different providers as separate entries', () => {
+    const out = replaceCryptoByKey([
+      { id: 'bitcoin', provider: 'coingecko', rates: { usd: 100 } },
+      { id: 'bitcoin', provider: 'cryptocompare', rates: { usd: 101 } },
+    ] as never);
+    expect(out).toHaveLength(2);
+    expect(out.map((e) => (e as { provider: string }).provider).sort())
+      .toEqual(['coingecko', 'cryptocompare']);
+  });
+
+  it('collapses a repeated provider+id to one entry carrying the LAST value', () => {
+    const out = replaceCryptoByKey([
+      { id: 'bitcoin', provider: 'coingecko', rates: { usd: 100 } },
+      { id: 'ethereum', provider: 'coingecko', rates: { usd: 5 } },
+      { id: 'bitcoin', provider: 'coingecko', rates: { usd: 999 } },
+    ] as never);
+    expect(out).toHaveLength(2);
+    const btc = out.find((e) => (e as { id: string }).id === 'bitcoin') as unknown as { rates: { usd: number } };
+    expect(btc.rates.usd).toBe(999);
+    // ...and it stays at the first occurrence's position, so ordering is stable.
+    expect((out[0] as { id: string }).id).toBe('bitcoin');
   });
 });

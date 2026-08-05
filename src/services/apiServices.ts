@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import zlib from 'zlib';
 import * as log from '../lib/log';
-import { mergeDeep, mergeCryptoByKey } from '../lib/objects';
+import { mergeDeep, replaceCryptoByKey } from '../lib/objects';
 import zelcoreRates from './zelcoreRates';
 import zelcoreMarketsUSD from './zelcoreMarketsUSD';
 import zelcoreRatesV2 from './zelcoreRatesV2';
@@ -244,9 +244,16 @@ export async function serviceRefresher(): Promise<void> {
       }
     }
 
-    if (ratesV2Fetched && ratesV2Fetched.fiat.length > 20 && ratesV2Fetched.crypto.length > 300) {
+    // Count only real-provider rows. The floor was calibrated before bStocks
+    // existed, and ~56 synthetic bStock entries would otherwise mask a
+    // degraded provider response that the floor is meant to reject — pushing
+    // an under-strength payload past the guard and truncating /v2/rates.
+    const providerCryptoCount = ratesV2Fetched
+      ? ratesV2Fetched.crypto.filter((c) => !c.id.startsWith('bstock-')).length
+      : 0;
+    if (ratesV2Fetched && ratesV2Fetched.fiat.length > 20 && providerCryptoCount > 300) {
       ratesV2.fiat = mergeDeep(ratesV2.fiat, ratesV2Fetched.fiat);
-      ratesV2.crypto = mergeCryptoByKey(ratesV2.crypto, ratesV2Fetched.crypto);
+      ratesV2.crypto = replaceCryptoByKey(ratesV2Fetched.crypto);
       ratesV2.errors = ratesV2Fetched.errors;
     }
 
