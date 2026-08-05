@@ -1,13 +1,11 @@
-[**rates-api v3.0.0**](../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../modules.md) / src/routes
+[rates-api](../../modules.md) / src/routes
 
 # src/routes
 
-## Index
+## Variables
 
-### Functions
-
-- [default](functions/default.md)
+- [default](variables/default.md)

@@ -1,10 +1,12 @@
-[**rates-api v3.0.0**](../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../modules.md) / [src/lib/axios](../README.md) / AxiosWrapper
+[rates-api](../../../../modules.md) / [src/lib/axios](../README.md) / AxiosWrapper
 
 # Class: AxiosWrapper
+
+Defined in: src/lib/axios.ts:26
 
 A wrapper around Axios to handle automatic retries and customizable configurations.
 
@@ -31,29 +33,37 @@ apiClient.post('/users', { name: 'John Doe' })
 
 ## Constructors
 
-### new AxiosWrapper()
+### Constructor
 
-> **new AxiosWrapper**(`baseURL`, `maxRetries`, `timeout`): [`AxiosWrapper`](AxiosWrapper.md)
+> **new AxiosWrapper**(`baseURL`, `maxRetries?`, `timeout?`): `AxiosWrapper`
+
+Defined in: src/lib/axios.ts:43
 
 Creates an instance of AxiosWrapper.
 
 #### Parameters
 
-• **baseURL**: `string`
+##### baseURL
+
+`string`
 
 The base URL for all requests.
 
-• **maxRetries**: `number` = `3`
+##### maxRetries?
+
+`number` = `3`
 
 The maximum number of retry attempts for failed requests (default is 3).
 
-• **timeout**: `number` = `5000`
+##### timeout?
+
+`number` = `5000`
 
 The timeout in milliseconds for requests (default is 5000 ms).
 
 #### Returns
 
-[`AxiosWrapper`](AxiosWrapper.md)
+`AxiosWrapper`
 
 #### Example
 
@@ -61,25 +71,27 @@ The timeout in milliseconds for requests (default is 5000 ms).
 const apiClient = new AxiosWrapper('https://api.example.com', 5, 10000);
 ```
 
-#### Defined in
-
-[src/lib/axios.ts:43](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/axios.ts#L43)
-
 ## Methods
 
 ### delete()
 
-> **delete**(`url`, `config`?): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
+> **delete**(`url`, `config?`): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
+
+Defined in: src/lib/axios.ts:171
 
 Performs a DELETE request.
 
 #### Parameters
 
-• **url**: `string`
+##### url
+
+`string`
 
 The URL to send the DELETE request to.
 
-• **config?**: `AxiosRequestConfig`\<`any`\>
+##### config?
+
+`AxiosRequestConfig`\<`any`\>
 
 Optional Axios request configuration.
 
@@ -97,25 +109,27 @@ apiClient.delete('/users/123')
   .catch(error => console.error(error));
 ```
 
-#### Defined in
-
-[src/lib/axios.ts:171](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/axios.ts#L171)
-
 ***
 
 ### get()
 
-> **get**(`url`, `config`?): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
+> **get**(`url`, `config?`): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
+
+Defined in: src/lib/axios.ts:115
 
 Performs a GET request.
 
 #### Parameters
 
-• **url**: `string`
+##### url
+
+`string`
 
 The URL to send the GET request to.
 
-• **config?**: `AxiosRequestConfig`\<`any`\>
+##### config?
+
+`AxiosRequestConfig`\<`any`\>
 
 Optional Axios request configuration.
 
@@ -133,29 +147,33 @@ apiClient.get('/users')
   .catch(error => console.error(error));
 ```
 
-#### Defined in
-
-[src/lib/axios.ts:115](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/axios.ts#L115)
-
 ***
 
 ### post()
 
-> **post**(`url`, `data`?, `config`?): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
+> **post**(`url`, `data?`, `config?`): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
+
+Defined in: src/lib/axios.ts:134
 
 Performs a POST request.
 
 #### Parameters
 
-• **url**: `string`
+##### url
+
+`string`
 
 The URL to send the POST request to.
 
-• **data?**: `any`
+##### data?
+
+`any`
 
 The data to send with the POST request.
 
-• **config?**: `AxiosRequestConfig`\<`any`\>
+##### config?
+
+`AxiosRequestConfig`\<`any`\>
 
 Optional Axios request configuration.
 
@@ -173,29 +191,33 @@ apiClient.post('/users', { name: 'John Doe' })
   .catch(error => console.error(error));
 ```
 
-#### Defined in
-
-[src/lib/axios.ts:134](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/axios.ts#L134)
-
 ***
 
 ### put()
 
-> **put**(`url`, `data`?, `config`?): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
+> **put**(`url`, `data?`, `config?`): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
+
+Defined in: src/lib/axios.ts:153
 
 Performs a PUT request.
 
 #### Parameters
 
-• **url**: `string`
+##### url
+
+`string`
 
 The URL to send the PUT request to.
 
-• **data?**: `any`
+##### data?
+
+`any`
 
 The data to send with the PUT request.
 
-• **config?**: `AxiosRequestConfig`\<`any`\>
+##### config?
+
+`AxiosRequestConfig`\<`any`\>
 
 Optional Axios request configuration.
 
@@ -212,7 +234,3 @@ apiClient.put('/users/123', { name: 'Jane Doe' })
   .then(response => console.log(response.data))
   .catch(error => console.error(error));
 ```
-
-#### Defined in
-
-[src/lib/axios.ts:153](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/axios.ts#L153)

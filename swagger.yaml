@@ -40,7 +40,29 @@ paths:
   /v2/rates:
     get:
       summary: Get exchange rates (v2)
-      description: Retrieves version 2 of the exchange rates.
+      description: >
+        Retrieves version 2 of the exchange rates. The `crypto` array includes
+        one synthetic entry per Binance bStock (tokenized US equity on BNB
+        Smart Chain), alongside the regular CoinGecko/CryptoCompare/LiveCoinWatch
+        entries.
+
+
+        bStock entries are identified by `id` starting with `bstock-` (e.g.
+        `bstock-tslab` for the Tesla bStock). They are always tagged
+        `provider: "coingecko"` — never `"binance"` — because the ZelCore
+        client matches market entries on the literal string
+        `${provider}-${id}`, and the sibling `api` repo advertises each
+        bStock's `coinInfo.coingeckoID` as `bstock-<code>`. Using any other
+        provider value would make the client-side lookup miss silently.
+
+
+        `rates.usd` and `rates.btc` are sourced from live Binance Spot
+        `<CODE>USDT` tickers (bStocks are quoted in USDT, not USDC) divided by
+        the same batch's `BTCUSDT` price; `change24h`/`change7d` come from
+        Binance's 24h and 7d rolling-window tickers. During a CEX trading
+        halt (e.g. around a stock split) the last known-good price is served
+        rather than dropping the entry, per the bStocks partner guide's
+        display-only allowance.
       responses:
         '200':
           description: A list of exchange rates (v2).
@@ -48,6 +70,35 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  crypto:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: bstock-tslab
+                        provider:
+                          type: string
+                          example: coingecko
+                        rates:
+                          type: object
+                          properties:
+                            usd:
+                              type: number
+                            btc:
+                              type: number
+                        change24h:
+                          type: number
+                        change7d:
+                          type: number
+                  fiat:
+                    type: array
+                    items:
+                      type: object
+                  errors:
+                    type: object
 
   /v2/rates-compressed:
     get:

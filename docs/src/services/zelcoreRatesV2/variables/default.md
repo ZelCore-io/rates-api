@@ -1,16 +1,18 @@
-[**rates-api v3.0.0**](../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../modules.md) / [src/services/zelcoreRatesV2](../README.md) / default
+[rates-api](../../../../modules.md) / [src/services/zelcoreRatesV2](../README.md) / default
 
 # Variable: default
 
 > **default**: `object`
 
-## Type declaration
+Defined in: src/services/zelcoreRatesV2.ts:153
 
-### getAll()
+## Type Declaration
+
+### getAll
 
 > **getAll**: () => `Promise`\<[`PricesResponse`](../../../types/type-aliases/PricesResponse.md)\>
 
@@ -40,7 +42,3 @@ async function fetchPrices() {
 
 fetchPrices();
 ```
-
-## Defined in
-
-[src/services/zelcoreRatesV2.ts:142](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/zelcoreRatesV2.ts#L142)

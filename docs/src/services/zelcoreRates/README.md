@@ -1,17 +1,15 @@
-[**rates-api v3.0.0**](../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../modules.md) / src/services/zelcoreRates
+[rates-api](../../../modules.md) / src/services/zelcoreRates
 
 # src/services/zelcoreRates
 
-## Index
-
-### Variables
+## Variables
 
 - [default](variables/default.md)
 
-### Functions
+## Functions
 
 - [getAll](functions/getAll.md)

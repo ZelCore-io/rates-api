@@ -1,12 +1,14 @@
-[**rates-api v3.0.0**](../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../modules.md) / [src/services/zelcoreRatesV2](../README.md) / getAll
+[rates-api](../../../../modules.md) / [src/services/zelcoreRatesV2](../README.md) / getAll
 
 # Function: getAll()
 
 > **getAll**(): `Promise`\<[`PricesResponse`](../../../types/type-aliases/PricesResponse.md)\>
+
+Defined in: src/services/zelcoreRatesV2.ts:29
 
 Fetches and aggregates cryptocurrency prices and fiat rates from multiple providers.
 
@@ -34,7 +36,3 @@ async function fetchPrices() {
 
 fetchPrices();
 ```
-
-## Defined in
-
-[src/services/zelcoreRatesV2.ts:28](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/zelcoreRatesV2.ts#L28)

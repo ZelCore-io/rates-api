@@ -1,12 +1,14 @@
-[**rates-api v3.0.0**](../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../modules.md) / [src/lib/objects](../README.md) / mergeDeep
+[rates-api](../../../../modules.md) / [src/lib/objects](../README.md) / mergeDeep
 
 # Function: mergeDeep()
 
 > **mergeDeep**(`target`, `source`): `any`
+
+Defined in: src/lib/objects.ts:20
 
 Deeply merges two objects or arrays.
 
@@ -16,11 +18,15 @@ This function takes a target and a source and recursively merges properties.
 
 ## Parameters
 
-• **target**: `any`
+### target
+
+`any`
 
 The target object or array to merge into.
 
-• **source**: `any`
+### source
+
+`any`
 
 The source object or array to merge from.
 
@@ -38,7 +44,3 @@ const obj2 = { b: { d: 3 }, e: 4 };
 const result = mergeDeep(obj1, obj2);
 // result: { a: 1, b: { c: 2, d: 3 }, e: 4 }
 ```
-
-## Defined in
-
-[src/lib/objects.ts:20](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/objects.ts#L20)

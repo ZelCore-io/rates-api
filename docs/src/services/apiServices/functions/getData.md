@@ -1,18 +1,18 @@
-[**rates-api v3.0.0**](../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../modules.md) / [src/services/apiServices](../README.md) / getData
+[rates-api](../../../../modules.md) / [src/services/apiServices](../README.md) / getData
 
 # Function: getData()
 
 > **getData**(): `object`
 
+Defined in: src/services/apiServices.ts:105
+
 Retrieves the current rates and market data.
 
 ## Returns
-
-`object`
 
 An object containing `rates` and `marketsUSD`.
 
@@ -20,9 +20,22 @@ An object containing `rates` and `marketsUSD`.
 
 > **marketsUSD**: [`MarketsData`](../../../types/type-aliases/MarketsData.md)
 
+Stores market data in USD.
+
+Structure:
+- `marketsUSD[0]`: BTC to USD market data.
+- `marketsUSD[1]`: Errors object.
+
 ### rates
 
 > **rates**: [`RatesData`](../../../types/type-aliases/RatesData.md)
+
+Stores exchange rates data.
+
+Structure:
+- `rates[0]`: BTC to fiat exchange rates.
+- `rates[1]`: Alternative coins to fiat exchange rates.
+- `rates[2]`: Errors object.
 
 ## Example
 
@@ -30,7 +43,3 @@ An object containing `rates` and `marketsUSD`.
 const data = getData();
 console.log(data.rates, data.marketsUSD);
 ```
-
-## Defined in
-
-[src/services/apiServices.ts:105](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/apiServices.ts#L105)

@@ -1,12 +1,14 @@
-[**rates-api v3.0.0**](../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../modules.md) / [src/lib/utils](../README.md) / makeRequestStrings
+[rates-api](../../../../modules.md) / [src/lib/utils](../README.md) / makeRequestStrings
 
 # Function: makeRequestStrings()
 
 > **makeRequestStrings**(`elements`, `maxLength`): `string`[]
+
+Defined in: src/lib/utils.ts:41
 
 Combines elements of a string array into comma-separated strings, ensuring that each combined string does not exceed a specified maximum length.
 
@@ -15,11 +17,15 @@ If adding another element would exceed the `maxLength`, it pushes the current st
 
 ## Parameters
 
-• **elements**: `string`[]
+### elements
+
+`string`[]
 
 The array of strings to combine.
 
-• **maxLength**: `number`
+### maxLength
+
+`number`
 
 The maximum length of each combined string.
 
@@ -37,7 +43,3 @@ const maxLength = 15;
 const result = makeRequestStrings(elements, maxLength);
 // result: ['apple,banana', 'cherry,date', 'fig']
 ```
-
-## Defined in
-
-[src/lib/utils.ts:41](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/lib/utils.ts#L41)

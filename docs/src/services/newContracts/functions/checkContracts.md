@@ -1,12 +1,14 @@
-[**rates-api v3.0.0**](../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../modules.md) / [src/services/newContracts](../README.md) / checkContracts
+[rates-api](../../../../modules.md) / [src/services/newContracts](../README.md) / checkContracts
 
 # Function: checkContracts()
 
 > **checkContracts**(`contracts`): `boolean`
+
+Defined in: src/services/newContracts.ts:32
 
 Checks the provided contracts against the CoinGecko contract map and updates the `foundContracts` store.
 
@@ -15,7 +17,9 @@ and updates the `foundContracts` object by incrementing the count or adding a ne
 
 ## Parameters
 
-• **contracts**: [`ContractWithType`](../../../types/type-aliases/ContractWithType.md)[]
+### contracts
+
+[`ContractWithType`](../../../types/type-aliases/ContractWithType.md)[]
 
 An array of contracts with their types.
 
@@ -38,7 +42,3 @@ const contracts = [
 const success = checkContracts(contracts);
 console.log('Contracts checked:', success);
 ```
-
-## Defined in
-
-[src/services/newContracts.ts:32](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/newContracts.ts#L32)
