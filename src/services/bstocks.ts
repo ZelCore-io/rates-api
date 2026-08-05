@@ -35,7 +35,30 @@ export function _clearLastGoodForTests(): void {
  * @returns Whether the bStocks pipeline is currently degraded.
  */
 export function isBstocksDegraded(): boolean {
-  return freshPricedLastRun === 0 && lastGood.size > 0;
+  if (!config.bStocksEnabled) return false;
+  // A cold start during a Binance outage has nothing in lastGood yet, so
+  // requiring lastGood.size > 0 would report a healthy service that is
+  // serving no bStocks at all. Any run that priced nothing fresh while the
+  // feature is enabled is degraded, whether or not we have stale data.
+  return freshPricedLastRun === 0;
+}
+
+/**
+ * The current last-known-good rows, without touching Binance.
+ *
+ * Used when a caller has given up waiting on `getBstockPrices()`. Returning
+ * an empty array there would drop every bStock from the response while the
+ * provider-level carry-forward in apiServices cannot help: bStock rows carry
+ * `provider: 'coingecko'` but their failure is reported under
+ * `errors.binance`, so nothing would carry them.
+ *
+ * @returns The last-known-good rows, stale entries already pruned.
+ */
+export function getLastGoodBstockPrices(): CryptoPrice[] {
+  const cutoff = Date.now() - config.bstocksLastGoodMaxAgeMs;
+  return Array.from(lastGood.values())
+    .filter((e) => e.at >= cutoff)
+    .map((e) => e.price);
 }
 
 /**

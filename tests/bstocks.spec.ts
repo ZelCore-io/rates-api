@@ -1,6 +1,6 @@
 import { Binance } from '../src/services/providers/binance';
 import {
-  getBstockPrices, _clearLastGoodForTests, isBstocksDegraded,
+  getBstockPrices, getLastGoodBstockPrices, _clearLastGoodForTests, isBstocksDegraded,
 } from '../src/services/bstocks';
 
 jest.mock('../src/services/providers/binance');
@@ -221,5 +221,45 @@ describe('bStocks assembler', () => {
       expect(p.provider).toBe('coingecko');
       expect(p.id).toMatch(/^bstock-[a-z0-9]+$/);
     });
+  });
+});
+
+describe('bStocks degradation signalling and last-good snapshot', () => {
+  beforeEach(() => _clearLastGoodForTests());
+
+  // Regression guard: the 10s race in zelcoreRatesV2 used to resolve to [] on
+  // timeout. bStock rows carry provider "coingecko" but their failure is
+  // reported under errors.binance, so apiServices' provider carry-forward can
+  // never protect them -- every bStock would vanish from /v2/rates while the
+  // wallet showed $0 with no banner. The snapshot below is what the timeout
+  // branch serves instead.
+  it('exposes a last-good snapshot without touching Binance', async () => {
+    mockBinance({
+      assets: [TSLAB],
+      trading: ['TSLABUSDT', 'BTCUSDT'],
+      t24: [
+        { symbol: 'TSLABUSDT', lastPrice: '326.11', priceChangePercent: '2.5', quoteVolume: '1000000' },
+        { symbol: 'BTCUSDT', lastPrice: '65222.00', priceChangePercent: '1.0', quoteVolume: '9' },
+      ],
+      t7d: [{ symbol: 'TSLABUSDT', lastPrice: '326.11', priceChangePercent: '7.1', quoteVolume: '0' }],
+    });
+    await getBstockPrices();
+
+    const snapshot = getLastGoodBstockPrices();
+    expect(snapshot).toHaveLength(1);
+    expect(snapshot[0].id).toBe('bstock-tslab');
+    expect(snapshot[0].provider).toBe('coingecko');
+    expect(snapshot[0].rates.usd).toBeCloseTo(326.11);
+  });
+
+  it('reports degraded on a cold start with no last-good data at all', async () => {
+    // A fresh deploy while Binance is down has nothing cached. Requiring
+    // lastGood to be non-empty would report a healthy service serving zero
+    // bStocks -- silent, and exactly when someone needs to know.
+    mockBinance({
+      assets: [], trading: [], t24: [], t7d: [],
+    });
+    expect(await getBstockPrices()).toHaveLength(0);
+    expect(isBstocksDegraded()).toBe(true);
   });
 });
