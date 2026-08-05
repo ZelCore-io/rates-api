@@ -1,6 +1,7 @@
 import { coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
 import { CoinGecko, BitPay, CryptoCompare, LiveCoinWatch } from './providers';
+import { getBstockPrices } from './bstocks';
 import { PricesResponse, CryptoPrice, ICurrencyRate } from '../types';
 
 /**
@@ -130,6 +131,16 @@ export async function getAll(): Promise<PricesResponse> {
     log.error('LiveCoinWatch error');
     log.error(e);
     errors.livecoinwatch = true;
+  }
+
+  // Fetch bStock prices from Binance
+  try {
+    const bstocks = await getBstockPrices();
+    processed.push(...bstocks);
+  } catch (e) {
+    log.error('bStocks error');
+    log.error(e);
+    errors.binance = true;
   }
 
   return {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import zlib from 'zlib';
 import * as log from '../lib/log';
-import { mergeDeep } from '../lib/objects';
+import { mergeDeep, mergeCryptoByKey } from '../lib/objects';
 import zelcoreRates from './zelcoreRates';
 import zelcoreMarketsUSD from './zelcoreMarketsUSD';
 import zelcoreRatesV2 from './zelcoreRatesV2';
@@ -246,7 +246,7 @@ export async function serviceRefresher(): Promise<void> {
 
     if (ratesV2Fetched && ratesV2Fetched.fiat.length > 20 && ratesV2Fetched.crypto.length > 300) {
       ratesV2.fiat = mergeDeep(ratesV2.fiat, ratesV2Fetched.fiat);
-      ratesV2.crypto = mergeDeep(ratesV2.crypto, ratesV2Fetched.crypto);
+      ratesV2.crypto = mergeCryptoByKey(ratesV2.crypto, ratesV2Fetched.crypto);
       ratesV2.errors = ratesV2Fetched.errors;
     }
 

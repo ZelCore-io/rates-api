@@ -94,7 +94,8 @@ export async function getLatestCoinInfo(): Promise<void> {
     const coinInfo: Record<string, CoinInfo> = (await axios.get(config.zelCoinInfoUrl)).data;
     const coinGeckoKeys = Object.values(coinInfo)
       .map((coin) => coin.coingeckoID)
-      .filter((id) => !!id);
+      .filter((id) => !!id)
+      .filter((id: string) => !id.startsWith('bstock-'));
     const uniqueCoinGeckoKeys = [...new Set(coinGeckoKeys)];
     coinAggregatorIDs.coingecko = [...new Set([...coinAggregatorIDs.coingecko, ...uniqueCoinGeckoKeys])];
     zelData.coinInfo = coinInfo;

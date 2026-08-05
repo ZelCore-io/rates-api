@@ -45,3 +45,17 @@ export function mergeDeep(target: any, source: any) {
   }
   return target;
 }
+
+/**
+ * Replaces the crypto array wholesale, keyed by `${provider}-${id}`.
+ * The previous positional mergeDeep corrupted entries when provider block
+ * lengths shifted between refreshes (duplicate/stale-field bug).
+ */
+export function mergeCryptoByKey<T extends { id: string; provider: string }>(
+  _target: T[],
+  source: T[],
+): T[] {
+  const byKey = new Map<string, T>();
+  for (const entry of source) byKey.set(`${entry.provider}-${entry.id}`, entry);
+  return Array.from(byKey.values());
+}
