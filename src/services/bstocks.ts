@@ -2,9 +2,12 @@ import config from '../../config';
 import { Binance } from './providers/binance';
 import type { CryptoPrice } from '../types';
 
-// Last-known-good per bStock id — during CEX halts (stock splits) the ticker
-// omits the symbol; we keep serving the previous price (display-only per the
-// bStocks partner guide).
+// Last-known-good per bStock id. During a CEX halt (stock splits) Binance
+// returns the symbol PRESENT with lastPrice "0.00000000" rather than omitting
+// it — measured live, 20/20 halted symbols came back present, 9 priced zero —
+// so the guard below is on the price being finite and positive, not on the
+// ticker being absent. We keep serving the previous price (display-only per
+// the bStocks partner guide).
 let lastGood = new Map<string, CryptoPrice>();
 
 export function _clearLastGoodForTests(): void {
@@ -22,11 +25,14 @@ export function _clearLastGoodForTests(): void {
  * basis is introduced.
  *
  * Emitted ids are `bstock-<assetCode lowercase>` under `provider: "coingecko"`
- * — NOT `"binance"` — because the ZelCore client's `use-fiat.js` only resolves
- * the `coingecko|cryptocompare|coinmarketcap|livecoinwatch` provider prefixes,
- * and the sibling `api` repo serves `coinInfo.coingeckoID = "bstock-<code>"` to
- * match. This id/provider pairing is a cross-repo contract — do not change it
- * here in isolation.
+ * — NOT `"binance"`. The client does no prefix parsing: ZelCore's
+ * `store/actions.js` (`applyMarkets`) keys the market store on the literal
+ * string `${provider}-${id}`, and `use-fiat.js` builds the same literal from
+ * `coininfo.json`'s `coingeckoID` as `coingecko-${coingeckoID}`. The sibling
+ * `api` repo serves `coinInfo.coingeckoID = "bstock-<code>"`, so the two
+ * literals only meet if the provider here is exactly `"coingecko"`. Any other
+ * value makes the lookup miss silently — no error, just no price. This
+ * id/provider pairing is a cross-repo contract; do not change it in isolation.
  *
  * A module-level last-known-good map means a symbol that drops out of a given
  * refresh (CEX halt, e.g. around a stock split) keeps being served at its
