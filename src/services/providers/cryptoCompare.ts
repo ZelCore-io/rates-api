@@ -8,10 +8,11 @@ import { CryptoCompareMarkets, CryptoComparePrice } from '../../types';
 // why several quote currencies fit in a single request.
 const MAX_LENGTH_PER_REQUEST = 300;
 
-// Long enough that the 30s refresh loop reuses one response across several
+// Long enough that the 30s refresh loop reuses one response across many
 // cycles: three services call this provider, and the quota is the binding
-// constraint, not freshness.
-const CACHE_TTL_MS = 2.5 * 60 * 1000;
+// constraint, not freshness. At this TTL the two distinct cache keys in use
+// cost about 576 requests a day, down from ~11.5k before any of this.
+const CACHE_TTL_MS = 5 * 60 * 1000;
 
 /**
  * Singleton class to interact with the CryptoCompare API.

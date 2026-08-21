@@ -6,7 +6,7 @@
 
 # Class: CryptoCompare
 
-Defined in: [src/services/providers/cryptoCompare.ts:35](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/cryptoCompare.ts#L35)
+Defined in: [src/services/providers/cryptoCompare.ts:36](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/cryptoCompare.ts#L36)
 
 Singleton class to interact with the CryptoCompare API.
 
@@ -33,7 +33,7 @@ fetchExchangeRates();
 
 > **new CryptoCompare**(): `CryptoCompare`
 
-Defined in: [src/services/providers/cryptoCompare.ts:76](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/cryptoCompare.ts#L76)
+Defined in: [src/services/providers/cryptoCompare.ts:77](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/cryptoCompare.ts#L77)
 
 Private constructor to enforce the singleton pattern.
 
@@ -53,7 +53,7 @@ If an instance already exists.
 
 > **getExchangeRates**(`ids`, `vsCurrency?`): `Promise`\<[`CryptoComparePrice`](../../../../types/type-aliases/CryptoComparePrice.md)\>
 
-Defined in: [src/services/providers/cryptoCompare.ts:200](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/cryptoCompare.ts#L200)
+Defined in: [src/services/providers/cryptoCompare.ts:201](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/cryptoCompare.ts#L201)
 
 Retrieves exchange rates for an array of cryptocurrency symbols.
 
@@ -93,7 +93,7 @@ console.log('Exchange Rates:', rates);
 
 > **getMarketData**(`ids`, `vsCurrency?`): `Promise`\<[`CryptoCompareMarkets`](../../../../types/type-aliases/CryptoCompareMarkets.md)\>
 
-Defined in: [src/services/providers/cryptoCompare.ts:273](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/cryptoCompare.ts#L273)
+Defined in: [src/services/providers/cryptoCompare.ts:274](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/cryptoCompare.ts#L274)
 
 Retrieves market data for an array of cryptocurrency symbols.
 
@@ -139,7 +139,7 @@ console.log('Market Data:', marketData);
 
 > `static` **getInstance**(): `CryptoCompare`
 
-Defined in: [src/services/providers/cryptoCompare.ts:99](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/cryptoCompare.ts#L99)
+Defined in: [src/services/providers/cryptoCompare.ts:100](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/cryptoCompare.ts#L100)
 
 Returns the singleton instance of the CryptoCompare class.
 
