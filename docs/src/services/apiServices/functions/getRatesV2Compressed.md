@@ -8,7 +8,7 @@
 
 > **getRatesV2Compressed**(`req`, `res`): `Promise`\<`void`\>
 
-Defined in: src/services/apiServices.ts:85
+Defined in: [src/services/apiServices.ts:85](https://github.com/ZelCore-io/rates-api/blob/master/src/services/apiServices.ts#L85)
 
 Handles the GET request to retrieve compressed version of the exchange rates (version 2).
 

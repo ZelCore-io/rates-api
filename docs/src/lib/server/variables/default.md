@@ -8,7 +8,7 @@
 
 > `const` **default**: `Express`
 
-Defined in: src/lib/server.ts:33
+Defined in: [src/lib/server.ts:33](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/server.ts#L33)
 
 The main Express application instance.
 

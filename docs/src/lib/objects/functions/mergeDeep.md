@@ -8,7 +8,7 @@
 
 > **mergeDeep**(`target`, `source`): `any`
 
-Defined in: src/lib/objects.ts:20
+Defined in: [src/lib/objects.ts:23](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/objects.ts#L23)
 
 Deeply merges two objects or arrays.
 

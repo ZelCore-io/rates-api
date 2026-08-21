@@ -8,7 +8,7 @@
 
 > **getAll**(): `Promise`\<[`PricesResponse`](../../../types/type-aliases/PricesResponse.md)\>
 
-Defined in: src/services/zelcoreRatesV2.ts:29
+Defined in: [src/services/zelcoreRatesV2.ts:47](https://github.com/ZelCore-io/rates-api/blob/master/src/services/zelcoreRatesV2.ts#L47)
 
 Fetches and aggregates cryptocurrency prices and fiat rates from multiple providers.
 

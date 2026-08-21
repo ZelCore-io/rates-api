@@ -8,4 +8,4 @@
 
 > **FoundContractStore** = `Record`\<`string`, \{ `cg`: [`CoinGeckoToken`](CoinGeckoToken.md); `count`: `number`; `zel`: [`ContractWithType`](ContractWithType.md); \}\>
 
-Defined in: src/types.ts:65
+Defined in: [src/types.ts:65](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L65)

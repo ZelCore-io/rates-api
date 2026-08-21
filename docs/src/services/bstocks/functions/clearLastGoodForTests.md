@@ -8,7 +8,7 @@
 
 > **\_clearLastGoodForTests**(): `void`
 
-Defined in: src/services/bstocks.ts:13
+Defined in: [src/services/bstocks.ts:25](https://github.com/ZelCore-io/rates-api/blob/master/src/services/bstocks.ts#L25)
 
 ## Returns
 

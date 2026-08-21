@@ -6,7 +6,7 @@
 
 # Class: LiveCoinWatch
 
-Defined in: src/services/providers/liveCoinWatch.ts:28
+Defined in: [src/services/providers/liveCoinWatch.ts:28](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/liveCoinWatch.ts#L28)
 
 Singleton class to interact with the LiveCoinWatch API.
 
@@ -33,7 +33,7 @@ fetchExchangeRates();
 
 > **new LiveCoinWatch**(): `LiveCoinWatch`
 
-Defined in: src/services/providers/liveCoinWatch.ts:69
+Defined in: [src/services/providers/liveCoinWatch.ts:69](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/liveCoinWatch.ts#L69)
 
 Private constructor to enforce the singleton pattern.
 
@@ -53,7 +53,7 @@ If an instance already exists.
 
 > **getExchangeRates**(`ids`, `vsCurrency?`): `Promise`\<[`LiveCoinWatchMarket`](../../../../types/type-aliases/LiveCoinWatchMarket.md)[]\>
 
-Defined in: src/services/providers/liveCoinWatch.ts:164
+Defined in: [src/services/providers/liveCoinWatch.ts:164](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/liveCoinWatch.ts#L164)
 
 Retrieves exchange rates for an array of cryptocurrency symbols.
 
@@ -93,7 +93,7 @@ console.log('Exchange Rates:', rates);
 
 > `static` **getInstance**(): `LiveCoinWatch`
 
-Defined in: src/services/providers/liveCoinWatch.ts:92
+Defined in: [src/services/providers/liveCoinWatch.ts:92](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/liveCoinWatch.ts#L92)
 
 Returns the singleton instance of the LiveCoinWatch class.
 

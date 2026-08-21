@@ -8,4 +8,4 @@
 
 > **RatesData** = \[[`ICurrencyRate`](../interfaces/ICurrencyRate.md)[], [`CodeRates`](CodeRates.md), [`IErrorObject`](../interfaces/IErrorObject.md)\]
 
-Defined in: src/types.ts:79
+Defined in: [src/types.ts:79](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L79)

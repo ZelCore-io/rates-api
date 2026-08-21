@@ -6,7 +6,7 @@
 
 # Interface: ICurrencyRate
 
-Defined in: src/types.ts:67
+Defined in: [src/types.ts:67](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L67)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: src/types.ts:67
 
 > **code**: `string`
 
-Defined in: src/types.ts:68
+Defined in: [src/types.ts:68](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L68)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: src/types.ts:68
 
 > **name**: `string`
 
-Defined in: src/types.ts:69
+Defined in: [src/types.ts:69](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L69)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: src/types.ts:69
 
 > **rate**: `number`
 
-Defined in: src/types.ts:70
+Defined in: [src/types.ts:70](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L70)

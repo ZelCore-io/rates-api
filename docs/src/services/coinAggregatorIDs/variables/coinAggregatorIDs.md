@@ -8,7 +8,7 @@
 
 > `const` **coinAggregatorIDs**: `object`
 
-Defined in: src/services/coinAggregatorIDs.ts:14
+Defined in: [src/services/coinAggregatorIDs.ts:14](https://github.com/ZelCore-io/rates-api/blob/master/src/services/coinAggregatorIDs.ts#L14)
 
 An object containing arrays of cryptocurrency IDs used by different data aggregators.
 

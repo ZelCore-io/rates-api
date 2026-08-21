@@ -6,7 +6,7 @@
 
 # Class: CoinGecko
 
-Defined in: src/services/providers/coinGecko.ts:40
+Defined in: [src/services/providers/coinGecko.ts:40](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/coinGecko.ts#L40)
 
 Singleton class to interact with the CoinGecko API.
 
@@ -33,7 +33,7 @@ fetchRates();
 
 > **new CoinGecko**(): `CoinGecko`
 
-Defined in: src/services/providers/coinGecko.ts:81
+Defined in: [src/services/providers/coinGecko.ts:81](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/coinGecko.ts#L81)
 
 Private constructor to enforce the singleton pattern.
 
@@ -53,7 +53,7 @@ If an instance already exists.
 
 > **getAssetPlatformData**(): `Promise`\<`any`\>
 
-Defined in: src/services/providers/coinGecko.ts:207
+Defined in: [src/services/providers/coinGecko.ts:207](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/coinGecko.ts#L207)
 
 Retrieves asset platform data from CoinGecko.
 
@@ -77,7 +77,7 @@ console.log('Asset Platforms:', assetPlatforms);
 
 > **getCoinsList**(`includePlatform?`): `Promise`\<`any`\>
 
-Defined in: src/services/providers/coinGecko.ts:173
+Defined in: [src/services/providers/coinGecko.ts:173](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/coinGecko.ts#L173)
 
 Retrieves a list of all coins supported by CoinGecko.
 
@@ -109,7 +109,7 @@ console.log('Coins List:', coinsList);
 
 > **getExchangeRates**(`ids`, `vsCurrency?`): `Promise`\<[`CoinGeckoPrice`](../../../../types/type-aliases/CoinGeckoPrice.md)[]\>
 
-Defined in: src/services/providers/coinGecko.ts:278
+Defined in: [src/services/providers/coinGecko.ts:278](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/coinGecko.ts#L278)
 
 Retrieves exchange rates for an array of coin IDs.
 
@@ -149,7 +149,7 @@ console.log('Exchange Rates:', rates);
 
 > **getKeyUsage**(): `Promise`\<`KeyUsage` \| `null`\>
 
-Defined in: src/services/providers/coinGecko.ts:138
+Defined in: [src/services/providers/coinGecko.ts:138](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/coinGecko.ts#L138)
 
 Retrieves the usage statistics of the CoinGecko API key.
 
@@ -176,7 +176,7 @@ console.log('API Key Usage:', usage);
 
 > `static` **getInstance**(): `CoinGecko`
 
-Defined in: src/services/providers/coinGecko.ts:104
+Defined in: [src/services/providers/coinGecko.ts:104](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/coinGecko.ts#L104)
 
 Returns the singleton instance of the CoinGecko class.
 

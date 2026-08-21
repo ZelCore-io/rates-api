@@ -8,6 +8,6 @@
 
 > **cgTokens**: [`CoinGeckoToken`](../../../types/type-aliases/CoinGeckoToken.md)[] = `cgCoins`
 
-Defined in: src/services/coinAggregatorIDs.ts:70
+Defined in: [src/services/coinAggregatorIDs.ts:72](https://github.com/ZelCore-io/rates-api/blob/master/src/services/coinAggregatorIDs.ts#L72)
 
 Array of CoinGecko tokens.

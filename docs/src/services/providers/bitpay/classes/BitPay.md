@@ -6,7 +6,7 @@
 
 # Class: BitPay
 
-Defined in: src/services/providers/bitpay.ts:24
+Defined in: [src/services/providers/bitpay.ts:24](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/bitpay.ts#L24)
 
 Singleton class to interact with the BitPay API.
 
@@ -33,7 +33,7 @@ fetchRates();
 
 > **new BitPay**(): `BitPay`
 
-Defined in: src/services/providers/bitpay.ts:58
+Defined in: [src/services/providers/bitpay.ts:58](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/bitpay.ts#L58)
 
 Private constructor to enforce the singleton pattern.
 
@@ -53,7 +53,7 @@ If an instance already exists.
 
 > **getFiatRates**(): `Promise`\<`any`\>
 
-Defined in: src/services/providers/bitpay.ts:115
+Defined in: [src/services/providers/bitpay.ts:115](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/bitpay.ts#L115)
 
 Retrieves fiat currency exchange rates from the BitPay API.
 
@@ -80,7 +80,7 @@ console.log(rates);
 
 > `static` **getInstance**(): `BitPay`
 
-Defined in: src/services/providers/bitpay.ts:81
+Defined in: [src/services/providers/bitpay.ts:81](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/bitpay.ts#L81)
 
 Returns the singleton instance of the BitPay class.
 

@@ -10,3 +10,5 @@
 
 - [\_clearLastGoodForTests](functions/clearLastGoodForTests.md)
 - [getBstockPrices](functions/getBstockPrices.md)
+- [getLastGoodBstockPrices](functions/getLastGoodBstockPrices.md)
+- [isBstocksDegraded](functions/isBstocksDegraded.md)

@@ -8,7 +8,7 @@
 
 > **replaceCryptoByKey**\<`T`\>(`source`): `T`[]
 
-Defined in: src/lib/objects.ts:74
+Defined in: [src/lib/objects.ts:78](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/objects.ts#L78)
 
 Rebuilds the crypto array from `source` alone, de-duplicated by
 `${provider}-${id}`, preserving source order with last-write-wins.

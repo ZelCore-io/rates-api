@@ -8,7 +8,7 @@
 
 > **checkContracts**(`contracts`): `boolean`
 
-Defined in: src/services/newContracts.ts:32
+Defined in: [src/services/newContracts.ts:32](https://github.com/ZelCore-io/rates-api/blob/master/src/services/newContracts.ts#L32)
 
 Checks the provided contracts against the CoinGecko contract map and updates the `foundContracts` store.
 

@@ -8,7 +8,7 @@
 
 > **makeRequestStrings**(`elements`, `maxLength`): `string`[]
 
-Defined in: src/lib/utils.ts:41
+Defined in: [src/lib/utils.ts:41](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/utils.ts#L41)
 
 Combines elements of a string array into comma-separated strings, ensuring that each combined string does not exceed a specified maximum length.
 

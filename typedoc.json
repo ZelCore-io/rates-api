@@ -10,6 +10,7 @@
   "excludePrivate": true,
   "excludeProtected": true,
   "includeVersion": true,
+  "gitRevision": "master",
   "compilerOptions": {
     "target": "es2020",
     "module": "commonjs",

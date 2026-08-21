@@ -8,7 +8,7 @@
 
 > **BinanceTicker** = `object`
 
-Defined in: src/types.ts:137
+Defined in: [src/types.ts:137](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L137)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: src/types.ts:137
 
 > **lastPrice**: `string`
 
-Defined in: src/types.ts:139
+Defined in: [src/types.ts:139](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L139)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: src/types.ts:139
 
 > **priceChangePercent**: `string`
 
-Defined in: src/types.ts:140
+Defined in: [src/types.ts:140](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L140)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: src/types.ts:140
 
 > **quoteVolume**: `string`
 
-Defined in: src/types.ts:141
+Defined in: [src/types.ts:141](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L141)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: src/types.ts:141
 
 > **symbol**: `string`
 
-Defined in: src/types.ts:138
+Defined in: [src/types.ts:138](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L138)

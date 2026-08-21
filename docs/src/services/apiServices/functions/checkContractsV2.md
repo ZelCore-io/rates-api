@@ -8,7 +8,7 @@
 
 > **checkContractsV2**(`req`, `res`): `Promise`\<`void`\>
 
-Defined in: src/services/apiServices.ts:156
+Defined in: [src/services/apiServices.ts:156](https://github.com/ZelCore-io/rates-api/blob/master/src/services/apiServices.ts#L156)
 
 Handles the request to check for new contracts.
 

@@ -8,7 +8,7 @@
 
 > **getAll**(): `Promise`\<[`RatesData`](../../../types/type-aliases/RatesData.md)\>
 
-Defined in: src/services/zelcoreRates.ts:34
+Defined in: [src/services/zelcoreRates.ts:34](https://github.com/ZelCore-io/rates-api/blob/master/src/services/zelcoreRates.ts#L34)
 
 Fetches exchange rates and price data from various providers and aggregates them.
 

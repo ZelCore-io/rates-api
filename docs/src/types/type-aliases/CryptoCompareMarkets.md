@@ -8,7 +8,7 @@
 
 > **CryptoCompareMarkets** = `object`
 
-Defined in: src/types.ts:149
+Defined in: [src/types.ts:149](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L149)
 
 ## Index Signature
 

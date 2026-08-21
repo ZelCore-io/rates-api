@@ -8,7 +8,7 @@
 
 > **serviceRefresher**(): `Promise`\<`void`\>
 
-Defined in: src/services/apiServices.ts:224
+Defined in: [src/services/apiServices.ts:224](https://github.com/ZelCore-io/rates-api/blob/master/src/services/apiServices.ts#L224)
 
 Periodically refreshes market data and exchange rates.
 

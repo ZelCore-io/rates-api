@@ -8,7 +8,7 @@
 
 > **CoinGeckoPrice** = `object`
 
-Defined in: src/types.ts:95
+Defined in: [src/types.ts:95](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L95)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: src/types.ts:95
 
 > **ath**: `number`
 
-Defined in: src/types.ts:114
+Defined in: [src/types.ts:114](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L114)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: src/types.ts:114
 
 > **ath\_change\_percentage**: `number`
 
-Defined in: src/types.ts:115
+Defined in: [src/types.ts:115](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L115)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: src/types.ts:115
 
 > **ath\_date**: `string`
 
-Defined in: src/types.ts:116
+Defined in: [src/types.ts:116](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L116)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: src/types.ts:116
 
 > **atl**: `number`
 
-Defined in: src/types.ts:117
+Defined in: [src/types.ts:117](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L117)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: src/types.ts:117
 
 > **atl\_change\_percentage**: `number`
 
-Defined in: src/types.ts:118
+Defined in: [src/types.ts:118](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L118)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: src/types.ts:118
 
 > **atl\_date**: `string`
 
-Defined in: src/types.ts:119
+Defined in: [src/types.ts:119](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L119)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: src/types.ts:119
 
 > **circulating\_supply**: `number`
 
-Defined in: src/types.ts:111
+Defined in: [src/types.ts:111](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L111)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: src/types.ts:111
 
 > **current\_price**: `number`
 
-Defined in: src/types.ts:100
+Defined in: [src/types.ts:100](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L100)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: src/types.ts:100
 
 > **fully\_diluted\_valuation**: `number`
 
-Defined in: src/types.ts:103
+Defined in: [src/types.ts:103](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L103)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: src/types.ts:103
 
 > **high\_24h**: `number`
 
-Defined in: src/types.ts:105
+Defined in: [src/types.ts:105](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L105)
 
 ***
 
@@ -96,7 +96,7 @@ Defined in: src/types.ts:105
 
 > **id**: `string`
 
-Defined in: src/types.ts:96
+Defined in: [src/types.ts:96](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L96)
 
 ***
 
@@ -104,7 +104,7 @@ Defined in: src/types.ts:96
 
 > **image**: `string`
 
-Defined in: src/types.ts:99
+Defined in: [src/types.ts:99](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L99)
 
 ***
 
@@ -112,7 +112,7 @@ Defined in: src/types.ts:99
 
 > **last\_updated**: `string`
 
-Defined in: src/types.ts:125
+Defined in: [src/types.ts:125](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L125)
 
 ***
 
@@ -120,7 +120,7 @@ Defined in: src/types.ts:125
 
 > **low\_24h**: `number`
 
-Defined in: src/types.ts:106
+Defined in: [src/types.ts:106](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L106)
 
 ***
 
@@ -128,7 +128,7 @@ Defined in: src/types.ts:106
 
 > **market\_cap**: `number`
 
-Defined in: src/types.ts:101
+Defined in: [src/types.ts:101](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L101)
 
 ***
 
@@ -136,7 +136,7 @@ Defined in: src/types.ts:101
 
 > **market\_cap\_change\_24h**: `number`
 
-Defined in: src/types.ts:109
+Defined in: [src/types.ts:109](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L109)
 
 ***
 
@@ -144,7 +144,7 @@ Defined in: src/types.ts:109
 
 > **market\_cap\_change\_percentage\_24h**: `number`
 
-Defined in: src/types.ts:110
+Defined in: [src/types.ts:110](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L110)
 
 ***
 
@@ -152,7 +152,7 @@ Defined in: src/types.ts:110
 
 > **market\_cap\_rank**: `number`
 
-Defined in: src/types.ts:102
+Defined in: [src/types.ts:102](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L102)
 
 ***
 
@@ -160,7 +160,7 @@ Defined in: src/types.ts:102
 
 > **max\_supply**: `number`
 
-Defined in: src/types.ts:113
+Defined in: [src/types.ts:113](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L113)
 
 ***
 
@@ -168,7 +168,7 @@ Defined in: src/types.ts:113
 
 > **name**: `string`
 
-Defined in: src/types.ts:98
+Defined in: [src/types.ts:98](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L98)
 
 ***
 
@@ -176,7 +176,7 @@ Defined in: src/types.ts:98
 
 > **price\_change\_24h**: `number`
 
-Defined in: src/types.ts:107
+Defined in: [src/types.ts:107](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L107)
 
 ***
 
@@ -184,7 +184,7 @@ Defined in: src/types.ts:107
 
 > **price\_change\_percentage\_24h**: `number`
 
-Defined in: src/types.ts:108
+Defined in: [src/types.ts:108](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L108)
 
 ***
 
@@ -192,7 +192,7 @@ Defined in: src/types.ts:108
 
 > **price\_change\_percentage\_7d\_in\_currency**: `number`
 
-Defined in: src/types.ts:126
+Defined in: [src/types.ts:126](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L126)
 
 ***
 
@@ -200,7 +200,7 @@ Defined in: src/types.ts:126
 
 > **roi**: `null` \| \{ `currency`: `string`; `percentage`: `number`; `times`: `number`; \}
 
-Defined in: src/types.ts:120
+Defined in: [src/types.ts:120](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L120)
 
 ***
 
@@ -208,7 +208,7 @@ Defined in: src/types.ts:120
 
 > **symbol**: `string`
 
-Defined in: src/types.ts:97
+Defined in: [src/types.ts:97](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L97)
 
 ***
 
@@ -216,7 +216,7 @@ Defined in: src/types.ts:97
 
 > **total\_supply**: `number`
 
-Defined in: src/types.ts:112
+Defined in: [src/types.ts:112](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L112)
 
 ***
 
@@ -224,4 +224,4 @@ Defined in: src/types.ts:112
 
 > **total\_volume**: `number`
 
-Defined in: src/types.ts:104
+Defined in: [src/types.ts:104](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L104)

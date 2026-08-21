@@ -8,7 +8,7 @@
 
 > **getAll**(): `Promise`\<[`MarketsData`](../../../types/type-aliases/MarketsData.md)\>
 
-Defined in: src/services/zelcoreMarketsUSD.ts:21
+Defined in: [src/services/zelcoreMarketsUSD.ts:21](https://github.com/ZelCore-io/rates-api/blob/master/src/services/zelcoreMarketsUSD.ts#L21)
 
 Fetches market data from multiple providers and aggregates it.
 

@@ -8,7 +8,7 @@
 
 > **dataRefresher**(): `Promise`\<`void`\>
 
-Defined in: src/services/apiServices.ts:195
+Defined in: [src/services/apiServices.ts:195](https://github.com/ZelCore-io/rates-api/blob/master/src/services/apiServices.ts#L195)
 
 Periodically refreshes coin information and aggregator IDs.
 

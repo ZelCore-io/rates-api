@@ -6,7 +6,7 @@
 
 # Interface: IErrorObject
 
-Defined in: src/types.ts:75
+Defined in: [src/types.ts:75](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L75)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: src/types.ts:75
 
 > **errors**: `object`
 
-Defined in: src/types.ts:76
+Defined in: [src/types.ts:76](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L76)
 
 #### Index Signature
 

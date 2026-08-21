@@ -8,7 +8,7 @@
 
 > **default**: `object`
 
-Defined in: src/services/zelcoreRates.ts:153
+Defined in: [src/services/zelcoreRates.ts:153](https://github.com/ZelCore-io/rates-api/blob/master/src/services/zelcoreRates.ts#L153)
 
 ## Type Declaration
 

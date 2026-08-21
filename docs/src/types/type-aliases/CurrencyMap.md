@@ -8,7 +8,7 @@
 
 > **CurrencyMap** = `object`
 
-Defined in: src/types.ts:91
+Defined in: [src/types.ts:91](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L91)
 
 ## Index Signature
 

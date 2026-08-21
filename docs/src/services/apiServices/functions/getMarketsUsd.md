@@ -8,7 +8,7 @@
 
 > **getMarketsUsd**(`req`, `res`): `Promise`\<`void`\>
 
-Defined in: src/services/apiServices.ts:123
+Defined in: [src/services/apiServices.ts:123](https://github.com/ZelCore-io/rates-api/blob/master/src/services/apiServices.ts#L123)
 
 Handles the GET request to retrieve market data in USD.
 

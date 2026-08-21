@@ -8,7 +8,7 @@
 
 > **CoinGeckoToken** = `object`
 
-Defined in: src/types.ts:58
+Defined in: [src/types.ts:58](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L58)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: src/types.ts:58
 
 > **id**: `string`
 
-Defined in: src/types.ts:59
+Defined in: [src/types.ts:59](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L59)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: src/types.ts:59
 
 > **name**: `string`
 
-Defined in: src/types.ts:61
+Defined in: [src/types.ts:61](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L61)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: src/types.ts:61
 
 > **platforms**: `Record`\<`string`, `string`\>
 
-Defined in: src/types.ts:62
+Defined in: [src/types.ts:62](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L62)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: src/types.ts:62
 
 > **symbol**: `string`
 
-Defined in: src/types.ts:60
+Defined in: [src/types.ts:60](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L60)

@@ -8,7 +8,7 @@
 
 > **CodeRates** = `object`
 
-Defined in: src/types.ts:73
+Defined in: [src/types.ts:73](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L73)
 
 ## Index Signature
 

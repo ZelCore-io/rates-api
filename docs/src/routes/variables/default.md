@@ -8,7 +8,7 @@
 
 > **default**: (`app`) => `void`
 
-Defined in: src/routes.ts:26
+Defined in: [src/routes.ts:26](https://github.com/ZelCore-io/rates-api/blob/master/src/routes.ts#L26)
 
 Configures the Express application by setting up routes, middleware, and caching.
 

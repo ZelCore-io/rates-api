@@ -8,7 +8,7 @@
 
 > `const` **zelData**: `object`
 
-Defined in: src/services/coinAggregatorIDs.ts:61
+Defined in: [src/services/coinAggregatorIDs.ts:61](https://github.com/ZelCore-io/rates-api/blob/master/src/services/coinAggregatorIDs.ts#L61)
 
 Global object to store coin information.
 

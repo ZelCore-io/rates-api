@@ -8,6 +8,6 @@
 
 > `const` **foundContracts**: [`FoundContractStore`](../../../types/type-aliases/FoundContractStore.md) = `{}`
 
-Defined in: src/services/newContracts.ts:8
+Defined in: [src/services/newContracts.ts:8](https://github.com/ZelCore-io/rates-api/blob/master/src/services/newContracts.ts#L8)
 
 Stores the found contracts with their occurrence count.

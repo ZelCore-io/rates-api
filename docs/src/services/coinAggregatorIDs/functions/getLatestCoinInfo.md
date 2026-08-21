@@ -8,7 +8,7 @@
 
 > **getLatestCoinInfo**(): `Promise`\<`void`\>
 
-Defined in: src/services/coinAggregatorIDs.ts:92
+Defined in: [src/services/coinAggregatorIDs.ts:94](https://github.com/ZelCore-io/rates-api/blob/master/src/services/coinAggregatorIDs.ts#L94)
 
 Fetches the latest coin information and updates the global data.
 

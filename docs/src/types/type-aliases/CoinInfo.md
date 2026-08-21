@@ -8,7 +8,7 @@
 
 > **CoinInfo** = `object`
 
-Defined in: src/types.ts:32
+Defined in: [src/types.ts:32](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L32)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: src/types.ts:32
 
 > **auditInfos**: `string`[]
 
-Defined in: src/types.ts:54
+Defined in: [src/types.ts:54](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L54)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: src/types.ts:54
 
 > **bitcointalk**: `string`
 
-Defined in: src/types.ts:41
+Defined in: [src/types.ts:41](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L41)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: src/types.ts:41
 
 > **circulating\_supply**: `number` \| `null`
 
-Defined in: src/types.ts:35
+Defined in: [src/types.ts:35](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L35)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: src/types.ts:35
 
 > **coingeckoID**: `string`
 
-Defined in: src/types.ts:53
+Defined in: [src/types.ts:53](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L53)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: src/types.ts:53
 
 > **coinMarketCapID**: `string`
 
-Defined in: src/types.ts:52
+Defined in: [src/types.ts:52](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L52)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: src/types.ts:52
 
 > **cryptoCompareID**: `string`
 
-Defined in: src/types.ts:51
+Defined in: [src/types.ts:51](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L51)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: src/types.ts:51
 
 > **description**: `string`
 
-Defined in: src/types.ts:33
+Defined in: [src/types.ts:33](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L33)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: src/types.ts:33
 
 > **discord**: `string`
 
-Defined in: src/types.ts:39
+Defined in: [src/types.ts:39](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L39)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: src/types.ts:39
 
 > **explorers**: `string`[]
 
-Defined in: src/types.ts:37
+Defined in: [src/types.ts:37](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L37)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: src/types.ts:37
 
 > **facebook**: `string`
 
-Defined in: src/types.ts:42
+Defined in: [src/types.ts:42](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L42)
 
 ***
 
@@ -96,7 +96,7 @@ Defined in: src/types.ts:42
 
 > **instagram**: `string`
 
-Defined in: src/types.ts:47
+Defined in: [src/types.ts:47](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L47)
 
 ***
 
@@ -104,7 +104,7 @@ Defined in: src/types.ts:47
 
 > **linkedin**: `string`
 
-Defined in: src/types.ts:50
+Defined in: [src/types.ts:50](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L50)
 
 ***
 
@@ -112,7 +112,7 @@ Defined in: src/types.ts:50
 
 > **medium**: `string`
 
-Defined in: src/types.ts:38
+Defined in: [src/types.ts:38](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L38)
 
 ***
 
@@ -120,7 +120,7 @@ Defined in: src/types.ts:38
 
 > **reddit**: `string`
 
-Defined in: src/types.ts:44
+Defined in: [src/types.ts:44](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L44)
 
 ***
 
@@ -128,7 +128,7 @@ Defined in: src/types.ts:44
 
 > **repository**: `string`
 
-Defined in: src/types.ts:45
+Defined in: [src/types.ts:45](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L45)
 
 ***
 
@@ -136,7 +136,7 @@ Defined in: src/types.ts:45
 
 > **telegram**: `string`
 
-Defined in: src/types.ts:40
+Defined in: [src/types.ts:40](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L40)
 
 ***
 
@@ -144,7 +144,7 @@ Defined in: src/types.ts:40
 
 > **tiktok**: `string`
 
-Defined in: src/types.ts:48
+Defined in: [src/types.ts:48](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L48)
 
 ***
 
@@ -152,7 +152,7 @@ Defined in: src/types.ts:48
 
 > **total\_supply**: `number` \| `null`
 
-Defined in: src/types.ts:34
+Defined in: [src/types.ts:34](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L34)
 
 ***
 
@@ -160,7 +160,7 @@ Defined in: src/types.ts:34
 
 > **twitch**: `string`
 
-Defined in: src/types.ts:49
+Defined in: [src/types.ts:49](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L49)
 
 ***
 
@@ -168,7 +168,7 @@ Defined in: src/types.ts:49
 
 > **twitter**: `string`
 
-Defined in: src/types.ts:43
+Defined in: [src/types.ts:43](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L43)
 
 ***
 
@@ -176,7 +176,7 @@ Defined in: src/types.ts:43
 
 > **websites**: `string`[]
 
-Defined in: src/types.ts:36
+Defined in: [src/types.ts:36](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L36)
 
 ***
 
@@ -184,7 +184,7 @@ Defined in: src/types.ts:36
 
 > **whitepaper**: `string`[]
 
-Defined in: src/types.ts:55
+Defined in: [src/types.ts:55](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L55)
 
 ***
 
@@ -192,4 +192,4 @@ Defined in: src/types.ts:55
 
 > **youtube**: `string`
 
-Defined in: src/types.ts:46
+Defined in: [src/types.ts:46](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L46)

@@ -8,7 +8,7 @@
 
 > **getFoundContracts**(): [`FoundContractStore`](../../../types/type-aliases/FoundContractStore.md)
 
-Defined in: src/services/apiServices.ts:141
+Defined in: [src/services/apiServices.ts:141](https://github.com/ZelCore-io/rates-api/blob/master/src/services/apiServices.ts#L141)
 
 Retrieves the found contracts.
 

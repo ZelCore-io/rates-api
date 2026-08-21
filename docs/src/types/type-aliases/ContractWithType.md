@@ -8,7 +8,7 @@
 
 > **ContractWithType** = `object`
 
-Defined in: src/types.ts:27
+Defined in: [src/types.ts:27](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L27)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: src/types.ts:27
 
 > **address**: `string`
 
-Defined in: src/types.ts:28
+Defined in: [src/types.ts:28](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L28)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: src/types.ts:28
 
 > **type**: `string`
 
-Defined in: src/types.ts:29
+Defined in: [src/types.ts:29](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L29)

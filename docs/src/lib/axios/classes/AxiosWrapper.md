@@ -6,7 +6,7 @@
 
 # Class: AxiosWrapper
 
-Defined in: src/lib/axios.ts:26
+Defined in: [src/lib/axios.ts:26](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/axios.ts#L26)
 
 A wrapper around Axios to handle automatic retries and customizable configurations.
 
@@ -37,7 +37,7 @@ apiClient.post('/users', { name: 'John Doe' })
 
 > **new AxiosWrapper**(`baseURL`, `maxRetries?`, `timeout?`): `AxiosWrapper`
 
-Defined in: src/lib/axios.ts:43
+Defined in: [src/lib/axios.ts:45](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/axios.ts#L45)
 
 Creates an instance of AxiosWrapper.
 
@@ -77,7 +77,7 @@ const apiClient = new AxiosWrapper('https://api.example.com', 5, 10000);
 
 > **delete**(`url`, `config?`): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
 
-Defined in: src/lib/axios.ts:171
+Defined in: [src/lib/axios.ts:173](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/axios.ts#L173)
 
 Performs a DELETE request.
 
@@ -115,7 +115,7 @@ apiClient.delete('/users/123')
 
 > **get**(`url`, `config?`): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
 
-Defined in: src/lib/axios.ts:115
+Defined in: [src/lib/axios.ts:117](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/axios.ts#L117)
 
 Performs a GET request.
 
@@ -153,7 +153,7 @@ apiClient.get('/users')
 
 > **post**(`url`, `data?`, `config?`): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
 
-Defined in: src/lib/axios.ts:134
+Defined in: [src/lib/axios.ts:136](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/axios.ts#L136)
 
 Performs a POST request.
 
@@ -197,7 +197,7 @@ apiClient.post('/users', { name: 'John Doe' })
 
 > **put**(`url`, `data?`, `config?`): `Promise`\<`AxiosResponse`\<`any`, `any`\>\>
 
-Defined in: src/lib/axios.ts:153
+Defined in: [src/lib/axios.ts:155](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/axios.ts#L155)
 
 Performs a PUT request.
 

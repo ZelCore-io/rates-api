@@ -8,7 +8,7 @@
 
 > **getData**(): `object`
 
-Defined in: src/services/apiServices.ts:105
+Defined in: [src/services/apiServices.ts:105](https://github.com/ZelCore-io/rates-api/blob/master/src/services/apiServices.ts#L105)
 
 Retrieves the current rates and market data.
 

@@ -8,4 +8,4 @@
 
 > **MarketsData** = \[[`CurrencyMap`](CurrencyMap.md), [`IErrorObject`](../interfaces/IErrorObject.md)\]
 
-Defined in: src/types.ts:93
+Defined in: [src/types.ts:93](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L93)

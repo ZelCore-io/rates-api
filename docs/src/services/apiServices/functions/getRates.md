@@ -8,7 +8,7 @@
 
 > **getRates**(`req`, `res`): `Promise`\<`void`\>
 
-Defined in: src/services/apiServices.ts:47
+Defined in: [src/services/apiServices.ts:47](https://github.com/ZelCore-io/rates-api/blob/master/src/services/apiServices.ts#L47)
 
 Handles the GET request to retrieve exchange rates.
 

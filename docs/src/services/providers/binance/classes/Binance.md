@@ -6,7 +6,7 @@
 
 # Class: Binance
 
-Defined in: src/services/providers/binance.ts:33
+Defined in: [src/services/providers/binance.ts:38](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/binance.ts#L38)
 
 Singleton class to interact with Binance's public (no-API-key) endpoints.
 
@@ -46,7 +46,7 @@ async function fetchBStocks() {
 
 > **chunkSymbols**(`symbols`): `string`[][]
 
-Defined in: src/services/providers/binance.ts:122
+Defined in: [src/services/providers/binance.ts:137](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/binance.ts#L137)
 
 Splits a symbol list into chunks of at most `TICKER_CHUNK` symbols, to stay
 under Binance's per-request weight cap on the 7d rolling-window ticker.
@@ -71,7 +71,7 @@ An array of symbol chunks.
 
 > **filterBscAssets**(`assets`): [`BinanceTokenisedAsset`](../../../../types/type-aliases/BinanceTokenisedAsset.md)[]
 
-Defined in: src/services/providers/binance.ts:110
+Defined in: [src/services/providers/binance.ts:124](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/binance.ts#L124)
 
 Filters tokenised assets down to those with a BSC (BNB Smart Chain) contract listed.
 
@@ -95,7 +95,7 @@ Only the assets with at least one BSC entry in `caList`.
 
 > **getTicker24h**(`symbols`): `Promise`\<[`BinanceTicker`](../../../../types/type-aliases/BinanceTicker.md)[]\>
 
-Defined in: src/services/providers/binance.ts:231
+Defined in: [src/services/providers/binance.ts:291](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/binance.ts#L291)
 
 Retrieves 24h tickers for the given symbols in a single request.
 
@@ -123,7 +123,7 @@ One ticker per requested symbol that has ever been seen.
 
 > **getTicker7d**(`symbols`): `Promise`\<[`BinanceTicker`](../../../../types/type-aliases/BinanceTicker.md)[]\>
 
-Defined in: src/services/providers/binance.ts:261
+Defined in: [src/services/providers/binance.ts:321](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/binance.ts#L321)
 
 Retrieves 7d rolling-window tickers for the given symbols, chunked to stay
 under Binance's per-request weight cap.
@@ -153,7 +153,7 @@ One ticker per requested symbol that has ever been seen.
 
 > **getTokenisedAssets**(): `Promise`\<[`BinanceTokenisedAsset`](../../../../types/type-aliases/BinanceTokenisedAsset.md)[]\>
 
-Defined in: src/services/providers/binance.ts:173
+Defined in: [src/services/providers/binance.ts:226](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/binance.ts#L226)
 
 Retrieves the tokenised-asset universe (bStocks), filtered to those with a BSC contract.
 
@@ -171,7 +171,7 @@ The BSC-listed tokenised assets.
 
 > **getTradingSymbols**(): `Promise`\<`Set`\<`string`\>\>
 
-Defined in: src/services/providers/binance.ts:201
+Defined in: [src/services/providers/binance.ts:258](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/binance.ts#L258)
 
 Retrieves the set of Spot symbols currently in `TRADING` status.
 
@@ -192,13 +192,14 @@ The set of currently-trading symbols.
 
 ### lastGoodAgeMs()
 
-> **lastGoodAgeMs**(`symbol`): `number` \| `null`
+> **lastGoodAgeMs**(`symbol`, `window?`): `number` \| `null`
 
-Defined in: src/services/providers/binance.ts:161
+Defined in: [src/services/providers/binance.ts:186](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/binance.ts#L186)
 
 Age in milliseconds of the last-known-good price for a symbol, or null if
-none has ever been recorded. Lets a caller distinguish a live price from
-one carried through a long halt, which the ticker itself cannot express.
+none has ever been recorded for the requested window(s). Lets a caller
+distinguish a live price from one carried through a long halt, which the
+ticker itself cannot express.
 
 #### Parameters
 
@@ -208,11 +209,60 @@ one carried through a long halt, which the ticker itself cannot express.
 
 The Binance symbol, e.g. `TSLABUSDT`.
 
+##### window?
+
+`"7d"` \| `"24h"`
+
+Which window's last-known-good entry to check (`24h` or
+`7d`). Omit to get the freshest of the two — the age of whichever window
+priced most recently — which is what a caller asking "how stale is this
+symbol overall" generally wants.
+
 #### Returns
 
 `number` \| `null`
 
-Age in ms, or null when the symbol has never priced successfully.
+Age in ms, or null when the symbol has never priced successfully
+for the requested window (or for either window, when unspecified).
+
+***
+
+### pricedFresh()
+
+> **pricedFresh**(`symbol`, `window`): `boolean`
+
+Defined in: [src/services/providers/binance.ts:214](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/binance.ts#L214)
+
+Whether the price currently served for a symbol comes from a live quote
+rather than the last-known-good backfill.
+
+`mergeTickers` returns a plain `BinanceTicker` whether it was fetched or
+carried, so a caller cannot tell the two apart from the returned value —
+and a carried price is a valid, positive number, which makes the
+difference invisible to any price check. A batch answered from
+`quoteCache` legitimately carries a price up to one cache TTL old, so
+anything within that window is live; past it, nothing has priced the
+symbol since, so every batch in between was backfilled.
+
+#### Parameters
+
+##### symbol
+
+`string`
+
+The Binance symbol, e.g. `TSLABUSDT`.
+
+##### window
+
+`"7d"` \| `"24h"`
+
+Which ticker window to check (`24h` or `7d`).
+
+#### Returns
+
+`boolean`
+
+True when the symbol priced live within the quote-cache window.
 
 ***
 
@@ -220,7 +270,7 @@ Age in ms, or null when the symbol has never priced successfully.
 
 > `static` **getInstance**(): `Binance`
 
-Defined in: src/services/providers/binance.ts:99
+Defined in: [src/services/providers/binance.ts:112](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/binance.ts#L112)
 
 Returns the singleton instance of the Binance class.
 

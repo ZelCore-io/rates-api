@@ -8,7 +8,7 @@
 
 > **arraySplit**(`arr`, `size`): `string`[][]
 
-Defined in: src/lib/utils.ts:15
+Defined in: [src/lib/utils.ts:15](https://github.com/ZelCore-io/rates-api/blob/master/src/lib/utils.ts#L15)
 
 Splits an array into chunks of a specified size.
 

@@ -8,7 +8,7 @@
 
 > **PricesResponse** = `object`
 
-Defined in: src/types.ts:21
+Defined in: [src/types.ts:21](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L21)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: src/types.ts:21
 
 > **crypto**: [`CryptoPrice`](CryptoPrice.md)[]
 
-Defined in: src/types.ts:22
+Defined in: [src/types.ts:22](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L22)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: src/types.ts:22
 
 > `optional` **errors?**: `Record`\<`string`, `any`\>
 
-Defined in: src/types.ts:24
+Defined in: [src/types.ts:24](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L24)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: src/types.ts:24
 
 > **fiat**: [`FiatPrice`](FiatPrice.md)[]
 
-Defined in: src/types.ts:23
+Defined in: [src/types.ts:23](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L23)

@@ -8,7 +8,7 @@
 
 > **FiatPrice** = `object`
 
-Defined in: src/types.ts:14
+Defined in: [src/types.ts:14](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L14)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: src/types.ts:14
 
 > **code**: `string`
 
-Defined in: src/types.ts:15
+Defined in: [src/types.ts:15](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L15)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: src/types.ts:15
 
 > **name**: `string`
 
-Defined in: src/types.ts:16
+Defined in: [src/types.ts:16](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L16)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: src/types.ts:16
 
 > `optional` **provider?**: `string`
 
-Defined in: src/types.ts:18
+Defined in: [src/types.ts:18](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L18)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: src/types.ts:18
 
 > **rate**: `number`
 
-Defined in: src/types.ts:17
+Defined in: [src/types.ts:17](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L17)
