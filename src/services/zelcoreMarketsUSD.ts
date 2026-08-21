@@ -19,7 +19,6 @@ import { MarketsData, IErrorObject, CoinGeckoPrice, LiveCoinWatchMarket, Currenc
  * ```
  */
 export async function getAll(): Promise<MarketsData> {
-
   const markets: MarketsData = [{}, { errors: {} }];
   const cmk: CurrencyMap = {};
   const errors: IErrorObject = { errors: {} };
@@ -64,7 +63,7 @@ export async function getAll(): Promise<MarketsData> {
     log.error(e);
     errors.errors.coingecko = true;
   }
-  
+
   // Fetch results from LiveCoinWatch
   try {
     const livecoinwatch = await LiveCoinWatch.getInstance().getExchangeRates(coinAggregatorIDs.livecoinwatch, 'USD');

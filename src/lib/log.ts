@@ -69,8 +69,8 @@ function writeToFile(filepath: string, args: { message?: string; stack?: string 
   const stream = fs.createWriteStream(filepath, { flags: flag });
   stream.write(
     `${new Date().toISOString()}          ${ensureString(
-      typeof args === 'object' && args.message ? args.message : args
-    )}\n`
+      typeof args === 'object' && args.message ? args.message : args,
+    )}\n`,
   );
   if (typeof args === 'object' && args.stack && typeof args.stack === 'string') {
     stream.write(`${args.stack}\n`);

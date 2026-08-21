@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
 
 /**
  * A wrapper around Axios to handle automatic retries and customizable configurations.
@@ -24,11 +24,13 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from "axios";
  * ```
  */
 export class AxiosWrapper {
-    private axiosInstance: AxiosInstance;
-    private maxRetries: number;
-    private timeout: number;
+  private axiosInstance: AxiosInstance;
 
-    /**
+  private maxRetries: number;
+
+  private timeout: number;
+
+  /**
      * Creates an instance of AxiosWrapper.
      *
      * @param baseURL - The base URL for all requests.
@@ -40,19 +42,19 @@ export class AxiosWrapper {
      * const apiClient = new AxiosWrapper('https://api.example.com', 5, 10000);
      * ```
      */
-    constructor(baseURL: string, maxRetries: number = 3, timeout: number = 5000) {
-        this.maxRetries = maxRetries;
-        this.timeout = timeout;
+  constructor(baseURL: string, maxRetries: number = 3, timeout: number = 5000) {
+    this.maxRetries = maxRetries;
+    this.timeout = timeout;
 
-        this.axiosInstance = axios.create({
-            baseURL,
-            timeout: this.timeout,
-        });
+    this.axiosInstance = axios.create({
+      baseURL,
+      timeout: this.timeout,
+    });
 
-        this.initializeInterceptors();
-    }
+    this.initializeInterceptors();
+  }
 
-    /**
+  /**
      * Initializes response interceptors to handle retries for failed requests.
      *
      * This method sets up an interceptor that listens for response errors
@@ -60,14 +62,14 @@ export class AxiosWrapper {
      *
      * @private
      */
-    private initializeInterceptors() {
-        this.axiosInstance.interceptors.response.use(
-            response => response,
-            (error: AxiosError) => this.handleRetry(error)
-        );
-    }
+  private initializeInterceptors() {
+    this.axiosInstance.interceptors.response.use(
+      (response) => response,
+      (error: AxiosError) => this.handleRetry(error),
+    );
+  }
 
-    /**
+  /**
      * Handles retry logic for failed requests.
      *
      * If a request fails, this method checks if the maximum number of retries
@@ -77,28 +79,28 @@ export class AxiosWrapper {
      * @param error - The error received from a failed request.
      * @returns A promise that resolves with the retried request or rejects with the error.
      */
-    private async handleRetry(error: AxiosError): Promise<any> {
-        const config = error.config as AxiosRequestConfig & { __retryCount?: number };
+  private async handleRetry(error: AxiosError): Promise<any> {
+    const config = error.config as AxiosRequestConfig & { __retryCount?: number };
 
-        // Check if retry has been initialized
-        if (!config.__retryCount) {
-            config.__retryCount = 0;
-        }
-
-        // If max retries have not been met, retry the request
-        if (config.__retryCount < this.maxRetries) {
-            config.__retryCount += 1;
-            // Delay before retrying
-            return new Promise((resolve) =>
-                setTimeout(() => resolve(this.axiosInstance(config)), 1000)
-            );
-        }
-
-        // If max retries exceeded, reject the promise
-        return Promise.reject(error);
+    // Check if retry has been initialized
+    if (!config.__retryCount) {
+      config.__retryCount = 0;
     }
 
-    /**
+    // If max retries have not been met, retry the request
+    if (config.__retryCount < this.maxRetries) {
+      config.__retryCount += 1;
+      // Delay before retrying
+      return new Promise((resolve) => {
+        setTimeout(() => resolve(this.axiosInstance(config)), 1000);
+      });
+    }
+
+    // If max retries exceeded, reject the promise
+    return Promise.reject(error);
+  }
+
+  /**
      * Performs a GET request.
      *
      * @param url - The URL to send the GET request to.
@@ -112,11 +114,11 @@ export class AxiosWrapper {
      *   .catch(error => console.error(error));
      * ```
      */
-    public async get(url: string, config?: AxiosRequestConfig) {
-        return this.axiosInstance.get(url, config);
-    }
+  public async get(url: string, config?: AxiosRequestConfig) {
+    return this.axiosInstance.get(url, config);
+  }
 
-    /**
+  /**
      * Performs a POST request.
      *
      * @param url - The URL to send the POST request to.
@@ -131,11 +133,11 @@ export class AxiosWrapper {
      *   .catch(error => console.error(error));
      * ```
      */
-    public async post(url: string, data?: any, config?: AxiosRequestConfig) {
-        return this.axiosInstance.post(url, data, config);
-    }
+  public async post(url: string, data?: any, config?: AxiosRequestConfig) {
+    return this.axiosInstance.post(url, data, config);
+  }
 
-    /**
+  /**
      * Performs a PUT request.
      *
      * @param url - The URL to send the PUT request to.
@@ -150,11 +152,11 @@ export class AxiosWrapper {
      *   .catch(error => console.error(error));
      * ```
      */
-    public async put(url: string, data?: any, config?: AxiosRequestConfig) {
-        return this.axiosInstance.put(url, data, config);
-    }
+  public async put(url: string, data?: any, config?: AxiosRequestConfig) {
+    return this.axiosInstance.put(url, data, config);
+  }
 
-    /**
+  /**
      * Performs a DELETE request.
      *
      * @param url - The URL to send the DELETE request to.
@@ -168,9 +170,9 @@ export class AxiosWrapper {
      *   .catch(error => console.error(error));
      * ```
      */
-    public async delete(url: string, config?: AxiosRequestConfig) {
-        return this.axiosInstance.delete(url, config);
-    }
+  public async delete(url: string, config?: AxiosRequestConfig) {
+    return this.axiosInstance.delete(url, config);
+  }
 }
 
 export default AxiosWrapper;

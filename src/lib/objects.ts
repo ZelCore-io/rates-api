@@ -17,6 +17,9 @@
  * // result: { a: 1, b: { c: 2, d: 3 }, e: 4 }
  * ```
  */
+// mergeDeep merges INTO `target` and returns it -- mutating the argument is
+// the documented contract callers rely on, not an oversight.
+/* eslint-disable no-param-reassign */
 export function mergeDeep(target: any, source: any) {
   if (Array.isArray(source)) {
     if (!Array.isArray(target)) {
@@ -45,6 +48,7 @@ export function mergeDeep(target: any, source: any) {
   }
   return target;
 }
+/* eslint-enable no-param-reassign */
 
 /**
  * Rebuilds the crypto array from `source` alone, de-duplicated by

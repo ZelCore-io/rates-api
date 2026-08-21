@@ -19,6 +19,9 @@ let lastGood = new Map<string, { price: CryptoPrice; at: number }>();
 // exposes that distinction so a caller can surface it (e.g. errors.binance).
 let freshPricedLastRun = 0;
 
+// The leading underscore marks this as a test-only escape hatch rather than
+// part of the module's API; nothing in src/ calls it.
+// eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
 export function _clearLastGoodForTests(): void {
   lastGood = new Map();
   freshPricedLastRun = 0;

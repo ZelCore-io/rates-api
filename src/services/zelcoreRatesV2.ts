@@ -48,7 +48,7 @@ export async function getAll(): Promise<PricesResponse> {
   const processed: CryptoPrice[] = [];
   const fiat: ICurrencyRate[] = [];
   const errors: Record<string, any> = {};
-  
+
   // Fetch fiat rates from BitPay
   try {
     const bitpayRates = await BitPay.getInstance().getFiatRates();
@@ -90,7 +90,7 @@ export async function getAll(): Promise<PricesResponse> {
     log.error(e);
     errors.coingecko = true;
   }
-  
+
   // Fetch cryptocurrency prices from CryptoCompare
   try {
     const cryptocompare = await CryptoCompare.getInstance().getMarketData(coinAggregatorIDs.cryptoCompare);
@@ -118,7 +118,7 @@ export async function getAll(): Promise<PricesResponse> {
     log.error(e);
     errors.cryptocompare = true;
   }
-  
+
   // Fetch cryptocurrency prices from LiveCoinWatch
   try {
     const livecoinwatch = await LiveCoinWatch.getInstance().getExchangeRates(coinAggregatorIDs.livecoinwatch);

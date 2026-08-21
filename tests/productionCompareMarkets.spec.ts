@@ -17,17 +17,6 @@ const isWithinRange = (prodMarket: number, localMarket: number): boolean => {
   return diff <= maxDiff;
 };
 const AVOID = ['TOK', 'GUSD'];
-/**
- * Helper function to convert the API response to a dictionary with 'code' as key and 'rate' as value.
- */
-const convertArrayToMap = (data: Array<{ code: string, name: string, rate: number }>): Record<string, number> => {
-  const map: Record<string, number> = {};
-  data.forEach((entry) => {
-    map[entry.code] = entry.rate;
-  });
-  return map;
-};
-
 describe('Crypto rates comparison between production and localhost', () => {
   let prodMarkets: Record<string, Record<string, number>>;
   let localMarkets: Record<string, Record<string, number>>;
@@ -35,12 +24,11 @@ describe('Crypto rates comparison between production and localhost', () => {
   beforeAll(async () => {
     // Fetch production rates
     const prodResponse = await axios.get(PRODUCTION_URL);
-    prodMarkets = prodResponse.data[0];  // Assuming the rates data is in the first element of the array
-    
+    prodMarkets = prodResponse.data[0]; // Assuming the rates data is in the first element of the array
+
     // Fetch localhost rates
     const localResponse = await axios.get(LOCAL_URL);
-    localMarkets = localResponse.data[0];  // Assuming the rates data is in the first element of the array
-
+    localMarkets = localResponse.data[0]; // Assuming the rates data is in the first element of the array
   });
 
   test('All crypto codes should be present in both production and localhost', () => {
@@ -57,7 +45,6 @@ describe('Crypto rates comparison between production and localhost', () => {
         expect(localMarkets[key]).toHaveProperty(prodKey);
       });
     });
-    
   });
 
   test('All rates should be within a reasonable range', () => {
@@ -80,7 +67,6 @@ describe('Crypto rates comparison between production and localhost', () => {
           });
         }
       });
-
     });
     // Ensure the rates are within the allowed range
     expect(diffs).toEqual([]);

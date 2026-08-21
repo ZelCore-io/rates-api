@@ -92,7 +92,7 @@ describe('Binance provider', () => {
       const result = await binance.getTicker24h(['TSLABUSDT', 'NVDABUSDT']);
       expect(result).toEqual(raw);
       expect(getSpy).toHaveBeenCalledTimes(1);
-      const calledUrl = getSpy.mock.calls[0][0];
+      const [[calledUrl]] = getSpy.mock.calls;
       expect(calledUrl).toBe(`api/v3/ticker/24hr?symbols=${encodeURIComponent(JSON.stringify(['TSLABUSDT', 'NVDABUSDT']))}`);
 
       await binance.getTicker24h(['TSLABUSDT', 'NVDABUSDT']);

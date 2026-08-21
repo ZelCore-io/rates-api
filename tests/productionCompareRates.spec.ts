@@ -37,11 +37,11 @@ describe('Crypto rates comparison between production and localhost', () => {
   beforeAll(async () => {
     // Fetch production rates
     const prodResponse = await axios.get(PRODUCTION_URL);
-    const prodData = prodResponse.data[0];  // Assuming the rates data is in the first element of the array
-    
+    const [prodData] = prodResponse.data; // the rates data is the first element of the array
+
     // Fetch localhost rates
     const localResponse = await axios.get(LOCAL_URL);
-    const localData = localResponse.data[0];  // Assuming the rates data is in the first element of the array
+    const [localData] = localResponse.data; // the rates data is the first element of the array
 
     // Convert the array of rates into a map with 'code' as key and 'rate' as value
     prodRates = convertArrayToMap(prodData);
@@ -76,7 +76,6 @@ describe('Crypto rates comparison between production and localhost', () => {
     prodKeys.forEach((key) => {
       const prodRate = prodRates[key];
       const localRate = localRates[key];
-      const diffs = [];
       if (!isWithinRange(prodRate, localRate) && !AVOID.includes(key)) {
         diffs.push({ code: key, prodRate, localRate });
       }

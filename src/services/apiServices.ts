@@ -155,7 +155,7 @@ export function getFoundContracts(): FoundContractStore {
  */
 export async function checkContractsV2(req: Request, res: Response): Promise<void> {
   try {
-    const contracts = req.body.contracts;
+    const { contracts } = req.body;
     const success = checkContracts(contracts);
     res.json({ success });
   } catch (error) {
@@ -201,7 +201,7 @@ export async function dataRefresher(): Promise<void> {
       dataRefresher();
     }, 60 * 60 * 1000); // 1 hour
   } catch (error) {
-    log.error("Error in dataRefresher");
+    log.error('Error in dataRefresher');
     log.error(error);
     setTimeout(() => {
       dataRefresher();
@@ -227,14 +227,14 @@ export async function serviceRefresher(): Promise<void> {
     const ratesFetched = await zelcoreRates.getAll();
     const marketsUSDFetched = await zelcoreMarketsUSD.getAll();
     const ratesV2Fetched = await zelcoreRatesV2.getAll();
-    
+
     if (ratesFetched && ratesFetched[0]?.length > 20 && ratesFetched[1]) {
       if (Object.keys(ratesFetched[1]).length > 300) {
         rates = mergeDeep(rates, ratesFetched);
         rates[2] = ratesFetched[2]; // replace errors
       }
     }
-    
+
     if (marketsUSDFetched && marketsUSDFetched[0]) {
       log.info(Object.keys(marketsUSDFetched[0]));
       log.info(Object.keys(marketsUSDFetched[0]).length);

@@ -57,15 +57,21 @@ describe('bStocks assembler', () => {
   });
 
   it('skips assets without a TRADING symbol', async () => {
-    mockBinance({ assets: [TSLAB], trading: ['BTCUSDT'], t24: [
-      { symbol: 'BTCUSDT', lastPrice: '65222.00', priceChangePercent: '1.0', quoteVolume: '9' },
-    ], t7d: [] });
+    mockBinance({
+      assets: [TSLAB],
+      trading: ['BTCUSDT'],
+      t24: [
+        { symbol: 'BTCUSDT', lastPrice: '65222.00', priceChangePercent: '1.0', quoteVolume: '9' },
+      ],
+      t7d: [],
+    });
     expect(await getBstockPrices()).toHaveLength(0);
   });
 
   it('serves last-known-good when a symbol disappears (CEX halt)', async () => {
     mockBinance({
-      assets: [TSLAB], trading: ['TSLABUSDT', 'BTCUSDT'],
+      assets: [TSLAB],
+      trading: ['TSLABUSDT', 'BTCUSDT'],
       t24: [
         { symbol: 'TSLABUSDT', lastPrice: '326.11', priceChangePercent: '2.5', quoteVolume: '1000000' },
         { symbol: 'BTCUSDT', lastPrice: '65222.00', priceChangePercent: '1.0', quoteVolume: '9' },
@@ -74,9 +80,14 @@ describe('bStocks assembler', () => {
     });
     await getBstockPrices();
     // Halt: ticker omits TSLABUSDT this round
-    mockBinance({ assets: [TSLAB], trading: ['TSLABUSDT', 'BTCUSDT'], t24: [
-      { symbol: 'BTCUSDT', lastPrice: '65000.00', priceChangePercent: '0.5', quoteVolume: '9' },
-    ], t7d: [] });
+    mockBinance({
+      assets: [TSLAB],
+      trading: ['TSLABUSDT', 'BTCUSDT'],
+      t24: [
+        { symbol: 'BTCUSDT', lastPrice: '65000.00', priceChangePercent: '0.5', quoteVolume: '9' },
+      ],
+      t7d: [],
+    });
     const prices = await getBstockPrices();
     expect(prices).toHaveLength(1);
     expect(prices[0].rates.usd).toBeCloseTo(326.11);

@@ -3,10 +3,6 @@ import { CryptoPrice } from '../src/types';
 
 describe('replaceCryptoByKey', () => {
   it('replaces entries by provider-id key, not by index', () => {
-    const target = [
-      { id: 'bitcoin', provider: 'coingecko', rates: { btc: 1 } },
-      { id: 'stale', provider: 'livecoinwatch', rates: { btc: 9 } },
-    ];
     const source = [
       { id: 'bstock-tslab', provider: 'coingecko', rates: { btc: 0.005 } },
       { id: 'bitcoin', provider: 'coingecko', rates: { btc: 1.0001 } },
@@ -14,7 +10,7 @@ describe('replaceCryptoByKey', () => {
     const merged = replaceCryptoByKey(source);
     expect(merged).toHaveLength(2);
     expect(merged.find((e) => e.id === 'bitcoin')!.rates.btc).toBe(1.0001);
-    expect(merged.find((e) => e.id === 'stale')).toBeUndefined(); // stale tails dropped
+    expect(merged.find((e) => e.id === 'stale')).toBeUndefined(); // anything absent from the fresh array is dropped, not carried
   });
 });
 

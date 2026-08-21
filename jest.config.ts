@@ -1,11 +1,9 @@
-import type {Config} from 'jest';
+import type { Config } from 'jest';
 
-export default async (): Promise<Config> => {
-  return {
-    testEnvironment: 'node',
-    transform: {
-      '^.+.tsx?$': ['ts-jest', {}],
-    },
-    rootDir: './tests',
-  };
-}
+export default async (): Promise<Config> => ({
+  testEnvironment: 'node',
+  transform: {
+    '^.+.tsx?$': ['ts-jest', {}],
+  },
+  rootDir: './tests',
+});

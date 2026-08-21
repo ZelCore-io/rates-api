@@ -120,6 +120,7 @@ export class Binance {
    * @param assets - The raw tokenised-asset list from Binance.
    * @returns Only the assets with at least one BSC entry in `caList`.
    */
+  // eslint-disable-next-line class-methods-use-this -- pure helper, but part of the provider's instance API like the rest of the class.
   filterBscAssets(assets: BinanceTokenisedAsset[]): BinanceTokenisedAsset[] {
     return (assets || []).filter((a) => (a.caList || [])
       .some((c) => String(c.network).toUpperCase() === 'BSC' && !!c.ca));
@@ -132,6 +133,7 @@ export class Binance {
    * @param symbols - The full symbol list to split.
    * @returns An array of symbol chunks.
    */
+  // eslint-disable-next-line class-methods-use-this -- pure helper, but part of the provider's instance API like the rest of the class.
   chunkSymbols(symbols: string[]): string[][] {
     return arraySplit(symbols, TICKER_CHUNK);
   }

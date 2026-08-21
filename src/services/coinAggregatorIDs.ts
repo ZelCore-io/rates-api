@@ -18,9 +18,9 @@ export const coinAggregatorIDs = {
    * Add the CryptoCompare IDs at the end of this list.
    */
   cryptoCompare: [
-    'CONI', 'PAX', 'SPHTX', 'GVT', 'INS', 'MDA', 'QSP', 'SNGLS', 'TNB', 'WABI', 'DGD', 'TENT', 'BBO', 'ICN', 'MCO', 'EDO', 'WINGS', 'DTA', 'ADT', 'ATL', 
+    'CONI', 'PAX', 'SPHTX', 'GVT', 'INS', 'MDA', 'QSP', 'SNGLS', 'TNB', 'WABI', 'DGD', 'TENT', 'BBO', 'ICN', 'MCO', 'EDO', 'WINGS', 'DTA', 'ADT', 'ATL',
     'BCPT', 'BTH', 'USDS', 'VIDT', 'VBK', 'UST', 'GTO', 'ONGAS', 'MIOTA', 'TOK',
-    'GNT', 'AGI', 'ETHOS', 'BSV', 'AMB', 'SIN', 'QTUM', 'XEM', 'XCASH',  // These are not actually used in ZelCore or some tickers; just for testing until merge
+    'GNT', 'AGI', 'ETHOS', 'BSV', 'AMB', 'SIN', 'QTUM', 'XEM', 'XCASH', // These are not actually used in ZelCore or some tickers; just for testing until merge
   ],
   /**
    * CoinGecko API IDs.
@@ -67,6 +67,8 @@ export const zelData: {
 /**
  * Array of CoinGecko tokens.
  */
+// Reassigned wholesale by the refresher below once CoinGecko answers.
+// eslint-disable-next-line import/no-mutable-exports
 export let cgTokens: CoinGeckoToken[] = cgCoins;
 
 /**
@@ -99,13 +101,13 @@ export async function getLatestCoinInfo(): Promise<void> {
     const uniqueCoinGeckoKeys = [...new Set(coinGeckoKeys)];
     coinAggregatorIDs.coingecko = [...new Set([...coinAggregatorIDs.coingecko, ...uniqueCoinGeckoKeys])];
     zelData.coinInfo = coinInfo;
-    const cgCoins = await CoinGecko.getInstance().getCoinsList();
-    if (cgCoins) {
-      cgTokens = cgCoins as CoinGeckoToken[];
-      cgCoins.forEach((coin: CoinGeckoToken) => {
-        for (const _contract of Object.values(coin.platforms)) {
-          if (_contract) {
-            cgContractMap[_contract] = coin;
+    const coinsList = await CoinGecko.getInstance().getCoinsList();
+    if (coinsList) {
+      cgTokens = coinsList as CoinGeckoToken[];
+      coinsList.forEach((coin: CoinGeckoToken) => {
+        for (const contract of Object.values(coin.platforms)) {
+          if (contract) {
+            cgContractMap[contract] = coin;
           }
         }
       });

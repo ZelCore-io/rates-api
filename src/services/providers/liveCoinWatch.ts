@@ -1,8 +1,8 @@
-import AxiosWrapper from "../../lib/axios";
-import config from "../../../config";
-import { makeRequestStrings } from "../../lib/utils";
 import { LRUCache as LRU } from 'lru-cache';
-import { LiveCoinWatchMarket } from "../../types";
+import AxiosWrapper from '../../lib/axios';
+import config from '../../../config';
+import { makeRequestStrings } from '../../lib/utils';
+import { LiveCoinWatchMarket } from '../../types';
 
 const MAX_LENGTH_PER_REQUEST = 300;
 
@@ -30,7 +30,7 @@ export class LiveCoinWatch {
    * The API key for authenticating with the LiveCoinWatch API.
    * @private
    */
-  private readonly apiKey: string = process.env['LIVE_COIN_WATCH_KEY'] || config.liveCoinWatchApiKey;
+  private readonly apiKey: string = process.env.LIVE_COIN_WATCH_KEY || config.liveCoinWatchApiKey;
 
   /**
    * The singleton instance of the LiveCoinWatch class.
@@ -68,7 +68,7 @@ export class LiveCoinWatch {
    */
   constructor() {
     if (LiveCoinWatch.instance) {
-      throw new Error("Use LiveCoinWatch.getInstance()");
+      throw new Error('Use LiveCoinWatch.getInstance()');
     }
     LiveCoinWatch.instance = this;
     LiveCoinWatch.axiosWrapper = new AxiosWrapper(config.liveCoinWatchUrl);
@@ -164,10 +164,11 @@ export class LiveCoinWatch {
   public async getExchangeRates(ids: string[], vsCurrency = 'BTC'): Promise<LiveCoinWatchMarket[]> {
     const newIds = makeRequestStrings(ids, MAX_LENGTH_PER_REQUEST);
     let allRates: LiveCoinWatchMarket[] = [];
-    
+
     for (const id of newIds) {
+      // eslint-disable-next-line no-await-in-loop -- deliberately sequential: one id per request keeps us inside the upstream rate limit.
       const response = await this._getExchangeRates(id, vsCurrency);
-      allRates = [ ...allRates, ...response ];
+      allRates = [...allRates, ...response];
     }
 
     return allRates;
