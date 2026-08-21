@@ -8,6 +8,11 @@ import type { BinanceTicker, BinanceTokenisedAsset } from '../../types';
 // 7d ticker window is fetched per-symbol; stay far under Binance's 200-weight/request cap.
 const TICKER_CHUNK = 20;
 
+// Quote cache TTL, and with it the bound on how old a served price may be and
+// still count as live: a batch answered from `quoteCache` legitimately carries
+// a price up to one TTL old. See `pricedFresh`.
+const QUOTE_CACHE_MS = 60 * 1000;
+
 /**
  * Singleton class to interact with Binance's public (no-API-key) endpoints.
  *
@@ -59,7 +64,7 @@ export class Binance {
    * Cache for ticker quotes, keyed by requested symbol set: 60 seconds.
    * @private
    */
-  private quoteCache = new LRU<string, any>({ max: 50, ttl: 60 * 1000 });
+  private quoteCache = new LRU<string, any>({ max: 50, ttl: QUOTE_CACHE_MS });
 
   /**
    * Last-known-good ticker per `${window}:${symbol}`, independent of
@@ -186,6 +191,27 @@ export class Binance {
       .filter((e): e is { ticker: BinanceTicker; at: number } => !!e)
       .map((e) => Date.now() - e.at);
     return ages.length ? Math.min(...ages) : null;
+  }
+
+  /**
+   * Whether the price currently served for a symbol comes from a live quote
+   * rather than the last-known-good backfill.
+   *
+   * `mergeTickers` returns a plain `BinanceTicker` whether it was fetched or
+   * carried, so a caller cannot tell the two apart from the returned value —
+   * and a carried price is a valid, positive number, which makes the
+   * difference invisible to any price check. A batch answered from
+   * `quoteCache` legitimately carries a price up to one cache TTL old, so
+   * anything within that window is live; past it, nothing has priced the
+   * symbol since, so every batch in between was backfilled.
+   *
+   * @param symbol - The Binance symbol, e.g. `TSLABUSDT`.
+   * @param window - Which ticker window to check (`24h` or `7d`).
+   * @returns True when the symbol priced live within the quote-cache window.
+   */
+  pricedFresh(symbol: string, window: '24h' | '7d'): boolean {
+    const age = this.lastGoodAgeMs(symbol, window);
+    return age !== null && age <= QUOTE_CACHE_MS;
   }
 
   /**

@@ -25,9 +25,9 @@ export function _clearLastGoodForTests(): void {
 }
 
 /**
- * True when the most recent `getBstockPrices()` call priced nothing fresh
- * (every underlying Binance call failed or returned unusable data) while
- * there is still last-known-good data being served. Distinguishes "Binance is
+ * True when the most recent `getBstockPrices()` call priced nothing fresh —
+ * every underlying Binance call failed, returned unusable data, or served
+ * only prices carried over from an earlier refresh. Distinguishes "Binance is
  * down and we're serving frozen prices" from a normal, healthy refresh, which
  * `getBstockPrices()`'s return value alone cannot express since it never
  * rejects and unconditionally re-emits `lastGood` either way.
@@ -117,14 +117,24 @@ export async function getBstockPrices(): Promise<CryptoPrice[]> {
   let freshCount = 0;
   tradable.forEach((asset) => {
     const id = `bstock-${asset.assetCode.toLowerCase()}`;
-    const ticker = t24Map.get(`${asset.assetCode}USDT`);
+    const symbol = `${asset.assetCode}USDT`;
+    const ticker = t24Map.get(symbol);
     const px = Number(ticker?.lastPrice);
     if (!ticker || !Number.isFinite(px) || px <= 0 || !Number.isFinite(btcUsd) || btcUsd <= 0) {
       return; // keep lastGood entry as-is
     }
-    freshCount += 1;
+    // `ticker` is whatever the provider served, and for a symbol that did not
+    // price this batch that is its backfilled last-known-good value (see
+    // Binance.mergeTickers) — a positive number indistinguishable here from a
+    // live quote. Only a live quote may count as fresh or move the staleness
+    // clock: counting a carried price hides a ticker-endpoint outage from
+    // isBstocksDegraded(), and stamping `at: now` for one pushes the bound
+    // below out of reach on every refresh, so a symbol that never prices
+    // again would be served at its frozen price forever.
+    const ageMs = binance.lastGoodAgeMs(symbol, '24h') ?? 0;
+    if (binance.pricedFresh(symbol, '24h')) freshCount += 1;
     lastGood.set(id, {
-      at: now,
+      at: now - ageMs,
       price: {
         id,
         provider: 'coingecko',
@@ -134,7 +144,7 @@ export async function getBstockPrices(): Promise<CryptoPrice[]> {
         change24h: Number(ticker.priceChangePercent) || 0,
         market: 0,
         total_supply: 0,
-        change7d: Number(t7dMap.get(`${asset.assetCode}USDT`)?.priceChangePercent) || 0,
+        change7d: Number(t7dMap.get(symbol)?.priceChangePercent) || 0,
       },
     });
   });

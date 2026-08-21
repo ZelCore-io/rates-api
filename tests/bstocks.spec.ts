@@ -10,11 +10,20 @@ const MockedBinance = Binance as jest.Mocked<typeof Binance>;
 function mockBinance({ assets, trading, t24, t7d }: {
   assets: unknown[]; trading: string[]; t24: unknown[]; t7d: unknown[];
 }) {
+  // Every fixture here is a batch the provider priced live this round: these
+  // tests hand back raw ticker arrays rather than exercising the provider's
+  // last-known-good backfill, so a symbol in `t24` is by definition fresh and
+  // anything else has never priced. The carried-price path -- where the
+  // provider serves an old ticker that looks identical to a live one -- is
+  // covered in bstocksStaleness.spec.ts against the real provider.
+  const live = new Set((t24 as { symbol: string }[]).map((t) => t.symbol));
   MockedBinance.getInstance.mockReturnValue({
     getTokenisedAssets: jest.fn().mockResolvedValue(assets),
     getTradingSymbols: jest.fn().mockResolvedValue(new Set(trading)),
     getTicker24h: jest.fn().mockResolvedValue(t24),
     getTicker7d: jest.fn().mockResolvedValue(t7d),
+    lastGoodAgeMs: jest.fn((symbol: string) => (live.has(symbol) ? 0 : null)),
+    pricedFresh: jest.fn((symbol: string) => live.has(symbol)),
   } as never);
 }
 
