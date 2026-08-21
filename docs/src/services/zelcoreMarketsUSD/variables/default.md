@@ -1,16 +1,18 @@
-[**rates-api v3.0.0**](../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../modules.md) / [src/services/zelcoreMarketsUSD](../README.md) / default
+[rates-api](../../../../modules.md) / [src/services/zelcoreMarketsUSD](../README.md) / default
 
 # Variable: default
 
 > **default**: `object`
 
-## Type declaration
+Defined in: [src/services/zelcoreMarketsUSD.ts:138](https://github.com/ZelCore-io/rates-api/blob/master/src/services/zelcoreMarketsUSD.ts#L138)
 
-### getAll()
+## Type Declaration
+
+### getAll
 
 > **getAll**: () => `Promise`\<[`MarketsData`](../../../types/type-aliases/MarketsData.md)\>
 
@@ -33,7 +35,3 @@ The aggregated market data.
 const marketData = await getAll();
 console.log(marketData);
 ```
-
-## Defined in
-
-[src/services/zelcoreMarketsUSD.ts:137](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/zelcoreMarketsUSD.ts#L137)

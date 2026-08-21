@@ -1,8 +1,8 @@
-import AxiosWrapper from "../../lib/axios";
-import config from "../../../config";
-import { makeRequestStrings } from "../../lib/utils";
 import { LRUCache as LRU } from 'lru-cache';
-import { CryptoCompareMarkets, CryptoComparePrice } from "../../types";
+import AxiosWrapper from '../../lib/axios';
+import config from '../../../config';
+import { makeRequestStrings } from '../../lib/utils';
+import { CryptoCompareMarkets, CryptoComparePrice } from '../../types';
 
 const MAX_LENGTH_PER_REQUEST = 300;
 
@@ -30,7 +30,7 @@ export class CryptoCompare {
    * The API key for authenticating with the CryptoCompare API.
    * @private
    */
-  private readonly apiKey: string = process.env['CRYPTO_COMPARE_KEY'] || config.cryptoCompareApiKey;
+  private readonly apiKey: string = process.env.CRYPTO_COMPARE_KEY || config.cryptoCompareApiKey;
 
   /**
    * The singleton instance of the CryptoCompare class.
@@ -50,7 +50,7 @@ export class CryptoCompare {
    */
   private readonly headers = {
     'Content-Type': 'application/json',
-    'authorization': `Apikey ${this.apiKey}`,
+    authorization: `Apikey ${this.apiKey}`,
   };
 
   /**
@@ -68,7 +68,7 @@ export class CryptoCompare {
    */
   constructor() {
     if (CryptoCompare.instance) {
-      throw new Error("Use CryptoCompare.getInstance()");
+      throw new Error('Use CryptoCompare.getInstance()');
     }
     CryptoCompare.instance = this;
     CryptoCompare.axiosWrapper = new AxiosWrapper(config.cryptoCompareUrl);
@@ -136,7 +136,7 @@ export class CryptoCompare {
       fsyms: ids,
     });
 
-    const data: CryptoComparePrice = response.data;
+    const { data } = response;
 
     // Store in cache
     this.cache.set(cacheKey, data);
@@ -165,6 +165,7 @@ export class CryptoCompare {
     let allRates: CryptoComparePrice = {};
 
     for (const id of newIds) {
+      // eslint-disable-next-line no-await-in-loop -- deliberately sequential: one id per request keeps us inside the upstream rate limit.
       const response = await this._getExchangeRates(id, vsCurrency);
       allRates = { ...allRates, ...response };
     }
@@ -228,6 +229,7 @@ export class CryptoCompare {
     let allData: CryptoCompareMarkets = {};
 
     for (const id of newIds) {
+      // eslint-disable-next-line no-await-in-loop -- deliberately sequential: one id per request keeps us inside the upstream rate limit.
       const response = await this._getMarketData(id, vsCurrency);
       allData = { ...allData, ...response };
     }

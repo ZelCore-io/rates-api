@@ -35,7 +35,7 @@ export function checkContracts(contracts: ContractWithType[]): boolean {
       const cg = cgContractMap[contract.address];
       if (cg) {
         if (foundContracts[contract.address]) {
-          foundContracts[contract.address].count++;
+          foundContracts[contract.address].count += 1;
         } else {
           foundContracts[contract.address] = { zel: contract, cg, count: 1 };
         }

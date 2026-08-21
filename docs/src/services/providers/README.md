@@ -1,12 +1,18 @@
-[**rates-api v3.0.0**](../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../modules.md) / src/services/providers
+[rates-api](../../../modules.md) / src/services/providers
 
 # src/services/providers
 
 ## References
+
+### Binance
+
+Re-exports [Binance](binance/classes/Binance.md)
+
+***
 
 ### BitPay
 

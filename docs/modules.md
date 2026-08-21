@@ -1,4 +1,4 @@
-[**rates-api v3.0.0**](README.md) • **Docs**
+[**rates-api v3.0.0**](README.md)
 
 ***
 
@@ -14,9 +14,11 @@
 - [src/lib/utils](src/lib/utils/README.md)
 - [src/routes](src/routes/README.md)
 - [src/services/apiServices](src/services/apiServices/README.md)
+- [src/services/bstocks](src/services/bstocks/README.md)
 - [src/services/coinAggregatorIDs](src/services/coinAggregatorIDs/README.md)
 - [src/services/newContracts](src/services/newContracts/README.md)
 - [src/services/providers](src/services/providers/README.md)
+- [src/services/providers/binance](src/services/providers/binance/README.md)
 - [src/services/providers/bitpay](src/services/providers/bitpay/README.md)
 - [src/services/providers/coinGecko](src/services/providers/coinGecko/README.md)
 - [src/services/providers/cryptoCompare](src/services/providers/cryptoCompare/README.md)

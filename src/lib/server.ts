@@ -86,7 +86,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
  *
  * @remarks
  * The `routes` function is responsible for setting up all the necessary routes in the Express application.
- * 
+ *
  * @param app - The Express application instance.
  *
  * @example

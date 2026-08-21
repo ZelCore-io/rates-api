@@ -126,6 +126,21 @@ export type CoinGeckoPrice = {
   price_change_percentage_7d_in_currency: number;
 };
 
+export type BinanceTokenisedAsset = {
+  assetCode: string;
+  assetName: string;
+  uq?: string;
+  logo?: string;
+  caList?: { network: string; ca: string }[];
+};
+
+export type BinanceTicker = {
+  symbol: string;
+  lastPrice: string;
+  priceChangePercent: string;
+  quoteVolume: string;
+};
+
 export type CryptoComparePrice = {
   [key: string]: {
     [key: string]: number;

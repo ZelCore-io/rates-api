@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import zlib from 'zlib';
 import * as log from '../lib/log';
-import { mergeDeep } from '../lib/objects';
+import { mergeDeep, replaceCryptoByKey } from '../lib/objects';
 import zelcoreRates from './zelcoreRates';
 import zelcoreMarketsUSD from './zelcoreMarketsUSD';
 import zelcoreRatesV2 from './zelcoreRatesV2';
@@ -155,7 +155,7 @@ export function getFoundContracts(): FoundContractStore {
  */
 export async function checkContractsV2(req: Request, res: Response): Promise<void> {
   try {
-    const contracts = req.body.contracts;
+    const { contracts } = req.body;
     const success = checkContracts(contracts);
     res.json({ success });
   } catch (error) {
@@ -201,7 +201,7 @@ export async function dataRefresher(): Promise<void> {
       dataRefresher();
     }, 60 * 60 * 1000); // 1 hour
   } catch (error) {
-    log.error("Error in dataRefresher");
+    log.error('Error in dataRefresher');
     log.error(error);
     setTimeout(() => {
       dataRefresher();
@@ -227,14 +227,14 @@ export async function serviceRefresher(): Promise<void> {
     const ratesFetched = await zelcoreRates.getAll();
     const marketsUSDFetched = await zelcoreMarketsUSD.getAll();
     const ratesV2Fetched = await zelcoreRatesV2.getAll();
-    
+
     if (ratesFetched && ratesFetched[0]?.length > 20 && ratesFetched[1]) {
       if (Object.keys(ratesFetched[1]).length > 300) {
         rates = mergeDeep(rates, ratesFetched);
         rates[2] = ratesFetched[2]; // replace errors
       }
     }
-    
+
     if (marketsUSDFetched && marketsUSDFetched[0]) {
       log.info(Object.keys(marketsUSDFetched[0]));
       log.info(Object.keys(marketsUSDFetched[0]).length);
@@ -244,9 +244,26 @@ export async function serviceRefresher(): Promise<void> {
       }
     }
 
-    if (ratesV2Fetched && ratesV2Fetched.fiat.length > 20 && ratesV2Fetched.crypto.length > 300) {
+    // Count only real-provider rows. The floor was calibrated before bStocks
+    // existed, and ~56 synthetic bStock entries would otherwise mask a
+    // degraded provider response that the floor is meant to reject — pushing
+    // an under-strength payload past the guard and truncating /v2/rates.
+    const providerCryptoCount = ratesV2Fetched
+      ? ratesV2Fetched.crypto.filter((c) => !c.id.startsWith('bstock-')).length
+      : 0;
+    if (ratesV2Fetched && ratesV2Fetched.fiat.length > 20 && providerCryptoCount > 300) {
       ratesV2.fiat = mergeDeep(ratesV2.fiat, ratesV2Fetched.fiat);
-      ratesV2.crypto = mergeDeep(ratesV2.crypto, ratesV2Fetched.crypto);
+      // Carry forward only the rows belonging to providers that errored THIS
+      // cycle, then key-merge with the fresh fetch last so fresh data always
+      // wins. Without this, a provider whose block failed (CryptoCompare,
+      // LiveCoinWatch) simply vanishes from /v2/rates the moment the
+      // remaining providers alone still clear the >300 floor -- there is no
+      // positional stale tail to fall back on any more (replaceCryptoByKey
+      // rebuilds from `source` alone). `ratesV2.crypto` is genuinely
+      // undefined on the first cycle, hence the `??`.
+      const failedProviders = new Set(Object.keys(ratesV2Fetched.errors ?? {}));
+      const carried = (ratesV2.crypto ?? []).filter((c) => failedProviders.has(c.provider));
+      ratesV2.crypto = replaceCryptoByKey([...carried, ...ratesV2Fetched.crypto]);
       ratesV2.errors = ratesV2Fetched.errors;
     }
 

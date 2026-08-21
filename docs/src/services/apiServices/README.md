@@ -1,18 +1,16 @@
-[**rates-api v3.0.0**](../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../modules.md) / src/services/apiServices
+[rates-api](../../../modules.md) / src/services/apiServices
 
 # src/services/apiServices
 
-## Index
-
-### Variables
+## Variables
 
 - [default](variables/default.md)
 
-### Functions
+## Functions
 
 - [checkContractsV2](functions/checkContractsV2.md)
 - [dataRefresher](functions/dataRefresher.md)

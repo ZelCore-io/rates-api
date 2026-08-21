@@ -1,16 +1,18 @@
-[**rates-api v3.0.0**](../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../modules.md) / [src/services/coinAggregatorIDs](../README.md) / coinAggregatorIDs
+[rates-api](../../../../modules.md) / [src/services/coinAggregatorIDs](../README.md) / coinAggregatorIDs
 
 # Variable: coinAggregatorIDs
 
 > `const` **coinAggregatorIDs**: `object`
 
+Defined in: [src/services/coinAggregatorIDs.ts:14](https://github.com/ZelCore-io/rates-api/blob/master/src/services/coinAggregatorIDs.ts#L14)
+
 An object containing arrays of cryptocurrency IDs used by different data aggregators.
 
-## Type declaration
+## Type Declaration
 
 ### coingecko
 
@@ -36,7 +38,3 @@ Add the CryptoCompare IDs at the end of this list.
 LiveCoinWatch API IDs.
 
 ## Const
-
-## Defined in
-
-[src/services/coinAggregatorIDs.ts:14](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/coinAggregatorIDs.ts#L14)

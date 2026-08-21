@@ -1,13 +1,11 @@
-[**rates-api v3.0.0**](../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../modules.md) / src/services/providers/coinGecko
+[rates-api](../../../../modules.md) / src/services/providers/coinGecko
 
 # src/services/providers/coinGecko
 
-## Index
-
-### Classes
+## Classes
 
 - [CoinGecko](classes/CoinGecko.md)

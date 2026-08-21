@@ -1,21 +1,21 @@
-[**rates-api v3.0.0**](../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../modules.md) / src/types
+[rates-api](../../modules.md) / src/types
 
 # src/types
 
-## Index
-
-### Interfaces
+## Interfaces
 
 - [ICurrencyData](interfaces/ICurrencyData.md)
 - [ICurrencyRate](interfaces/ICurrencyRate.md)
 - [IErrorObject](interfaces/IErrorObject.md)
 
-### Type Aliases
+## Type Aliases
 
+- [BinanceTicker](type-aliases/BinanceTicker.md)
+- [BinanceTokenisedAsset](type-aliases/BinanceTokenisedAsset.md)
 - [CodeRates](type-aliases/CodeRates.md)
 - [CoinGeckoPrice](type-aliases/CoinGeckoPrice.md)
 - [CoinGeckoToken](type-aliases/CoinGeckoToken.md)

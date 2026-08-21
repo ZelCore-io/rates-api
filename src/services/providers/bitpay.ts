@@ -1,6 +1,6 @@
-import AxiosWrapper from "../../lib/axios";
-import config from "../../../config";
 import { LRUCache as LRU } from 'lru-cache';
+import AxiosWrapper from '../../lib/axios';
+import config from '../../../config';
 
 /**
  * Singleton class to interact with the BitPay API.
@@ -57,7 +57,7 @@ export class BitPay {
    */
   constructor() {
     if (BitPay.instance) {
-      throw new Error("Use BitPay.getInstance()");
+      throw new Error('Use BitPay.getInstance()');
     }
     BitPay.instance = this;
     BitPay.axiosWrapper = new AxiosWrapper(config.bitPayUrl);
@@ -115,17 +115,17 @@ export class BitPay {
   public async getFiatRates(): Promise<any | null> {
     const cacheKey = 'fiatRates';
     const cachedRates = this.cache.get(cacheKey);
-    
+
     if (cachedRates) {
       return cachedRates;
     }
 
     try {
       const response = await this.get('rates/BTC');
-      const data = response.data.data;
+      const { data } = response.data;
 
       this.cache.set(cacheKey, data);
-      
+
       return data;
     } catch (error) {
       return null;

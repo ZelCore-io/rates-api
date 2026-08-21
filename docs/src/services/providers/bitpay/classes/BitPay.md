@@ -1,10 +1,12 @@
-[**rates-api v3.0.0**](../../../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../../../modules.md) / [src/services/providers/bitpay](../README.md) / BitPay
+[rates-api](../../../../../modules.md) / [src/services/providers/bitpay](../README.md) / BitPay
 
 # Class: BitPay
+
+Defined in: [src/services/providers/bitpay.ts:24](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/bitpay.ts#L24)
 
 Singleton class to interact with the BitPay API.
 
@@ -27,9 +29,11 @@ fetchRates();
 
 ## Constructors
 
-### new BitPay()
+### Constructor
 
-> **new BitPay**(): [`BitPay`](BitPay.md)
+> **new BitPay**(): `BitPay`
+
+Defined in: [src/services/providers/bitpay.ts:58](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/bitpay.ts#L58)
 
 Private constructor to enforce the singleton pattern.
 
@@ -37,21 +41,19 @@ Initializes the AxiosWrapper and the LRU cache.
 
 #### Returns
 
-[`BitPay`](BitPay.md)
+`BitPay`
 
 #### Throws
 
 If an instance already exists.
-
-#### Defined in
-
-[src/services/providers/bitpay.ts:58](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/providers/bitpay.ts#L58)
 
 ## Methods
 
 ### getFiatRates()
 
 > **getFiatRates**(): `Promise`\<`any`\>
+
+Defined in: [src/services/providers/bitpay.ts:115](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/bitpay.ts#L115)
 
 Retrieves fiat currency exchange rates from the BitPay API.
 
@@ -72,21 +74,19 @@ const rates = await bitPay.getFiatRates();
 console.log(rates);
 ```
 
-#### Defined in
-
-[src/services/providers/bitpay.ts:115](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/providers/bitpay.ts#L115)
-
 ***
 
 ### getInstance()
 
-> `static` **getInstance**(): [`BitPay`](BitPay.md)
+> `static` **getInstance**(): `BitPay`
+
+Defined in: [src/services/providers/bitpay.ts:81](https://github.com/ZelCore-io/rates-api/blob/master/src/services/providers/bitpay.ts#L81)
 
 Returns the singleton instance of the BitPay class.
 
 #### Returns
 
-[`BitPay`](BitPay.md)
+`BitPay`
 
 The singleton instance of BitPay.
 
@@ -95,7 +95,3 @@ The singleton instance of BitPay.
 ```typescript
 const bitPay = BitPay.getInstance();
 ```
-
-#### Defined in
-
-[src/services/providers/bitpay.ts:81](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/services/providers/bitpay.ts#L81)

@@ -1,191 +1,275 @@
-[**rates-api v3.0.0**](../../../README.md) • **Docs**
+[**rates-api v3.0.0**](../../../README.md)
 
 ***
 
-[rates-api v3.0.0](../../../modules.md) / [src/types](../README.md) / LiveCoinWatchMarket
+[rates-api](../../../modules.md) / [src/types](../README.md) / LiveCoinWatchMarket
 
 # Type Alias: LiveCoinWatchMarket
 
-> **LiveCoinWatchMarket**: `object`
+> **LiveCoinWatchMarket** = `object`
 
-## Type declaration
+Defined in: [src/types.ts:204](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L204)
+
+## Properties
 
 ### age
 
 > **age**: `number`
 
+Defined in: [src/types.ts:207](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L207)
+
+***
+
 ### allTimeHighUSD
 
 > **allTimeHighUSD**: `number`
+
+Defined in: [src/types.ts:217](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L217)
+
+***
 
 ### cap
 
 > **cap**: `number` \| `null`
 
+Defined in: [src/types.ts:242](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L242)
+
+***
+
 ### categories
 
 > **categories**: `string`[]
+
+Defined in: [src/types.ts:216](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L216)
+
+***
 
 ### circulatingSupply
 
 > **circulatingSupply**: `number` \| `null`
 
+Defined in: [src/types.ts:218](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L218)
+
+***
+
 ### code
 
 > **code**: `string`
+
+Defined in: [src/types.ts:239](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L239)
+
+***
 
 ### color
 
 > **color**: `string`
 
+Defined in: [src/types.ts:208](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L208)
+
+***
+
 ### delta
 
 > **delta**: `object`
 
-### delta.day
+Defined in: [src/types.ts:243](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L243)
+
+#### day
 
 > **day**: `number` \| `null`
 
-### delta.hour
+#### hour
 
 > **hour**: `number` \| `null`
 
-### delta.month
+#### month
 
 > **month**: `number` \| `null`
 
-### delta.quarter
+#### quarter
 
 > **quarter**: `number` \| `null`
 
-### delta.week
+#### week
 
 > **week**: `number` \| `null`
 
-### delta.year
+#### year
 
 > **year**: `number` \| `null`
+
+***
 
 ### exchanges
 
 > **exchanges**: `number`
 
+Defined in: [src/types.ts:213](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L213)
+
+***
+
 ### links
 
 > **links**: `object`
 
-### links.discord
+Defined in: [src/types.ts:221](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L221)
+
+#### discord
 
 > **discord**: `string` \| `null`
 
-### links.instagram
+#### instagram
 
 > **instagram**: `string` \| `null`
 
-### links.linkedin
+#### linkedin
 
 > **linkedin**: `string` \| `null`
 
-### links.medium
+#### medium
 
 > **medium**: `string` \| `null`
 
-### links.naver
+#### naver
 
 > **naver**: `string` \| `null`
 
-### links.reddit
+#### reddit
 
 > **reddit**: `string` \| `null`
 
-### links.soundcloud
+#### soundcloud
 
 > **soundcloud**: `string` \| `null`
 
-### links.spotify
+#### spotify
 
 > **spotify**: `string` \| `null`
 
-### links.telegram
+#### telegram
 
 > **telegram**: `string` \| `null`
 
-### links.tiktok
+#### tiktok
 
 > **tiktok**: `string` \| `null`
 
-### links.twitch
+#### twitch
 
 > **twitch**: `string` \| `null`
 
-### links.twitter
+#### twitter
 
 > **twitter**: `string` \| `null`
 
-### links.website
+#### website
 
 > **website**: `string` \| `null`
 
-### links.wechat
+#### wechat
 
 > **wechat**: `string` \| `null`
 
-### links.whitepaper
+#### whitepaper
 
 > **whitepaper**: `string` \| `null`
 
-### links.youtube
+#### youtube
 
 > **youtube**: `string` \| `null`
+
+***
 
 ### markets
 
 > **markets**: `number`
 
+Defined in: [src/types.ts:214](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L214)
+
+***
+
 ### maxSupply
 
 > **maxSupply**: `number` \| `null`
+
+Defined in: [src/types.ts:220](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L220)
+
+***
 
 ### name
 
 > **name**: `string`
 
+Defined in: [src/types.ts:205](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L205)
+
+***
+
 ### pairs
 
 > **pairs**: `number`
+
+Defined in: [src/types.ts:215](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L215)
+
+***
 
 ### png32
 
 > **png32**: `string`
 
+Defined in: [src/types.ts:209](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L209)
+
+***
+
 ### png64
 
 > **png64**: `string`
+
+Defined in: [src/types.ts:210](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L210)
+
+***
 
 ### rank
 
 > **rank**: `number`
 
+Defined in: [src/types.ts:206](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L206)
+
+***
+
 ### rate
 
 > **rate**: `number` \| `null`
+
+Defined in: [src/types.ts:240](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L240)
+
+***
 
 ### totalSupply
 
 > **totalSupply**: `number`
 
+Defined in: [src/types.ts:219](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L219)
+
+***
+
 ### volume
 
 > **volume**: `number` \| `null`
+
+Defined in: [src/types.ts:241](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L241)
+
+***
 
 ### webp32
 
 > **webp32**: `string`
 
+Defined in: [src/types.ts:211](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L211)
+
+***
+
 ### webp64
 
 > **webp64**: `string`
 
-## Defined in
-
-[src/types.ts:189](https://github.com/ZelCore-io/rates-api/blob/6ee8192dea404fd0a0f6ba9b7352f3b7673523eb/src/types.ts#L189)
+Defined in: [src/types.ts:212](https://github.com/ZelCore-io/rates-api/blob/master/src/types.ts#L212)

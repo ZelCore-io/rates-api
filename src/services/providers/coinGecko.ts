@@ -1,9 +1,9 @@
-import AxiosWrapper from "../../lib/axios";
-import config from "../../../config";
-import * as log from "../../lib/log";
-import { arraySplit } from "../../lib/utils";
 import { LRUCache as LRU } from 'lru-cache';
-import { CoinGeckoPrice } from "../../types";
+import AxiosWrapper from '../../lib/axios';
+import config from '../../../config';
+import * as log from '../../lib/log';
+import { arraySplit } from '../../lib/utils';
+import { CoinGeckoPrice } from '../../types';
 
 const MAX_IDS_PER_REQUEST = 250;
 
@@ -42,7 +42,7 @@ export class CoinGecko {
    * The API key for authenticating with the CoinGecko API.
    * @private
    */
-  private readonly apiKey: string = process.env['COIN_GECKO_KEY'] || config.coinGeckoApiKey;
+  private readonly apiKey: string = process.env.COIN_GECKO_KEY || config.coinGeckoApiKey;
 
   /**
    * The singleton instance of the CoinGecko class.
@@ -80,7 +80,7 @@ export class CoinGecko {
    */
   constructor() {
     if (CoinGecko.instance) {
-      throw new Error("Use CoinGecko.getInstance()");
+      throw new Error('Use CoinGecko.getInstance()');
     }
     CoinGecko.instance = this;
     CoinGecko.axiosWrapper = new AxiosWrapper(config.coinGeckoUrl);
@@ -145,7 +145,7 @@ export class CoinGecko {
 
     try {
       const response = await this.get('key');
-      const data = response.data;
+      const { data } = response;
 
       this.cache.set(cacheKey, data);
 
@@ -180,7 +180,7 @@ export class CoinGecko {
 
     try {
       const response = await this.get('coins/list', { include_platform: includePlatform });
-      const data = response.data;
+      const { data } = response;
 
       this.cache.set(cacheKey, data);
 
@@ -214,7 +214,7 @@ export class CoinGecko {
 
     try {
       const response = await this.get('asset_platforms');
-      const data = response.data;
+      const { data } = response;
 
       this.cache.set(cacheKey, data);
 
@@ -244,7 +244,7 @@ export class CoinGecko {
 
     const response = await this.get('coins/markets', {
       vs_currency: vsCurrency,
-      ids: ids,
+      ids,
       order: 'market_cap_desc',
       per_page: 250,
       page: 1,
@@ -252,7 +252,7 @@ export class CoinGecko {
       price_change_percentage: '7d',
     });
 
-    const data = response.data;
+    const { data } = response;
 
     this.cache.set(cacheKey, data);
 
@@ -280,6 +280,7 @@ export class CoinGecko {
     const allRates: CoinGeckoPrice[] = [];
 
     for (const id of newIds) {
+      // eslint-disable-next-line no-await-in-loop -- deliberately sequential: one id per request keeps us inside the upstream rate limit.
       const response = await this._getExchangeRates(id, vsCurrency);
       allRates.push(...response);
     }
