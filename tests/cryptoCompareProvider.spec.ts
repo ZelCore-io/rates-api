@@ -86,7 +86,7 @@ describe('CryptoCompare provider', () => {
     expect(data.QTUM.USD.PRICE).toBe(2.5);
   });
 
-  it('caches a successful response for 2.5 minutes', async () => {
+  it('caches a successful response for 5 minutes', async () => {
     // lru-cache reads the clock from performance.now, which Jest's fake
     // timers leave alone; bridge it to the fake Date.
     jest.useFakeTimers({ doNotFake: ['performance'] });
@@ -97,7 +97,7 @@ describe('CryptoCompare provider', () => {
     const cc = CryptoCompare.getInstance();
 
     await cc.getMarketData(['QTUM'], 'USD');
-    jest.advanceTimersByTime(2 * 60 * 1000);
+    jest.advanceTimersByTime(4.5 * 60 * 1000);
     await cc.getMarketData(['QTUM'], 'USD');
     expect(getSpy).toHaveBeenCalledTimes(1);
 
