@@ -4,7 +4,14 @@ import config from '../../../config';
 import { makeRequestStrings } from '../../lib/utils';
 import { CryptoCompareMarkets, CryptoComparePrice } from '../../types';
 
+// `fsyms` is capped at 300 characters by the API; `tsyms` at 100, which is
+// why several quote currencies fit in a single request.
 const MAX_LENGTH_PER_REQUEST = 300;
+
+// Long enough that the 30s refresh loop reuses one response across several
+// cycles: three services call this provider, and the quota is the binding
+// constraint, not freshness.
+const CACHE_TTL_MS = 2.5 * 60 * 1000;
 
 /**
  * Singleton class to interact with the CryptoCompare API.
@@ -75,7 +82,7 @@ export class CryptoCompare {
 
     this.cache = new LRU({
       max: 100, // Maximum number of items in the cache
-      ttl: 1000 * 60 * 1, // Cache for 1 minute
+      ttl: CACHE_TTL_MS,
     });
   }
 
@@ -91,6 +98,34 @@ export class CryptoCompare {
    */
   public static getInstance(): CryptoCompare {
     return CryptoCompare.instance || new CryptoCompare();
+  }
+
+  /**
+   * Throws when a 200 response is really a failure.
+   *
+   * CryptoCompare does not use HTTP status codes for quota or parameter
+   * errors: it answers 200 with `{Response: 'Error', Message: ...}` and no
+   * payload field. Captured live from an exhausted key:
+   *
+   * ```
+   * HTTP:200 {"Response":"Error","Type":99,"Cooldown":406,
+   *           "Message":"You are over your rate limit please upgrade your account!"}
+   * ```
+   *
+   * Nothing rejects on its own, so without this check the caller reads a
+   * missing payload as "no symbols matched" and serves an empty provider
+   * while reporting success -- which is exactly how a spent quota went
+   * unnoticed in production.
+   *
+   * @private
+   * @param payload - The parsed response body.
+   * @param endpoint - The endpoint that produced it, for the message.
+   * @throws {Error} When the body carries an error envelope.
+   */
+  private static assertNotAnError(payload: any, endpoint: string): void {
+    if (payload?.Response === 'Error') {
+      throw new Error(`CryptoCompare ${endpoint} failed: ${payload.Message || 'unknown error'}`);
+    }
   }
 
   /**
@@ -136,9 +171,11 @@ export class CryptoCompare {
       fsyms: ids,
     });
 
-    const { data } = response;
+    CryptoCompare.assertNotAnError(response.data, 'data/pricemulti');
+    const { data }: { data: CryptoComparePrice } = response;
 
-    // Store in cache
+    // Cached only once known good, so a failure is retried rather than
+    // served from cache for the whole TTL.
     this.cache.set(cacheKey, data);
 
     return data;
@@ -201,8 +238,14 @@ export class CryptoCompare {
       fsyms: ids,
     });
 
+    CryptoCompare.assertNotAnError(response.data, 'data/pricemultifull');
     const data: CryptoCompareMarkets = response.data.RAW;
+    if (!data) {
+      throw new Error('CryptoCompare data/pricemultifull returned no RAW payload');
+    }
 
+    // Cached only once known good, so a failure is retried rather than
+    // served from cache for the whole TTL.
     this.cache.set(cacheKey, data);
 
     return data;
@@ -214,8 +257,11 @@ export class CryptoCompare {
    * Handles splitting the symbols into batches to comply with API limitations.
    *
    * @param ids - An array of cryptocurrency symbols (e.g., ['BTC', 'ETH']).
-   * @param vsCurrency - The target currency symbol (default is 'BTC').
+   * @param vsCurrency - Target currency symbol, or a comma-separated list of
+   * them (e.g. `'BTC,USD'`) to get every quote in one request. The response
+   * is keyed `[FROM][TO]`, so each symbol carries one entry per currency.
    * @returns An object containing detailed market data.
+   * @throws {Error} When the API reports an error, including an exhausted quota.
    *
    * @example
    * ```typescript

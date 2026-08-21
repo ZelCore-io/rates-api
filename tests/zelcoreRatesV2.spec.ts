@@ -96,6 +96,31 @@ it('sets errors.binance when bStocks degrades, even though getBstockPrices resol
   expect(result.crypto.some((c) => c.id === 'bstock-tslab')).toBe(true); // stale rows still served
 });
 
+// CryptoCompare's `tsyms` takes a list (max 100 characters) and RAW is keyed
+// [FROM][TO], so asking for BTC and USD in separate calls doubled the request
+// count against a quota that was already exhausted in production.
+it('asks CryptoCompare for both quote currencies in a single request', async () => {
+  const getMarketData = jest.fn().mockResolvedValue({
+    QTUM: {
+      BTC: { PRICE: 0.00003 },
+      USD: {
+        PRICE: 2.5, SUPPLY: 100, VOLUME24HOURTO: 200, CHANGEPCT24HOUR: 1.5, MKTCAP: 300, TOTALVOLUME24H: 400,
+      },
+    },
+  });
+  MockedCryptoCompare.getInstance.mockReturnValue({ getMarketData } as never);
+  mockedGetBstockPrices.mockResolvedValue([]);
+  mockedIsBstocksDegraded.mockReturnValue(false);
+
+  const result = await getAll();
+
+  expect(getMarketData).toHaveBeenCalledTimes(1);
+  expect(getMarketData).toHaveBeenCalledWith(expect.anything(), 'BTC,USD');
+  const row = result.crypto.find((c) => c.id === 'QTUM');
+  expect(row?.rates).toEqual({ btc: 0.00003, usd: 2.5 });
+  expect(result.errors?.cryptocompare).toBeUndefined();
+});
+
 it('does not set errors.binance when bStocks is healthy', async () => {
   mockedGetBstockPrices.mockResolvedValue([]);
   mockedIsBstocksDegraded.mockReturnValue(false);
