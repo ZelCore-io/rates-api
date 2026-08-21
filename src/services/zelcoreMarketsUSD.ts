@@ -25,14 +25,19 @@ export async function getAll(): Promise<MarketsData> {
 
   // Fetch results from CryptoCompare
   try {
-    const cryptocompare = await CryptoCompare.getInstance().getMarketData(coinAggregatorIDs.cryptoCompare, 'USD');
+    // Same ticker list and same quote pair as zelcoreRatesV2's refresh, so
+    // the provider's cache serves whichever runs second instead of spending
+    // a second request per window. Only the USD leg is read here.
+    const cryptocompare = await CryptoCompare.getInstance().getMarketData(coinAggregatorIDs.cryptoCompare, 'BTC,USD');
     const coinsCC = Object.keys(cryptocompare);
     coinsCC.forEach((coin) => {
+      const usd = cryptocompare[coin].USD;
+      if (!usd) return;
       cmk[coin] = {
-        supply: cryptocompare[coin].USD.SUPPLY,
-        volume: cryptocompare[coin].USD.TOTALVOLUME24HTO,
-        change: cryptocompare[coin].USD.CHANGEPCT24HOUR,
-        market: cryptocompare[coin].USD.MKTCAP,
+        supply: usd.SUPPLY,
+        volume: usd.TOTALVOLUME24HTO,
+        change: usd.CHANGEPCT24HOUR,
+        market: usd.MKTCAP,
       };
     });
   } catch (e) {

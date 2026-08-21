@@ -93,13 +93,19 @@ export async function getAll(): Promise<PricesResponse> {
 
   // Fetch cryptocurrency prices from CryptoCompare
   try {
-    const cryptocompare = await CryptoCompare.getInstance().getMarketData(coinAggregatorIDs.cryptoCompare);
-    const cryptocompareUsd = await CryptoCompare.getInstance().getMarketData(coinAggregatorIDs.cryptoCompare, 'USD');
+    // One request for both quote currencies: `tsyms` takes a list and the
+    // response is keyed [FROM][TO], so this halves the calls this provider
+    // spends per refresh cycle.
+    const cryptocompare = await CryptoCompare.getInstance().getMarketData(coinAggregatorIDs.cryptoCompare, 'BTC,USD');
 
-    processed.push(...Object.entries(cryptocompareUsd).map(([id, market]) => {
-      const btcMarket = cryptocompare[id].BTC;
+    processed.push(...Object.entries(cryptocompare).flatMap(([id, market]) => {
+      const btcMarket = market.BTC;
       const usdMarket = market.USD;
-      return {
+      // A symbol quoted in only one of the two currencies is skipped rather
+      // than throwing: reading `.PRICE` off the missing leg used to take the
+      // whole provider's rows down with it.
+      if (!btcMarket || !usdMarket) return [];
+      return [{
         id,
         provider: 'cryptocompare',
         rates: {
@@ -111,7 +117,7 @@ export async function getAll(): Promise<PricesResponse> {
         change24h: usdMarket.CHANGEPCT24HOUR,
         market: usdMarket.MKTCAP,
         total_supply: usdMarket.TOTALVOLUME24H,
-      };
+      }];
     }));
   } catch (e) {
     log.error('CryptoCompare error');
