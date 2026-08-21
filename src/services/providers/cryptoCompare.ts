@@ -14,6 +14,10 @@ const MAX_LENGTH_PER_REQUEST = 300;
 // cost about 576 requests a day, down from ~11.5k before any of this.
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
+// Ceiling on a self-imposed backoff, so one absurd `Cooldown` value cannot
+// mute the provider for the life of the process.
+const MAX_COOLDOWN_MS = 60 * 60 * 1000;
+
 /**
  * Singleton class to interact with the CryptoCompare API.
  *
@@ -68,6 +72,21 @@ export class CryptoCompare {
   private cache: LRU<string, any>;
 
   /**
+   * Epoch ms until which this provider refuses to call the API, learned from
+   * the `Cooldown` the API itself reports when the account is over its limit.
+   *
+   * The window is re-armed by every request made while it is running, so
+   * polling through a cooldown keeps it alive indefinitely -- observed on the
+   * production key counting down 478 -> 164 -> 43 -> 15 seconds and then
+   * jumping back to 336/406/478 as soon as the next refresh landed. Sitting
+   * the window out is the only way it ever drains.
+   *
+   * Per instance rather than per endpoint, because the limit is per account.
+   * @private
+   */
+  private cooldownUntil = 0;
+
+  /**
    * Private constructor to enforce the singleton pattern.
    *
    * Initializes the AxiosWrapper and the LRU cache.
@@ -118,14 +137,37 @@ export class CryptoCompare {
    * while reporting success -- which is exactly how a spent quota went
    * unnoticed in production.
    *
+   * A rate-limit envelope also carries `Cooldown` in seconds; that starts a
+   * local backoff so the next refresh does not re-arm the window.
+   *
    * @private
    * @param payload - The parsed response body.
    * @param endpoint - The endpoint that produced it, for the message.
    * @throws {Error} When the body carries an error envelope.
    */
-  private static assertNotAnError(payload: any, endpoint: string): void {
-    if (payload?.Response === 'Error') {
-      throw new Error(`CryptoCompare ${endpoint} failed: ${payload.Message || 'unknown error'}`);
+  private assertNotAnError(payload: any, endpoint: string): void {
+    if (payload?.Response !== 'Error') return;
+
+    const cooldownSeconds = Number(payload.Cooldown);
+    if (Number.isFinite(cooldownSeconds) && cooldownSeconds > 0) {
+      this.cooldownUntil = Date.now() + Math.min(cooldownSeconds * 1000, MAX_COOLDOWN_MS);
+    }
+    throw new Error(`CryptoCompare ${endpoint} failed: ${payload.Message || 'unknown error'}`);
+  }
+
+  /**
+   * Refuses a request that would land inside a cooldown the API has asked us
+   * to observe. Throwing here rather than returning empty keeps the failure
+   * visible to the caller's error handling, at no cost upstream.
+   *
+   * @private
+   * @param endpoint - The endpoint being skipped, for the message.
+   * @throws {Error} While the cooldown is still running.
+   */
+  private assertNotCoolingDown(endpoint: string): void {
+    const remainingMs = this.cooldownUntil - Date.now();
+    if (remainingMs > 0) {
+      throw new Error(`CryptoCompare ${endpoint} skipped: in cooldown for another ${Math.ceil(remainingMs / 1000)}s`);
     }
   }
 
@@ -138,6 +180,7 @@ export class CryptoCompare {
    * @returns The response from the API.
    */
   private async get(endpoint: string, params: Record<string, any> = {}): Promise<any> {
+    this.assertNotCoolingDown(endpoint);
     return CryptoCompare.axiosWrapper.get(endpoint, {
       headers: this.headers,
       params: { ...params },
@@ -172,7 +215,7 @@ export class CryptoCompare {
       fsyms: ids,
     });
 
-    CryptoCompare.assertNotAnError(response.data, 'data/pricemulti');
+    this.assertNotAnError(response.data, 'data/pricemulti');
     const { data }: { data: CryptoComparePrice } = response;
 
     // Cached only once known good, so a failure is retried rather than
@@ -239,7 +282,7 @@ export class CryptoCompare {
       fsyms: ids,
     });
 
-    CryptoCompare.assertNotAnError(response.data, 'data/pricemultifull');
+    this.assertNotAnError(response.data, 'data/pricemultifull');
     const data: CryptoCompareMarkets = response.data.RAW;
     if (!data) {
       throw new Error('CryptoCompare data/pricemultifull returned no RAW payload');
