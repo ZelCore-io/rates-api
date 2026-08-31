@@ -6,6 +6,7 @@ import zelcoreRates from './zelcoreRates';
 import zelcoreMarketsUSD from './zelcoreMarketsUSD';
 import zelcoreRatesV2 from './zelcoreRatesV2';
 import { getLatestCoinInfo } from './coinAggregatorIDs';
+import { getBstockHistory as getBstockHistoryData } from './bstocks';
 import { checkContracts, foundContracts } from './newContracts';
 import { PricesResponse, FoundContractStore, MarketsData, RatesData } from '../types';
 
@@ -277,6 +278,46 @@ export async function serviceRefresher(): Promise<void> {
   }
 }
 
+/**
+ * Handles the GET request for one bStock's USD price history, shaped like
+ * CoinGecko's `market_chart` response.
+ *
+ * `days` is clamped to 1–1000, with `max` (CoinGecko's whole-history
+ * convention, which the wallet forwards verbatim) mapping to the 1000-candle
+ * cap; any other non-numeric value falls back to the default of 30. An
+ * unknown code is a 404; a valid code with no data is a 502 so the wallet's
+ * error path runs instead of caching an empty chart as truth.
+ *
+ * @param req - The Express request object (`params.code`, `query.days`).
+ * @param res - The Express response object.
+ *
+ * @example
+ * ```typescript
+ * app.get('/v2/bstocks/history/:code', getBstockHistory);
+ * ```
+ */
+export async function getBstockHistory(req: Request, res: Response): Promise<void> {
+  try {
+    const code = String(req.params.code || '');
+    const daysParam = String(req.query.days ?? 30);
+    const daysRaw = daysParam.toLowerCase() === 'max' ? 1000 : Number(daysParam);
+    const days = Number.isFinite(daysRaw) ? Math.min(Math.max(Math.trunc(daysRaw), 1), 1000) : 30;
+    const history = await getBstockHistoryData(code, days);
+    if (!history) {
+      res.status(404).json({ error: 'Unknown bStock' });
+      return;
+    }
+    if (!history.prices.length) {
+      res.status(502).json({ error: 'bStock history temporarily unavailable' });
+      return;
+    }
+    res.json(history);
+  } catch (error) {
+    log.error(error);
+    res.status(500).json({ error: 'Internal error' });
+  }
+}
+
 export default {
   getRates,
   getMarketsUsd,
@@ -287,4 +328,5 @@ export default {
   getRatesV2Compressed,
   getFoundContracts,
   checkContractsV2,
+  getBstockHistory,
 };

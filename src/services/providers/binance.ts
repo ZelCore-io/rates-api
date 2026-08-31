@@ -13,6 +13,12 @@ const TICKER_CHUNK = 20;
 // a price up to one TTL old. See `pricedFresh`.
 const QUOTE_CACHE_MS = 60 * 1000;
 
+// Kline (history) cache TTL. History barely moves between refreshes — only the
+// in-progress candle changes — and the wallet caches chart data locally for an
+// hour anyway, so 10 minutes keeps charts current without re-spending Binance
+// request weight on every chart open.
+const KLINE_CACHE_MS = 10 * 60 * 1000;
+
 /**
  * Singleton class to interact with Binance's public (no-API-key) endpoints.
  *
@@ -65,6 +71,15 @@ export class Binance {
    * @private
    */
   private quoteCache = new LRU<string, any>({ max: 50, ttl: QUOTE_CACHE_MS });
+
+  /**
+   * Cache for kline (candlestick) history, keyed by symbol/interval/limit: 10
+   * minutes. Sized for the bStock universe (~68 BSC-listed symbols as of
+   * 2026-08) times the six chart ranges the wallet requests (~408 keys), with
+   * headroom so a full sweep never evicts still-fresh entries.
+   * @private
+   */
+  private klineCache = new LRU<string, any>({ max: 600, ttl: KLINE_CACHE_MS });
 
   /**
    * Last-known-good ticker per `${window}:${symbol}`, independent of
@@ -275,6 +290,38 @@ export class Binance {
       // the retry storm doesn't repeat every cycle while Binance is down.
       this.longCache.set(key, new Set<string>(), { ttl: config.binanceFailureCacheMs });
       return new Set<string>();
+    }
+  }
+
+  /**
+   * Retrieves raw Spot klines (candlesticks) for a symbol.
+   *
+   * Rows come back in Binance's wire shape — `[openTime, open, high, low,
+   * close, volume, closeTime, ...]` — untranslated, so callers pick the fields
+   * they need. Cached for 10 minutes per symbol/interval/limit. A failed
+   * request returns an empty array (and logs) rather than throwing, matching
+   * the rest of this class; klines have no last-known-good store because a
+   * chart can simply be retried, unlike a spot price that must keep serving.
+   *
+   * @param symbol - The Spot symbol, e.g. `TSLABUSDT`.
+   * @param interval - Binance kline interval, e.g. `15m`, `1h`, `4h`, `1d`.
+   * @param limit - Number of most-recent candles to fetch (Binance caps at 1000).
+   * @returns Raw kline rows, oldest first; empty on failure.
+   */
+  async getKlines(symbol: string, interval: string, limit: number): Promise<(number | string)[][]> {
+    const key = `kl:${symbol}:${interval}:${limit}`;
+    if (this.klineCache.has(key)) return this.klineCache.get(key) as (number | string)[][];
+
+    try {
+      const res = await this.api.get(`api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`);
+      const rows = res.data ?? [];
+      this.klineCache.set(key, rows);
+      return rows;
+    } catch (err) {
+      log.error(`Error getting klines from Binance for ${symbol}`);
+      log.error(err);
+      // Not cached: the next chart request may retry immediately.
+      return [];
     }
   }
 
