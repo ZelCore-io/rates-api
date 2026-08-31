@@ -74,11 +74,12 @@ export class Binance {
 
   /**
    * Cache for kline (candlestick) history, keyed by symbol/interval/limit: 10
-   * minutes. Sized for the bStock universe (~20 symbols) times the handful of
-   * chart ranges the wallet requests.
+   * minutes. Sized for the bStock universe (~68 BSC-listed symbols as of
+   * 2026-08) times the six chart ranges the wallet requests (~408 keys), with
+   * headroom so a full sweep never evicts still-fresh entries.
    * @private
    */
-  private klineCache = new LRU<string, any>({ max: 200, ttl: KLINE_CACHE_MS });
+  private klineCache = new LRU<string, any>({ max: 600, ttl: KLINE_CACHE_MS });
 
   /**
    * Last-known-good ticker per `${window}:${symbol}`, independent of
