@@ -5,6 +5,10 @@ import apiService from './services/apiServices';
 
 const cache = apicache.middleware;
 
+// Cache-gate for endpoints that can 404/502: without it apicache would happily
+// serve a transient upstream failure for the full TTL.
+const onlyOk = (req: Request, res: Response): boolean => res.statusCode === 200;
+
 /**
  * Configures the Express application by setting up routes, middleware, and caching.
  *
@@ -87,6 +91,17 @@ export default (app: Application): void => {
    */
   app.get('/v2/rates-compressed', cache('30 seconds'), (req: Request, res: Response) => {
     apiService.getRatesV2Compressed(req, res);
+  });
+
+  /**
+   * Retrieves USD price history for one bStock, shaped like CoinGecko's
+   * market_chart response: `{prices: [[epochMs, price], ...]}`.
+   *
+   * @route GET /v2/bstocks/history/:code?days=30
+   * @cache 10 minutes (successful responses only)
+   */
+  app.get('/v2/bstocks/history/:code', cache('10 minutes', onlyOk), (req: Request, res: Response) => {
+    apiService.getBstockHistory(req, res);
   });
 
   /**

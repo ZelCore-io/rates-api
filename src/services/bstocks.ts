@@ -2,6 +2,16 @@ import config from '../../config';
 import { Binance } from './providers/binance';
 import type { CryptoPrice } from '../types';
 
+// Chart range → Binance kline interval and candle count. Chosen to roughly
+// match CoinGecko's market_chart granularity tiers (which the wallet's charts
+// were built against) while staying far under Binance's 1000-candle cap.
+const HISTORY_TIERS: { maxDays: number; interval: string; candlesPerDay: number }[] = [
+  { maxDays: 1, interval: '15m', candlesPerDay: 96 },
+  { maxDays: 7, interval: '1h', candlesPerDay: 24 },
+  { maxDays: 30, interval: '4h', candlesPerDay: 6 },
+  { maxDays: Infinity, interval: '1d', candlesPerDay: 1 },
+];
+
 // Last-known-good per bStock id, with the epoch-ms timestamp it was accepted
 // at. During a CEX halt (stock splits) Binance returns the symbol PRESENT
 // with lastPrice "0.00000000" rather than omitting it — measured live, 20/20
@@ -98,6 +108,46 @@ export function getLastGoodBstockPrices(): CryptoPrice[] {
  * `<code>USDT` Spot symbol) still within the staleness bound, including any
  * carried over from a prior refresh.
  */
+/**
+ * USD price history for one bStock, shaped like CoinGecko's `market_chart`
+ * response (`{prices: [[epochMs, price], ...]}`) so ZelCore's chart flow can
+ * consume it with the same code path it uses for every other coin.
+ *
+ * The `code` is the bStock id without its `bstock-` prefix (the wallet's
+ * `coingeckoID` for MSFTB is `bstock-msftb`, so the code here is `msftb`), and
+ * is validated against Binance's tokenised-asset universe before any kline
+ * request goes out — this endpoint must not be usable as an open proxy to
+ * arbitrary Binance symbols. History comes from the same venue as the spot
+ * prices above (Binance Spot `<code>USDT`), so the chart always agrees with
+ * the displayed ticker price.
+ *
+ * Each point is a candle's close price at its closeTime; the in-progress
+ * candle's closeTime sits in the future, so it is clamped to now.
+ *
+ * @param code - The bStock asset code, case-insensitive (e.g. `msftb`).
+ * @param days - How many days of history to return.
+ * @returns The price series; `null` when the feature is disabled or the code
+ * is not a tokenised asset. Empty `prices` means Binance served nothing —
+ * callers should treat that as an upstream failure, not an empty chart.
+ */
+export async function getBstockHistory(code: string, days: number): Promise<{ prices: [number, number][] } | null> {
+  if (!config.bStocksEnabled) return null;
+  const binance = Binance.getInstance();
+  const assets = await binance.getTokenisedAssets();
+  const asset = assets.find((a) => a.assetCode.toLowerCase() === code.toLowerCase());
+  if (!asset) return null;
+
+  const tier = HISTORY_TIERS.find((t) => days <= t.maxDays)!;
+  const limit = Math.min(Math.ceil(days * tier.candlesPerDay), 1000);
+  const klines = await binance.getKlines(`${asset.assetCode}USDT`, tier.interval, limit);
+
+  const now = Date.now();
+  const prices = klines
+    .map((row): [number, number] => [Math.min(Number(row[6]), now), Number(row[4])])
+    .filter(([ts, px]) => Number.isFinite(ts) && Number.isFinite(px) && px > 0);
+  return { prices };
+}
+
 export async function getBstockPrices(): Promise<CryptoPrice[]> {
   if (!config.bStocksEnabled) return [];
   const binance = Binance.getInstance();
