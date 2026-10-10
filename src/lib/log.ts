@@ -7,6 +7,34 @@ import * as path from 'path';
  */
 const homeDirPath: string = path.join(__dirname, '../../');
 
+/** Log directory: `LOG_DIR` when set (read per write), else the repo root. */
+function logDir(): string {
+  return process.env.LOG_DIR ? `${path.resolve(process.env.LOG_DIR)}${path.sep}` : homeDirPath;
+}
+
+/**
+ * Keys never written to any log. An Axios error carries the request config
+ * and the raw request (`config.headers`, `request._header`), which hold
+ * provider API keys; `AxiosError.toJSON()` includes `config` too.
+ */
+const SENSITIVE_KEYS = new Set(['config', 'request', 'headers', '_header']);
+
+/** JSON.stringify that drops SENSITIVE_KEYS at any depth (after toJSON). */
+function safeStringify(value: any): string {
+  return JSON.stringify(value, (key, v) => (SENSITIVE_KEYS.has(key) ? undefined : v));
+}
+
+/**
+ * Log-safe one-liner for an Axios error: message (or code, when Node raised
+ * an empty-message AggregateError), method, URL path without query, status.
+ */
+function describeAxiosError(err: any): string {
+  const method = String(err.config?.method ?? '').toUpperCase();
+  const url = `${err.config?.baseURL ?? ''}${String(err.config?.url ?? '').split('?')[0]}`;
+  const status = err.response?.status ?? err.code ?? 'no response';
+  return `AxiosError: ${err.message || err.code || 'request failed'} [${method} ${url}] status=${status}`;
+}
+
 /**
  * Retrieves the size of a file in bytes.
  *
@@ -60,22 +88,36 @@ function ensureString(parameter: any): string {
  * writeToFile('/path/to/log.txt', { message: 'Error occurred', stack: 'Error stack trace' });
  * ```
  */
-function writeToFile(filepath: string, args: { message?: string; stack?: string } | string): void {
+function writeToFile(filepath: string, args: any): void {
   const size: number = getFilesizeInBytes(filepath);
   let flag: 'a+' | 'w' = 'a+';
   if (size > (25 * 1024 * 1024)) { // 25MB
     flag = 'w'; // rewrite file
   }
+  let text: string;
+  if (typeof args === 'string') text = args;
+  else if (args?.isAxiosError) text = describeAxiosError(args);
+  else if (typeof args === 'object' && args?.message) text = ensureString(args.message);
+  else text = safeStringify(args);
   const stream = fs.createWriteStream(filepath, { flags: flag });
-  stream.write(
-    `${new Date().toISOString()}          ${ensureString(
-      typeof args === 'object' && args.message ? args.message : args,
-    )}\n`,
-  );
+  stream.write(`${new Date().toISOString()}          ${text}\n`);
   if (typeof args === 'object' && args.stack && typeof args.stack === 'string') {
     stream.write(`${args.stack}\n`);
   }
   stream.end();
+}
+
+/**
+ * Console-safe form of a log argument: an Axios error becomes its one-line
+ * description, and a plain object or array is printed with SENSITIVE_KEYS
+ * stripped (so an Axios error nested inside one can't leak either). Strings
+ * and other Errors pass through unchanged.
+ */
+function redactForConsole(args: any): any {
+  if (!args || typeof args !== 'object') return args;
+  if (args.isAxiosError) return describeAxiosError(args);
+  if (args instanceof Error) return args;
+  return safeStringify(args);
 }
 
 /**
@@ -90,24 +132,10 @@ function writeToFile(filepath: string, args: { message?: string; stack?: string 
  * debug({ message: 'Debugging', details: { key: 'value' } });
  * ```
  */
-/**
- * Console-safe form of a log argument. An Axios error's own properties carry
- * the request config and the raw request (`config.headers`, `request._header`),
- * which hold provider API keys, so it is reduced to its message, method, URL
- * path and status. Everything else passes through unchanged.
- */
-function redactForConsole(args: any): any {
-  if (!args || typeof args !== 'object' || !args.isAxiosError) return args;
-  const method = String(args.config?.method ?? '').toUpperCase();
-  const url = `${args.config?.baseURL ?? ''}${String(args.config?.url ?? '').split('?')[0]}`;
-  const status = args.response?.status ?? args.code ?? 'no response';
-  return `AxiosError: ${args.message} [${method} ${url}] status=${status}`;
-}
-
 function debug(args: any): void {
   try {
     console.log(redactForConsole(args));
-    const filepath = `${homeDirPath}debug.log`;
+    const filepath = `${logDir()}debug.log`;
     writeToFile(filepath, args);
   } catch (err) {
     console.error('This shall not have happened');
@@ -129,7 +157,7 @@ function debug(args: any): void {
  */
 function error(args: any): void {
   try {
-    const filepath = `${homeDirPath}error.log`;
+    const filepath = `${logDir()}error.log`;
     writeToFile(filepath, args);
     debug(args);
   } catch (err) {
@@ -152,7 +180,7 @@ function error(args: any): void {
  */
 function warn(args: any): void {
   try {
-    const filepath = `${homeDirPath}warn.log`;
+    const filepath = `${logDir()}warn.log`;
     writeToFile(filepath, args);
     debug(args);
   } catch (err) {
@@ -175,7 +203,7 @@ function warn(args: any): void {
  */
 function info(args: any): void {
   try {
-    const filepath = `${homeDirPath}info.log`;
+    const filepath = `${logDir()}info.log`;
     writeToFile(filepath, args);
     debug(args);
   } catch (err) {
