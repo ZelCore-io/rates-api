@@ -227,6 +227,35 @@ export class CoinGecko {
   }
 
   /**
+   * Retrieves one coin's price history between two unix timestamps
+   * (`coins/{id}/market_chart/range`).
+   *
+   * Uncached and unguarded on purpose: the caller (`services/priceHistory`)
+   * owns caching and needs the raw error so it can tell an unknown id
+   * (upstream 404) apart from an outage or rate limit.
+   *
+   * @param id - CoinGecko coin id, e.g. `bitcoin`.
+   * @param vsCurrency - Target currency, e.g. `eur`.
+   * @param from - Range start, unix seconds.
+   * @param to - Range end, unix seconds.
+   * @returns CoinGecko's `market_chart` payload; only `prices` is used here.
+   * @throws The underlying Axios error on any non-2xx response or network failure.
+   *
+   * @example
+   * ```typescript
+   * const { prices } = await CoinGecko.getInstance().getMarketChartRange('bitcoin', 'eur', 1514764800, 1546300799);
+   * ```
+   */
+  public async getMarketChartRange(id: string, vsCurrency: string, from: number, to: number): Promise<{ prices: [number, number | null][] }> {
+    const response = await this.get(`coins/${encodeURIComponent(id)}/market_chart/range`, {
+      vs_currency: vsCurrency,
+      from,
+      to,
+    });
+    return response.data;
+  }
+
+  /**
    * Retrieves exchange rates for a list of coin IDs.
    *
    * @private

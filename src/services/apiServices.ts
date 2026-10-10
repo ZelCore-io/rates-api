@@ -7,6 +7,7 @@ import zelcoreMarketsUSD from './zelcoreMarketsUSD';
 import zelcoreRatesV2 from './zelcoreRatesV2';
 import { getLatestCoinInfo } from './coinAggregatorIDs';
 import { getBstockHistory as getBstockHistoryData } from './bstocks';
+import { getPriceHistory as getPriceHistoryData, parsePriceHistoryParams, PriceHistoryError } from './priceHistory';
 import { checkContracts, foundContracts } from './newContracts';
 import { PricesResponse, FoundContractStore, MarketsData, RatesData } from '../types';
 
@@ -318,6 +319,38 @@ export async function getBstockHistory(req: Request, res: Response): Promise<voi
   }
 }
 
+/**
+ * Handles the GET request for one coin's fiat price history between two unix
+ * timestamps, for wallet tax exports. Answers
+ * `{prices: [[epochMs, price], ...], granularity: 'daily' | 'hourly'}`.
+ *
+ * 400 on invalid parameters, 404 when CoinGecko doesn't know the id, 502 on
+ * any other upstream failure (rate limit, outage, timeout).
+ *
+ * @param req - The Express request object (`params.geckoId`, `query.vs`, `query.from`, `query.to`).
+ * @param res - The Express response object.
+ *
+ * @example
+ * ```typescript
+ * app.get('/v2/prices/history/:geckoId', getPriceHistory);
+ * ```
+ */
+export async function getPriceHistory(req: Request, res: Response): Promise<void> {
+  try {
+    const {
+      geckoId, vs, from, to,
+    } = parsePriceHistoryParams(req.params.geckoId, req.query.vs, req.query.from, req.query.to);
+    res.json(await getPriceHistoryData(geckoId, vs, from, to));
+  } catch (error) {
+    if (error instanceof PriceHistoryError) {
+      res.status(error.status).json({ error: error.message });
+      return;
+    }
+    log.error(error);
+    res.status(500).json({ error: 'Internal error' });
+  }
+}
+
 export default {
   getRates,
   getMarketsUsd,
@@ -329,4 +362,5 @@ export default {
   getFoundContracts,
   checkContractsV2,
   getBstockHistory,
+  getPriceHistory,
 };

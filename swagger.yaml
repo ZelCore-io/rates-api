@@ -112,6 +112,78 @@ paths:
               schema:
                 type: object
 
+  /v2/prices/history/{geckoId}:
+    get:
+      summary: Get fiat price history for one coin
+      description: >
+        Price history for one CoinGecko id in one fiat currency between two
+        unix timestamps, for wallet tax exports. Ranges ending within the last
+        90 days are hourly; older ranges are daily (one point per UTC day).
+        Cached per coin, currency and UTC day (closed days 30 days, today 1
+        hour); successful responses are also cached for 1 hour.
+      parameters:
+        - name: geckoId
+          in: path
+          required: true
+          description: CoinGecko coin id.
+          schema:
+            type: string
+            pattern: '^[a-z0-9-]{1,100}$'
+            example: bitcoin
+        - name: vs
+          in: query
+          required: true
+          description: Fiat currency code (case-insensitive), e.g. usd, eur, gbp.
+          schema:
+            type: string
+            example: eur
+        - name: from
+          in: query
+          required: true
+          description: Range start, unix seconds (inclusive).
+          schema:
+            type: integer
+            example: 1514764800
+        - name: to
+          in: query
+          required: true
+          description: Range end, unix seconds (inclusive). Must be after `from`, at most 10 years later.
+          schema:
+            type: integer
+            example: 1546300799
+      responses:
+        '200':
+          description: Price points as [epochMs, price] pairs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prices:
+                    type: array
+                    items:
+                      type: array
+                      minItems: 2
+                      maxItems: 2
+                      items:
+                        type: number
+                  granularity:
+                    type: string
+                    enum: [daily, hourly]
+        '400':
+          description: Invalid geckoId, unsupported vs currency, from >= to, or a span over 10 years.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: CoinGecko does not know this id.
+        '502':
+          description: Upstream failure (rate limit, outage, timeout).
+
   /v2/found-contracts:
     get:
       summary: Get found contracts

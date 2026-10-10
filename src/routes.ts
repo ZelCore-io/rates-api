@@ -105,6 +105,18 @@ export default (app: Application): void => {
   });
 
   /**
+   * Retrieves one coin's fiat price history between two unix timestamps, for
+   * wallet tax exports: `{prices: [[epochMs, price], ...], granularity}`.
+   * Backed by a per-day cache in `services/priceHistory`.
+   *
+   * @route GET /v2/prices/history/:geckoId?vs=eur&from=<unix s>&to=<unix s>
+   * @cache 1 hour (successful responses only)
+   */
+  app.get('/v2/prices/history/:geckoId', cache('1 hour', onlyOk), (req: Request, res: Response) => {
+    apiService.getPriceHistory(req, res);
+  });
+
+  /**
    * Retrieves found contracts.
    *
    * @route GET /v2/found-contracts
