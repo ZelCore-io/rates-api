@@ -37,10 +37,10 @@ export const config = {
     upstreamPerDay: 5000,
     maxConcurrentUpstream: 4,
     upstreamTimeoutMs: 15 * 1000,
-    // Upper bound on cached price points across every coin/currency/day.
-    // At roughly 56 bytes a point plus ~200 bytes per day entry, the worst
-    // case is ~130 MB (every entry a single daily point, so the 1M budget
-    // holds 500k days); all-hourly days come to ~65 MB.
+    // Upper bounds on cached price points and day entries across every
+    // coin/currency/day. At roughly 56 bytes a point plus ~200 bytes per
+    // entry, the worst case is ~100 MB: 200k entries of 5 points each
+    // (1M points). All-hourly days (24 points) come to ~65 MB.
     cacheMaxPoints: 1_000_000,
     cacheMaxEntries: 200_000,
     notFoundCacheMs: 10 * 60 * 1000,
