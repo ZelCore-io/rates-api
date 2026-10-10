@@ -90,9 +90,23 @@ function writeToFile(filepath: string, args: { message?: string; stack?: string 
  * debug({ message: 'Debugging', details: { key: 'value' } });
  * ```
  */
+/**
+ * Console-safe form of a log argument. An Axios error's own properties carry
+ * the request config and the raw request (`config.headers`, `request._header`),
+ * which hold provider API keys, so it is reduced to its message, method, URL
+ * path and status. Everything else passes through unchanged.
+ */
+function redactForConsole(args: any): any {
+  if (!args || typeof args !== 'object' || !args.isAxiosError) return args;
+  const method = String(args.config?.method ?? '').toUpperCase();
+  const url = `${args.config?.baseURL ?? ''}${String(args.config?.url ?? '').split('?')[0]}`;
+  const status = args.response?.status ?? args.code ?? 'no response';
+  return `AxiosError: ${args.message} [${method} ${url}] status=${status}`;
+}
+
 function debug(args: any): void {
   try {
-    console.log(args);
+    console.log(redactForConsole(args));
     const filepath = `${homeDirPath}debug.log`;
     writeToFile(filepath, args);
   } catch (err) {

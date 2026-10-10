@@ -57,6 +57,15 @@ export class CoinGecko {
   private static axiosWrapper: AxiosWrapper;
 
   /**
+   * Separate client for `market_chart/range` (price history) with retries
+   * off. The shared client retries every failure three times, which turns a
+   * 404 or 429 into four billed calls; the price-history path does its own
+   * backoff instead. The shared client is left exactly as it was.
+   * @private
+   */
+  private static historyClient: AxiosWrapper;
+
+  /**
    * Default headers for API requests.
    * @private
    */
@@ -84,6 +93,7 @@ export class CoinGecko {
     }
     CoinGecko.instance = this;
     CoinGecko.axiosWrapper = new AxiosWrapper(config.coinGeckoUrl);
+    CoinGecko.historyClient = new AxiosWrapper(config.coinGeckoUrl, 0, config.priceHistory.upstreamTimeoutMs);
 
     this.cache = new LRU({
       max: 100, // Maximum number of items in the cache
@@ -230,9 +240,10 @@ export class CoinGecko {
    * Retrieves one coin's price history between two unix timestamps
    * (`coins/{id}/market_chart/range`).
    *
-   * Uncached and unguarded on purpose: the caller (`services/priceHistory`)
-   * owns caching and needs the raw error so it can tell an unknown id
-   * (upstream 404) apart from an outage or rate limit.
+   * Uncached, unguarded and never retried on purpose: the caller
+   * (`services/priceHistory`) owns caching, budgeting and backoff, and needs
+   * the raw error so it can tell an unknown id (404) and a rate limit (429,
+   * with its `Retry-After`) apart from an outage.
    *
    * @param id - CoinGecko coin id, e.g. `bitcoin`.
    * @param vsCurrency - Target currency, e.g. `eur`.
@@ -247,10 +258,9 @@ export class CoinGecko {
    * ```
    */
   public async getMarketChartRange(id: string, vsCurrency: string, from: number, to: number): Promise<{ prices: [number, number | null][] }> {
-    const response = await this.get(`coins/${encodeURIComponent(id)}/market_chart/range`, {
-      vs_currency: vsCurrency,
-      from,
-      to,
+    const response = await CoinGecko.historyClient.get(`coins/${encodeURIComponent(id)}/market_chart/range`, {
+      headers: this.headers,
+      params: { vs_currency: vsCurrency, from, to },
     });
     return response.data;
   }

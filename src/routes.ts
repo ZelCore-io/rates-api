@@ -106,8 +106,10 @@ export default (app: Application): void => {
 
   /**
    * Retrieves one coin's fiat price history between two unix timestamps, for
-   * wallet tax exports: `{prices: [[epochMs, price], ...], granularity}`.
-   * Backed by a per-day cache in `services/priceHistory`.
+   * wallet tax exports: `{prices: [[epochMs, price], ...], granularity, segments}`.
+   * Backed by a per-day cache and its own upstream budget in
+   * `services/priceHistory`. There is no per-IP limiter in this app; the
+   * upstream budget is the bound on what one client can spend.
    *
    * @route GET /v2/prices/history/:geckoId?vs=eur&from=<unix s>&to=<unix s>
    * @cache 1 hour (successful responses only)

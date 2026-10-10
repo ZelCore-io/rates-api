@@ -117,10 +117,15 @@ paths:
       summary: Get fiat price history for one coin
       description: >
         Price history for one CoinGecko id in one fiat currency between two
-        unix timestamps, for wallet tax exports. Ranges ending within the last
-        90 days are hourly; older ranges are daily (one point per UTC day).
-        Cached per coin, currency and UTC day (closed days 30 days, today 1
-        hour); successful responses are also cached for 1 hour.
+        unix timestamps, for wallet tax exports. Points in the last 90 UTC
+        days are hourly; older points are daily (one per UTC day, 00:00). A
+        range crossing that line returns granularity "mixed" with one daily
+        and one hourly entry in `segments`. Only ids ZelCore carries are
+        served. `from` before 2013-04-28 is clamped to it and `to` after now
+        is clamped to now. Cached per coin, currency and UTC day (closed days
+        30 days, today and empty days 1 hour); successful responses are also
+        cached for 1 hour. Upstream use is budgeted; when the budget is spent
+        or CoinGecko rate-limits, the endpoint answers 503 with Retry-After.
       parameters:
         - name: geckoId
           in: path
@@ -169,9 +174,22 @@ paths:
                         type: number
                   granularity:
                     type: string
-                    enum: [daily, hourly]
+                    enum: [daily, hourly, mixed]
+                  segments:
+                    type: array
+                    description: Contiguous parts of the range by granularity; from/to are epoch ms, inclusive.
+                    items:
+                      type: object
+                      properties:
+                        granularity:
+                          type: string
+                          enum: [daily, hourly]
+                        from:
+                          type: integer
+                        to:
+                          type: integer
         '400':
-          description: Invalid geckoId, unsupported vs currency, from >= to, or a span over 10 years.
+          description: Invalid geckoId, unsupported vs currency, from >= to, from in the future, or a span over 10 years.
           content:
             application/json:
               schema:
@@ -180,9 +198,16 @@ paths:
                   error:
                     type: string
         '404':
-          description: CoinGecko does not know this id.
+          description: ZelCore does not carry this id, or CoinGecko does not know it (cached for 10 minutes).
         '502':
-          description: Upstream failure (rate limit, outage, timeout).
+          description: Upstream failure (outage, timeout).
+        '503':
+          description: Upstream budget spent, too many concurrent upstream calls, or CoinGecko rate limit cooldown.
+          headers:
+            Retry-After:
+              description: Seconds until a retry can be admitted.
+              schema:
+                type: integer
 
   /v2/found-contracts:
     get:
