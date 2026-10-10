@@ -201,7 +201,7 @@ describe('price history caching (old spans, daily)', () => {
   });
 
   it('bounds the cache by point count, evicting the oldest days', async () => {
-    config.priceHistory.cacheMaxPoints = 2000; // a day costs points + 1
+    config.priceHistory.cacheMaxSize = 2000; // a day costs points + 1
     resetPriceHistoryState();
     const upstream = mockUpstream();
     await getPriceHistory('bitcoin', 'eur', from, to); // 730 days, size 1460: fits
@@ -211,6 +211,31 @@ describe('price history caching (old spans, daily)', () => {
     upstream.mockClear();
     await getPriceHistory('bitcoin', 'eur', from, to);
     expect(upstream).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('price history day TTLs', () => {
+  const DAY_MS = DAY_S * 1000;
+
+  it('treats a day as still open until two hours after its UTC midnight', async () => {
+    const midnightMs = Math.floor(realNow() / DAY_MS) * DAY_MS;
+    nowMs = midnightMs + 30 * 60 * 1000; // 00:30 UTC: yesterday's late points may be missing
+    const yesterday = { from: midnightMs / 1000 - DAY_S, to: midnightMs / 1000 - 1 };
+    const upstream = mockUpstream();
+    await getPriceHistory('bitcoin', 'usd', yesterday.from, yesterday.to);
+    expect(upstream).toHaveBeenCalledTimes(1);
+
+    nowMs += 60 * 60 * 1000 + 1000; // 01:30: the 1-hour "open" TTL has lapsed
+    await getPriceHistory('bitcoin', 'usd', yesterday.from, yesterday.to);
+    expect(upstream).toHaveBeenCalledTimes(2);
+
+    nowMs += 60 * 60 * 1000 + 1000; // 02:30: refetched once more, now closed
+    await getPriceHistory('bitcoin', 'usd', yesterday.from, yesterday.to);
+    expect(upstream).toHaveBeenCalledTimes(3);
+
+    nowMs += 6 * 60 * 60 * 1000; // closed days keep their 30-day TTL
+    await getPriceHistory('bitcoin', 'usd', yesterday.from, yesterday.to);
+    expect(upstream).toHaveBeenCalledTimes(3);
   });
 });
 

@@ -17,6 +17,8 @@ const EARLIEST_S = Date.UTC(2013, 3, 28) / 1000;
 
 const CLOSED_DAY_TTL_MS = 30 * DAY_S * 1000;
 const OPEN_DAY_TTL_MS = HOUR_S * 1000;
+/** A day counts as closed (long TTL) only this long after its UTC end, so late-published points get picked up. */
+const CLOSE_GRACE_MS = 2 * HOUR_S * 1000;
 
 const GECKO_ID_RE = /^[a-z0-9-]{1,100}$/;
 const UNIX_SECONDS_RE = /^\d{1,12}$/;
@@ -80,7 +82,7 @@ export function resetPriceHistoryState(): void {
   const cfg = config.priceHistory;
   dayCache = new LRU<string, CachedDay>({
     max: cfg.cacheMaxEntries,
-    maxSize: cfg.cacheMaxPoints,
+    maxSize: cfg.cacheMaxSize,
     sizeCalculation: (day) => day.prices.length + 1,
   });
   notFoundUntil = new LRU<string, number>({ max: 10_000 });
@@ -222,9 +224,9 @@ async function fillSpan(geckoId: string, vs: string, granularity: Granularity, s
   });
 
   const now = Date.now();
-  const today = Math.floor(now / 1000 / DAY_S);
   fresh.forEach((prices, day) => {
-    let ttl = day < today ? CLOSED_DAY_TTL_MS : OPEN_DAY_TTL_MS;
+    const closed = (day + 1) * DAY_S * 1000 + CLOSE_GRACE_MS <= now;
+    let ttl = closed ? CLOSED_DAY_TTL_MS : OPEN_DAY_TTL_MS;
     if (!prices.length) ttl = Math.min(ttl, config.priceHistory.emptyDayCacheMs);
     dayCache.set(dayKey(geckoId, vs, day), { granularity, prices, expiresMs: now + ttl });
   });
@@ -258,8 +260,8 @@ function admit(calls: number): void {
  *
  * - Days in the last 90 UTC days are hourly, older days daily; a range
  *   crossing that line comes back `mixed` with one segment of each.
- * - Cached per (geckoId, vs, UTC day): closed days 30 days, today 1 hour,
- *   empty days 1 hour. A fully cached span makes no upstream call.
+ * - Cached per (geckoId, vs, UTC day): closed days (ended 2+ hours ago)
+ *   30 days, today and just-closed days 1 hour, empty days 1 hour. A fully cached span makes no upstream call.
  * - Cache misses cost at most two upstream calls (one daily span, one
  *   hourly span); concurrent requests for the same span share one call.
  * - Upstream calls are admitted by a per-minute and a per-day budget, a
