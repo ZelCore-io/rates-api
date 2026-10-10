@@ -107,14 +107,18 @@ export default (app: Application): void => {
   /**
    * Retrieves one coin's fiat price history between two unix timestamps, for
    * wallet tax exports: `{prices: [[epochMs, price], ...], granularity, segments}`.
-   * Backed by a per-day cache and its own upstream budget in
+   * Backed by a bounded per-day cache and its own upstream budget in
    * `services/priceHistory`. There is no per-IP limiter in this app; the
    * upstream budget is the bound on what one client can spend.
    *
+   * Deliberately no route-level apicache: it keys on the full URL with no
+   * size bound, so shifting `to` by a second per request retained ~177 KB
+   * per entry (~1 GB after 3k requests) with zero upstream calls. A warm
+   * request costs 1-2 ms from the day cache anyway.
+   *
    * @route GET /v2/prices/history/:geckoId?vs=eur&from=<unix s>&to=<unix s>
-   * @cache 1 hour (successful responses only)
    */
-  app.get('/v2/prices/history/:geckoId', cache('1 hour', onlyOk), (req: Request, res: Response) => {
+  app.get('/v2/prices/history/:geckoId', (req: Request, res: Response) => {
     apiService.getPriceHistory(req, res);
   });
 
