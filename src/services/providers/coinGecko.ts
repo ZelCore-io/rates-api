@@ -57,6 +57,15 @@ export class CoinGecko {
   private static axiosWrapper: AxiosWrapper;
 
   /**
+   * Separate client for `market_chart/range` (price history) with retries
+   * off. The shared client retries every failure three times, which turns a
+   * 404 or 429 into four billed calls; the price-history path does its own
+   * backoff instead. The shared client is left exactly as it was.
+   * @private
+   */
+  private static historyClient: AxiosWrapper;
+
+  /**
    * Default headers for API requests.
    * @private
    */
@@ -84,6 +93,7 @@ export class CoinGecko {
     }
     CoinGecko.instance = this;
     CoinGecko.axiosWrapper = new AxiosWrapper(config.coinGeckoUrl);
+    CoinGecko.historyClient = new AxiosWrapper(config.coinGeckoUrl, 0, config.priceHistory.upstreamTimeoutMs);
 
     this.cache = new LRU({
       max: 100, // Maximum number of items in the cache
@@ -224,6 +234,35 @@ export class CoinGecko {
       log.error(error);
       return null;
     }
+  }
+
+  /**
+   * Retrieves one coin's price history between two unix timestamps
+   * (`coins/{id}/market_chart/range`).
+   *
+   * Uncached, unguarded and never retried on purpose: the caller
+   * (`services/priceHistory`) owns caching, budgeting and backoff, and needs
+   * the raw error so it can tell an unknown id (404) and a rate limit (429,
+   * with its `Retry-After`) apart from an outage.
+   *
+   * @param id - CoinGecko coin id, e.g. `bitcoin`.
+   * @param vsCurrency - Target currency, e.g. `eur`.
+   * @param from - Range start, unix seconds.
+   * @param to - Range end, unix seconds.
+   * @returns CoinGecko's `market_chart` payload; only `prices` is used here.
+   * @throws The underlying Axios error on any non-2xx response or network failure.
+   *
+   * @example
+   * ```typescript
+   * const { prices } = await CoinGecko.getInstance().getMarketChartRange('bitcoin', 'eur', 1514764800, 1546300799);
+   * ```
+   */
+  public async getMarketChartRange(id: string, vsCurrency: string, from: number, to: number): Promise<{ prices: [number, number | null][] }> {
+    const response = await CoinGecko.historyClient.get(`coins/${encodeURIComponent(id)}/market_chart/range`, {
+      headers: this.headers,
+      params: { vs_currency: vsCurrency, from, to },
+    });
+    return response.data;
   }
 
   /**

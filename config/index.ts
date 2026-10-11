@@ -25,6 +25,33 @@ export const config = {
   // exchange maintenance) is naturally multi-day, so this is deliberately far
   // longer than the ticker windows themselves.
   bstocksLastGoodMaxAgeMs: 7 * 24 * 60 * 60 * 1000,
+  // /v2/prices/history is public and each cache miss spends the shared
+  // CoinGecko Pro key that the rates refresher depends on, so its upstream
+  // use is capped on its own budget (see services/priceHistory.ts). Against
+  // the Analyst plan (500 calls/min, 500k credits/month), per process:
+  // - any 60 s window: at most 80 calls (burst 20 + 60 refill), <=16%;
+  // - 5000/day is the daily bucket's refill rate, and the bucket holds 5000,
+  //   so any rolling 24 h after an idle spell can reach ~10,000 calls;
+  //   sustained abuse settles at 5000/day, ~150k/month.
+  priceHistory: {
+    upstreamPerMinute: 60,
+    upstreamBurst: 20,
+    upstreamPerDay: 5000,
+    maxConcurrentUpstream: 4,
+    upstreamTimeoutMs: 15 * 1000,
+    // Day-cache bounds. A day entry's size is its point count + 1, so
+    // cacheMaxSize caps points + entries together. Measured cost is ~360 B
+    // per entry plus ~85 B per point; the worst fill is every entry at the
+    // cap with the remaining size as points: 150k x 360 B + 550k x 85 B
+    // = ~101 MB (96 MiB). All-hourly (25 per day) is ~28k days, ~67 MB;
+    // all-daily (2 per day) hits the entry cap first, ~67 MB.
+    cacheMaxSize: 700_000,
+    cacheMaxEntries: 150_000,
+    notFoundCacheMs: 10 * 60 * 1000,
+    emptyDayCacheMs: 60 * 60 * 1000,
+    defaultCooldownMs: 60 * 1000,
+    maxCooldownMs: 60 * 60 * 1000,
+  },
 };
 
 export default config;

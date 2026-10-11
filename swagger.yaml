@@ -112,6 +112,113 @@ paths:
               schema:
                 type: object
 
+  /v2/prices/history/{geckoId}:
+    get:
+      summary: Get fiat price history for one coin
+      description: >
+        Price history for one CoinGecko id in one fiat currency between two
+        unix timestamps, for wallet tax exports. Points in the last 90 UTC
+        days are hourly; older points are daily (one per UTC day, 00:00). A
+        range crossing that line returns granularity "mixed" with one daily
+        and one hourly entry in `segments`. Only ids ZelCore carries are
+        served. `from` before 2013-04-28 is clamped to it and `to` after now
+        is clamped to now. Cached per coin, currency and UTC day (closed days
+        30 days once ended 2+ hours ago, otherwise and for empty days 1 hour);
+        responses are not cached at the route level. Upstream use is budgeted; when the
+        budget is spent or CoinGecko rate-limits, the endpoint answers 503
+        with Retry-After.
+      parameters:
+        - name: geckoId
+          in: path
+          required: true
+          description: CoinGecko coin id.
+          schema:
+            type: string
+            pattern: '^[a-z0-9-]{1,100}$'
+            example: bitcoin
+        - name: vs
+          in: query
+          required: true
+          description: Fiat currency code (case-insensitive), e.g. usd, eur, gbp.
+          schema:
+            type: string
+            example: eur
+        - name: from
+          in: query
+          required: true
+          description: Range start, unix seconds (inclusive).
+          schema:
+            type: integer
+            example: 1514764800
+        - name: to
+          in: query
+          required: true
+          description: Range end, unix seconds (inclusive). Must be after `from`, at most 10 years later.
+          schema:
+            type: integer
+            example: 1546300799
+      responses:
+        '200':
+          description: Price points as [epochMs, price] pairs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prices:
+                    type: array
+                    items:
+                      type: array
+                      minItems: 2
+                      maxItems: 2
+                      items:
+                        type: number
+                  granularity:
+                    type: string
+                    enum: [daily, hourly, mixed]
+                  segments:
+                    type: array
+                    description: Contiguous parts of the range by granularity; from/to are epoch ms, inclusive.
+                    items:
+                      type: object
+                      properties:
+                        granularity:
+                          type: string
+                          enum: [daily, hourly]
+                        from:
+                          type: integer
+                        to:
+                          type: integer
+        '400':
+          description: Invalid geckoId, unsupported vs currency, from >= to, from in the future, or a span over 10 years.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceHistoryError'
+        '404':
+          description: ZelCore does not carry this id, or CoinGecko does not know it (cached for 10 minutes).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceHistoryError'
+        '502':
+          description: Upstream failure (outage, timeout).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceHistoryError'
+        '503':
+          description: Upstream budget spent, too many concurrent upstream calls, or CoinGecko rate limit cooldown.
+          headers:
+            Retry-After:
+              description: Seconds until a retry can be admitted.
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceHistoryError'
+
   /v2/found-contracts:
     get:
       summary: Get found contracts
@@ -151,3 +258,13 @@ paths:
       responses:
         '200':
           description: Prometheus metrics data.
+
+components:
+  schemas:
+    PriceHistoryError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          description: Human-readable reason.
