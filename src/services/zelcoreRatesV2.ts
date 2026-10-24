@@ -145,8 +145,9 @@ export async function getAll(): Promise<PricesResponse> {
         rank: coin.rank,
         supply,
         volume,
-        change24h: coin.delta.day ? (1 - coin.delta.day) * 100 : 0,
-        change7d: coin.delta.week ? (1 - coin.delta.week) * 100 : 0,
+        // `delta` is a ratio to the period's opening rate: 1.02 is +2%.
+        change24h: coin.delta.day ? (coin.delta.day - 1) * 100 : 0,
+        change7d: coin.delta.week ? (coin.delta.week - 1) * 100 : 0,
         market: coin.cap ? coin.cap : supply * usdRate,
         total_supply: coin.totalSupply,
       };

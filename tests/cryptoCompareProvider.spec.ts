@@ -166,7 +166,7 @@ describe('CryptoCompare provider', () => {
     await expect(cc.getMarketData(['QTUM'], 'USD')).resolves.toHaveProperty('QTUM');
   });
 
-  it('caches a successful response for 5 minutes', async () => {
+  it('caches a successful response for 15 minutes', async () => {
     // lru-cache reads the clock from performance.now, which Jest's fake
     // timers leave alone; bridge it to the fake Date.
     jest.useFakeTimers({ doNotFake: ['performance'] });
@@ -177,12 +177,82 @@ describe('CryptoCompare provider', () => {
     const cc = CryptoCompare.getInstance();
 
     await cc.getMarketData(['QTUM'], 'USD');
-    jest.advanceTimersByTime(4.5 * 60 * 1000);
+    jest.advanceTimersByTime(14.5 * 60 * 1000);
     await cc.getMarketData(['QTUM'], 'USD');
     expect(getSpy).toHaveBeenCalledTimes(1);
 
     jest.advanceTimersByTime(60 * 1000);
     await cc.getMarketData(['QTUM'], 'USD');
     expect(getSpy).toHaveBeenCalledTimes(2);
+  });
+
+  // Captured live: a request without a valid key gets the CoinDesk-era
+  // envelope. Read as data it would be cached as a price map keyed Data/Err.
+  it('reports the CoinDesk error envelope as a failure', async () => {
+    const { CryptoCompare, getSpy } = await loadIsolated();
+    getSpy.mockResolvedValue(axiosResponse({
+      Data: {}, Err: { type: 2, message: 'API key required', http_status_code: 401 },
+    }));
+
+    await expect(CryptoCompare.getInstance().getExchangeRates(['QTUM'], 'BTC'))
+      .rejects.toThrow(/API key required/);
+  });
+
+  // A 429/401 rejects inside axios and never reaches the body check, so it
+  // used to start no backoff: every caller in every cycle hit the API again.
+  it('backs off for the Retry-After of an HTTP 429', async () => {
+    jest.useFakeTimers({ doNotFake: ['performance'] });
+    jest.spyOn(performance, 'now').mockImplementation(() => Date.now());
+    const { CryptoCompare, getSpy } = await loadIsolated();
+    getSpy.mockRejectedValue(Object.assign(new Error('Request failed with status code 429'), {
+      response: { status: 429, headers: { 'retry-after': '120' }, data: { Err: { message: 'rate limit' } } },
+    }));
+    const cc = CryptoCompare.getInstance();
+
+    await expect(cc.getMarketData(['QTUM'], 'BTC,USD')).rejects.toThrow(/HTTP 429 rate limit/);
+    await expect(cc.getMarketData(['QTUM'], 'BTC,USD')).rejects.toThrow(/cooldown/i);
+    expect(getSpy).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(121 * 1000);
+    getSpy.mockResolvedValue(axiosResponse(marketFixture(['QTUM'], ['BTC', 'USD'])));
+    await expect(cc.getMarketData(['QTUM'], 'BTC,USD')).resolves.toHaveProperty('QTUM');
+    expect(getSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('backs off after a rejected key even when no wait is reported', async () => {
+    jest.useFakeTimers({ doNotFake: ['performance'] });
+    jest.spyOn(performance, 'now').mockImplementation(() => Date.now());
+    const { CryptoCompare, getSpy } = await loadIsolated();
+    getSpy.mockRejectedValue(Object.assign(new Error('Request failed with status code 401'), {
+      response: { status: 401, headers: {}, data: { Data: {}, Err: { message: 'API key required' } } },
+    }));
+    const cc = CryptoCompare.getInstance();
+
+    await expect(cc.getMarketData(['QTUM'], 'BTC,USD')).rejects.toThrow(/HTTP 401 API key required/);
+    jest.advanceTimersByTime(10 * 60 * 1000);
+    await expect(cc.getMarketData(['QTUM'], 'BTC,USD')).rejects.toThrow(/cooldown/i);
+    expect(getSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not back off after a network error', async () => {
+    const { CryptoCompare, getSpy } = await loadIsolated();
+    getSpy.mockRejectedValue(new Error('socket hang up'));
+    const cc = CryptoCompare.getInstance();
+
+    await expect(cc.getMarketData(['QTUM'], 'BTC,USD')).rejects.toThrow(/socket hang up/);
+    await expect(cc.getMarketData(['QTUM'], 'BTC,USD')).rejects.toThrow(/socket hang up/);
+    expect(getSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('builds its HTTP client without retries', () => {
+    jest.isolateModules(() => {
+      jest.doMock('../src/lib/axios');
+      // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+      const { default: MockedWrapper } = require('../src/lib/axios');
+      // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+      const { CryptoCompare } = require('../src/services/providers/cryptoCompare');
+      CryptoCompare.getInstance();
+      expect((MockedWrapper as jest.Mock).mock.calls).toEqual([[expect.stringContaining('cryptocompare'), 0]]);
+    });
   });
 });

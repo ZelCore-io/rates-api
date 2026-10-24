@@ -127,9 +127,12 @@ export class LiveCoinWatch {
       return cachedData;
     }
 
+    // `codes` must be an array. Sent as the joined string, the API matched it
+    // as a substring, so 'KDL,TLS' came back as S, T, D, K, KD, DL and KDL --
+    // and the S row (Sonic) overwrote CoinGecko's price for that ticker.
     const data = {
       currency: vsCurrency,
-      codes: ids,
+      codes: ids.split(','),
       sort: 'rank',
       order: 'ascending',
       offset: 0,

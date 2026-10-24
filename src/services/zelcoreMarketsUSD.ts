@@ -82,8 +82,9 @@ export async function getAll(): Promise<MarketsData> {
         total_supply: coin.totalSupply,
         supply,
         volume,
-        change: coin.delta.day ? (1 - coin.delta.day) * 100 : 0,
-        change7d: coin.delta.week ? (1 - coin.delta.week) * 100 : 0,
+        // `delta` is a ratio to the period's opening rate: 1.02 is +2%.
+        change: coin.delta.day ? (coin.delta.day - 1) * 100 : 0,
+        change7d: coin.delta.week ? (coin.delta.week - 1) * 100 : 0,
         market: coin.cap ? coin.cap : supply * rate,
       };
     });
@@ -94,7 +95,9 @@ export async function getAll(): Promise<MarketsData> {
   }
 
   // Map wrapped assets and Flux tokens to their equivalents
-  cmk.ONG = cmk.ONGAS;
+  // ONGAS and TENT come from CryptoCompare only; fall back to CoinGecko's
+  // ONG/GLINK rows rather than blanking them whenever that provider is down.
+  cmk.ONG = cmk.ONGAS ?? cmk.ONG;
   cmk.SAI = cmk.DAI;
   cmk.WBNB = cmk.BNB;
   cmk.ARN = cmk.ARNX;
@@ -121,7 +124,7 @@ export async function getAll(): Promise<MarketsData> {
   cmk.WMATIC = cmk.MATIC;
   cmk.POL = cmk.MATIC;
   cmk.kFRAX = cmk.FRAX;
-  cmk.GLINK = cmk.TENT;
+  cmk.GLINK = cmk.TENT ?? cmk.GLINK;
   cmk.zUSD = cmk.USDC;
   cmk.TUSDOLD = cmk.TUSD;
   cmk.BABE = {

@@ -10,13 +10,22 @@ const MAX_LENGTH_PER_REQUEST = 300;
 
 // Long enough that the 30s refresh loop reuses one response across many
 // cycles: three services call this provider, and the quota is the binding
-// constraint, not freshness. At this TTL the two distinct cache keys in use
-// cost about 576 requests a day, down from ~11.5k before any of this.
-const CACHE_TTL_MS = 5 * 60 * 1000;
+// constraint, not freshness -- its tickers are the legacy list in
+// coinAggregatorIDs.ts, nearly all of them delisted elsewhere. All three now
+// share one cache key, so this is 96 requests a day per instance, down from
+// ~11.5k before any of this.
+const CACHE_TTL_MS = 15 * 60 * 1000;
 
 // Ceiling on a self-imposed backoff, so one absurd `Cooldown` value cannot
 // mute the provider for the life of the process.
 const MAX_COOLDOWN_MS = 60 * 60 * 1000;
+
+// Backoff after an HTTP-level refusal (401/403/429) that does not say how
+// long to wait. Retrying a rejected key or a spent quota every cycle only
+// spends more of it.
+const DEFAULT_COOLDOWN_MS = 15 * 60 * 1000;
+
+const BACKOFF_STATUSES = new Set([401, 403, 429]);
 
 /**
  * Singleton class to interact with the CryptoCompare API.
@@ -98,7 +107,10 @@ export class CryptoCompare {
       throw new Error('Use CryptoCompare.getInstance()');
     }
     CryptoCompare.instance = this;
-    CryptoCompare.axiosWrapper = new AxiosWrapper(config.cryptoCompareUrl);
+    // No retries: each one is another call against the quota, and the shared
+    // wrapper retries a 429 three times a second apart -- straight back into
+    // the window it is meant to wait out. The next refresh is the retry.
+    CryptoCompare.axiosWrapper = new AxiosWrapper(config.cryptoCompareUrl, 0);
 
     this.cache = new LRU({
       max: 100, // Maximum number of items in the cache
@@ -146,13 +158,55 @@ export class CryptoCompare {
    * @throws {Error} When the body carries an error envelope.
    */
   private assertNotAnError(payload: any, endpoint: string): void {
+    // The CoinDesk-era envelope: `{Data: {}, Err: {type, message}}`, seen
+    // live for a missing key.
+    if (payload?.Err?.message) {
+      throw new Error(`CryptoCompare ${endpoint} failed: ${payload.Err.message}`);
+    }
     if (payload?.Response !== 'Error') return;
 
     const cooldownSeconds = Number(payload.Cooldown);
     if (Number.isFinite(cooldownSeconds) && cooldownSeconds > 0) {
-      this.cooldownUntil = Date.now() + Math.min(cooldownSeconds * 1000, MAX_COOLDOWN_MS);
+      this.startCooldown(cooldownSeconds * 1000);
     }
     throw new Error(`CryptoCompare ${endpoint} failed: ${payload.Message || 'unknown error'}`);
+  }
+
+  /**
+   * Starts (or extends) the local backoff, capped at {@link MAX_COOLDOWN_MS}.
+   *
+   * @private
+   * @param ms - How long to stay off the API.
+   */
+  private startCooldown(ms: number): void {
+    this.cooldownUntil = Math.max(this.cooldownUntil, Date.now() + Math.min(ms, MAX_COOLDOWN_MS));
+  }
+
+  /**
+   * Turns an HTTP-level refusal into a cooldown and a readable error.
+   *
+   * The API also answers with real 401/403/429 status codes (the key-required
+   * error comes back as HTTP 401). Those reject inside axios, so they never
+   * reach {@link assertNotAnError}; without this they started no backoff and
+   * every caller in every cycle went straight back to the API.
+   *
+   * @private
+   * @param error - Whatever the request rejected with.
+   * @param endpoint - The endpoint that produced it, for the message.
+   * @throws {Error} Always.
+   */
+  private failFromHttpError(error: any, endpoint: string): never {
+    const response = error?.response;
+    if (!response) throw error;
+
+    if (BACKOFF_STATUSES.has(response.status)) {
+      const waitSeconds = Number(response.headers?.['retry-after'] ?? response.data?.Cooldown);
+      this.startCooldown(Number.isFinite(waitSeconds) && waitSeconds > 0
+        ? waitSeconds * 1000
+        : DEFAULT_COOLDOWN_MS);
+    }
+    const message = response.data?.Err?.message || response.data?.Message || error.message;
+    throw new Error(`CryptoCompare ${endpoint} failed: HTTP ${response.status} ${message}`);
   }
 
   /**
@@ -181,10 +235,14 @@ export class CryptoCompare {
    */
   private async get(endpoint: string, params: Record<string, any> = {}): Promise<any> {
     this.assertNotCoolingDown(endpoint);
-    return CryptoCompare.axiosWrapper.get(endpoint, {
-      headers: this.headers,
-      params: { ...params },
-    });
+    try {
+      return await CryptoCompare.axiosWrapper.get(endpoint, {
+        headers: this.headers,
+        params: { ...params },
+      });
+    } catch (error) {
+      return this.failFromHttpError(error, endpoint);
+    }
   }
 
   /**
