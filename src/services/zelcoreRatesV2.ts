@@ -23,6 +23,16 @@ function timeout(ms: number): Promise<void> {
 }
 
 /**
+ * CryptoCompare IDs that wallet coininfo.json still points at, mapped to the
+ * provider row that now prices the same coin. TENT covers both gemlink and
+ * snowgem, which share it.
+ */
+export const cryptoCompareAliases: Record<string, { provider: string, id: string }> = {
+  QSP: { provider: 'livecoinwatch', id: 'QSP' },
+  TENT: { provider: 'coingecko', id: 'gemlink' },
+};
+
+/**
  * Fetches and aggregates cryptocurrency prices and fiat rates from multiple providers.
  *
  * This function retrieves fiat rates from BitPay and cryptocurrency prices from CoinGecko,
@@ -157,6 +167,15 @@ export async function getAll(): Promise<PricesResponse> {
     log.error(e);
     errors.livecoinwatch = true;
   }
+
+  // Released wallets bundle coininfo.json, where these assets still look up
+  // `cryptocompare-<ID>`. CryptoCompare no longer prices them, so serve the
+  // row from the provider that does under the ID those wallets ask for.
+  Object.entries(cryptoCompareAliases).forEach(([id, source]) => {
+    if (processed.some((c) => c.provider === 'cryptocompare' && c.id === id)) return;
+    const row = processed.find((c) => c.provider === source.provider && c.id === source.id);
+    if (row) processed.push({ ...row, id, provider: 'cryptocompare' });
+  });
 
   // Fetch bStock prices from Binance. Bounded to 10s so a hung/slow Binance
   // outage cannot stall the refresh of every other provider behind it.
