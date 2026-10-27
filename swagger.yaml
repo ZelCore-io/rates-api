@@ -243,10 +243,10 @@ paths:
       summary: Current prices (CoinGecko shape)
       description: >
         CoinGecko v3 `simple/price` for Blockbook's fiat downloader. Only the
-        configured explorer coins (bitcoin, groestlcoin) are served; any other
+        configured explorer coins (bitcoin, groestlcoin, litecoin, zcash, digibyte, dogecoin, dash, vertcoin, ravencoin, ethereum-classic, bitcoin-cash, bitcoin-gold, clore-ai) are served; any other
         id is a 404. Each id is asked once for every supported currency and
         cached 60 seconds, and any requested subset is answered from that.
-        Coins CoinGecko stopped tracking (groestlcoin) are priced from
+        Coins CoinGecko stopped tracking (groestlcoin, bitcoin-gold) are priced from
         CoinPaprika's USD price (cached 10 minutes) times Bitcoin's current
         price ratio vs/usd. An upstream answer without a price is a 502 and is
         not cached. Upstream use is budgeted per provider; a spent budget or
@@ -255,7 +255,7 @@ paths:
         - name: ids
           in: query
           required: true
-          description: Comma-separated CoinGecko ids, at most 10; only bitcoin and groestlcoin are served.
+          description: Comma-separated CoinGecko ids, at most 10; only the configured explorer coins (bitcoin, groestlcoin, litecoin, zcash, digibyte, dogecoin, dash, vertcoin, ravencoin, ethereum-classic, bitcoin-cash, bitcoin-gold, clore-ai) are served.
           schema:
             type: string
             example: bitcoin,groestlcoin
@@ -294,7 +294,7 @@ paths:
       description: >
         CoinGecko v3 `coins/{id}/market_chart` for Blockbook's fiat
         downloader; only `prices` is returned, null prices dropped. Only the
-        configured explorer coins (bitcoin, groestlcoin) are served; any other
+        configured explorer coins (bitcoin, groestlcoin, litecoin, zcash, digibyte, dogecoin, dash, vertcoin, ravencoin, ethereum-classic, bitcoin-cash, bitcoin-gold, clore-ai) are served; any other
         id is a 404. An upstream answer without prices is a 502 and is not
         cached.
 
@@ -308,9 +308,9 @@ paths:
         60 seconds for 1, 10 minutes for 90.
 
 
-        Coins CoinGecko stopped tracking (groestlcoin): the daily series is
-        CoinGecko's history up to the day before the configured cut-over
-        (2026-07-20), then CoinPaprika's daily USD price (at most a year back)
+        Coins CoinGecko stopped tracking (groestlcoin, bitcoin-gold): the daily
+        series is CoinGecko's history up to the day before the configured
+        cut-over (2026-07-20 for groestlcoin, 2026-07-27 for bitcoin-gold), then CoinPaprika's daily USD price (at most a year back)
         converted with Bitcoin's same-day price; days without a Bitcoin price
         are skipped. CoinGecko's history is only asked when the window starts
         before the cut-over; if it can't be had, the answer is a 502, never a
@@ -321,7 +321,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: CoinGecko coin id; only bitcoin and groestlcoin are served.
+          description: CoinGecko coin id; only the configured explorer coins (bitcoin, groestlcoin, litecoin, zcash, digibyte, dogecoin, dash, vertcoin, ravencoin, ethereum-classic, bitcoin-cash, bitcoin-gold, clore-ai) are served.
           schema:
             type: string
             pattern: '^[a-z0-9-]{1,100}$'
