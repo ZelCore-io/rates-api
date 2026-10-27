@@ -579,7 +579,9 @@ describe('upstream budget, cooldown and failures', () => {
   it('answers 502 on an upstream failure and caches nothing', async () => {
     const gecko = mockGecko();
     gecko.getMarketChart.mockImplementationOnce(async () => { throw upstreamError(500); });
-    await expectMirrorError(chart('bitcoin', 'usd', '1', 'daily'), 502);
+    const error = await expectMirrorError(chart('bitcoin', 'usd', '1', 'daily'), 502);
+    expect(error.message).toBe('Upstream unavailable');
+    expect(error.reason).toBe('CoinGecko daily bitcoin|usd failed: 500');
     await expect(chart('bitcoin', 'usd', '1', 'daily')).resolves.toBeDefined();
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(2);
   });
@@ -595,7 +597,8 @@ describe('upstream budget, cooldown and failures', () => {
     const gecko = mockGecko() as unknown as Record<string, jest.Mock>;
     await getSupportedVsCurrencies();
     gecko[method].mockImplementationOnce(empty);
-    await expectMirrorError(request(), 502);
+    const error = await expectMirrorError(request(), 502);
+    expect(error.reason).toMatch(/^CoinGecko (daily|chart|price) bitcoin.*: Upstream returned no prices?$/);
     await expect(request()).resolves.toBeDefined();
     expect(gecko[method]).toHaveBeenCalledTimes(2);
   });

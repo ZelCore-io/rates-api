@@ -56,9 +56,13 @@ const STATIC_VS_CURRENCIES: readonly string[] = [...new Set([...SUPPORTED_FIATS,
 export type PricePoint = [number, number];
 export type SimplePrices = Record<string, Record<string, number>>;
 
-/** A request the mirror must answer with a non-200 status (`retryAfterS` becomes `Retry-After`). */
+/**
+ * A request the mirror must answer with a non-200 status (`retryAfterS`
+ * becomes `Retry-After`). `reason` is for the log only, never sent: which
+ * upstream call failed and how (a 502's `message` is generic).
+ */
 export class MirrorError extends Error {
-  constructor(public readonly status: 400 | 404 | 429 | 502, message: string, public readonly retryAfterS?: number) {
+  constructor(public readonly status: 400 | 404 | 429 | 502, message: string, public readonly retryAfterS?: number, public reason?: string) {
     super(message);
     this.name = 'MirrorError';
   }
@@ -164,9 +168,10 @@ function nonEmptyPoints(prices: unknown): PricePoint[] {
 }
 
 /**
- * Turns an upstream failure into a MirrorError. Logged by status/message
+ * Turns an upstream failure into a MirrorError. Described by status/message
  * only: the Axios error object carries the request headers, which hold the
- * CoinGecko Pro key.
+ * CoinGecko Pro key. A 502 is logged once, with its request, by the route
+ * handler (from `reason`).
  */
 function upstreamFailure(provider: Provider, what: string, error: unknown): MirrorError {
   const response = (error as { response?: { status?: number; headers?: Record<string, unknown> } })?.response;
@@ -178,8 +183,7 @@ function upstreamFailure(provider: Provider, what: string, error: unknown): Mirr
     log.warn(`Blockbook mirror: ${provider.name} rate-limited on ${what}; cooling down for ${Math.ceil(waitMs / 1000)}s`);
     return new MirrorError(429, 'Rate limited, retry later', Math.ceil(waitMs / 1000));
   }
-  log.warn(`Blockbook mirror: ${provider.name} ${what} failed: ${response?.status ?? (error as Error)?.message}`);
-  return new MirrorError(502, 'Upstream unavailable');
+  return new MirrorError(502, 'Upstream unavailable', undefined, `${provider.name} ${what} failed: ${response?.status ?? (error as Error)?.message}`);
 }
 
 /**
@@ -212,6 +216,7 @@ async function cached<T>(label: string, cache: LRU<string, Entry<T>>, key: strin
       value = await fetch();
     } catch (error) {
       const failure = error instanceof MirrorError ? error : upstreamFailure(provider, `${label} ${key}`, error);
+      if (failure.status === 502 && !failure.reason) failure.reason = `${provider.name} ${label} ${key}: ${failure.message}`;
       if (failure.status === 404 && rememberNotFound) notFoundUntil.set(flightKey, Date.now() + config.blockbookMirror.notFoundCacheMs);
       throw failure;
     } finally {
@@ -244,7 +249,9 @@ export async function getSupportedVsCurrencies(): Promise<string[]> {
       lastGoodVs = list;
       return list;
     });
-  } catch {
+  } catch (error) {
+    // Not a 502 (the fallback list is served), but logged the same way.
+    if (error instanceof MirrorError && error.status === 502) log.warn(`Blockbook mirror: supported_vs_currencies served the fallback list: ${error.reason ?? error.message}`);
     vsRetryAfterMs = Date.now() + config.blockbookMirror.supportedVsRetryMs;
     return fallback;
   }
@@ -365,7 +372,8 @@ async function fallbackDaily(id: string, fallback: Fallback, vs: string, fromMs:
       history = (await geckoDaily(id, vs, true)).filter(([ts]) => ts < fallback.sinceMs);
     } catch (error) {
       if (error instanceof MirrorError && error.status === 429) throw error;
-      throw new MirrorError(502, 'Upstream unavailable');
+      const why = error instanceof MirrorError ? (error.reason ?? error.message) : String((error as Error)?.message);
+      throw new MirrorError(502, 'Upstream unavailable', undefined, `CoinGecko history before ${new Date(fallback.sinceMs).toISOString().slice(0, 10)} for ${id}|${vs} unavailable: ${why}`);
     }
   }
   const usd = (await paprikaDaily(fallback)).filter(([ts]) => ts >= fallback.sinceMs);
@@ -543,7 +551,7 @@ export async function getMarketChart(params: MarketChartParams): Promise<{ price
     const usd = await paprikaHourly(fallback);
     if (vs === 'usd') return { prices: usd };
     const rate = crossRate(vs, await bitcoinCross());
-    if (rate === undefined) throw new MirrorError(502, 'Upstream returned no price');
+    if (rate === undefined) throw new MirrorError(502, 'Upstream returned no price', undefined, `CoinGecko bitcoin price has no usable ${vs}/usd cross`);
     return { prices: usd.map(([ts, price]): PricePoint => [ts, price * rate]) };
   }
 

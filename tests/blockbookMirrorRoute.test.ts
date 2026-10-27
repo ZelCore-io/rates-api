@@ -6,6 +6,7 @@ import routes from '../src/routes';
 import { CoinGecko } from '../src/services/providers/coinGecko';
 import { CoinPaprika } from '../src/services/providers/coinPaprika';
 import { resetBlockbookMirrorState } from '../src/services/blockbookMirror';
+import * as log from '../src/lib/log';
 
 jest.mock('../src/services/providers/coinGecko');
 jest.mock('../src/services/providers/coinPaprika');
@@ -13,6 +14,7 @@ jest.mock('../src/lib/log');
 
 const MockedCoinGecko = CoinGecko as jest.Mocked<typeof CoinGecko>;
 const MockedCoinPaprika = CoinPaprika as jest.Mocked<typeof CoinPaprika>;
+const mockedWarn = log.warn as jest.Mock;
 const DAY_MS = 86_400_000;
 const BASE = '/v2/blockbook/api/v3';
 
@@ -118,5 +120,29 @@ describe('Blockbook mirror routes', () => {
     expect((await get(url)).status).toBe(502);
     expect((await get(url)).status).toBe(200);
     expect(apicache.getIndex().all).toHaveLength(0);
+  });
+
+  it('logs every 502 as one line with route, id, vs and reason', async () => {
+    gecko.getMarketChart.mockImplementationOnce(async () => { throw upstreamError(500); });
+    expect((await get(`${BASE}/coins/bitcoin/market_chart?vs_currency=usd&days=90`)).status).toBe(502);
+    expect(mockedWarn).toHaveBeenCalledTimes(1);
+    expect(mockedWarn).toHaveBeenCalledWith('Blockbook mirror 502: market_chart id=bitcoin vs=usd reason=CoinGecko chart bitcoin|usd|90 failed: 500');
+
+    mockedWarn.mockClear();
+    gecko.getSimplePrice.mockImplementationOnce(async () => ({}));
+    const res = await get(`${BASE}/simple/price?ids=bitcoin&vs_currencies=usd,eur`);
+    expect(res.status).toBe(502);
+    expect(JSON.parse(res.body)).toEqual({ error: 'Upstream returned no price' });
+    expect(mockedWarn).toHaveBeenCalledTimes(1);
+    expect(mockedWarn).toHaveBeenCalledWith('Blockbook mirror 502: simple/price id=bitcoin vs=usd,eur reason=CoinGecko price bitcoin: Upstream returned no price');
+  });
+
+  it('answers and logs 502 when a fallback coin\'s pre-since CoinGecko history is gone (404)', async () => {
+    gecko.getMarketChart.mockImplementation(async () => { throw upstreamError(404); });
+    MockedCoinPaprika.getInstance.mockReturnValue({ getHistorical: jest.fn(async () => [{ timestamp: '2026-07-20T00:00:00Z', price: 0.6 }]) } as never);
+    const res = await get(`${BASE}/coins/groestlcoin/market_chart?vs_currency=usd&days=max&interval=daily`);
+    expect(res.status).toBe(502);
+    expect(mockedWarn).toHaveBeenCalledTimes(1);
+    expect(mockedWarn.mock.calls[0][0]).toMatch(/^Blockbook mirror 502: market_chart id=groestlcoin vs=usd reason=CoinGecko history before 2026-07-20 for groestlcoin\|usd unavailable: /);
   });
 });

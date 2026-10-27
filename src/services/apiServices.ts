@@ -356,15 +356,24 @@ export async function getPriceHistory(req: Request, res: Response): Promise<void
   }
 }
 
+/** What a Blockbook-mirror 502 is logged with; filled once the parameters are validated. */
+interface MirrorLogContext {
+  id: string;
+  vs: string;
+}
+
 /**
  * Sends a Blockbook-mirror result, or its MirrorError as `{error}` with the
- * status and `Retry-After` it carries.
+ * status and `Retry-After` it carries. Every 502 is logged as one line:
+ * route, id, vs and the internal reason.
  */
-async function sendMirror(res: Response, work: () => Promise<unknown>): Promise<void> {
+async function sendMirror(res: Response, route: string, work: (ctx: MirrorLogContext) => Promise<unknown>): Promise<void> {
+  const ctx: MirrorLogContext = { id: '-', vs: '-' };
   try {
-    res.json(await work());
+    res.json(await work(ctx));
   } catch (error) {
     if (error instanceof blockbookMirror.MirrorError) {
+      if (error.status === 502) log.warn(`Blockbook mirror 502: ${route} id=${ctx.id} vs=${ctx.vs} reason=${error.reason ?? error.message}`);
       if (error.retryAfterS) res.set('Retry-After', String(error.retryAfterS));
       res.status(error.status).json({ error: error.message });
       return;
@@ -383,7 +392,7 @@ async function sendMirror(res: Response, work: () => Promise<unknown>): Promise<
  * @param res - The Express response object.
  */
 export async function getBlockbookSupportedVs(req: Request, res: Response): Promise<void> {
-  await sendMirror(res, () => blockbookMirror.getSupportedVsCurrencies());
+  await sendMirror(res, 'simple/supported_vs_currencies', () => blockbookMirror.getSupportedVsCurrencies());
 }
 
 /**
@@ -396,8 +405,10 @@ export async function getBlockbookSupportedVs(req: Request, res: Response): Prom
  * @param res - The Express response object.
  */
 export async function getBlockbookSimplePrice(req: Request, res: Response): Promise<void> {
-  await sendMirror(res, () => {
+  await sendMirror(res, 'simple/price', (ctx) => {
     const { ids, vs } = blockbookMirror.parseSimplePriceParams(req.query.ids, req.query.vs_currencies);
+    ctx.id = ids.join(',');
+    ctx.vs = vs.join(',');
     return blockbookMirror.getSimplePrice(ids, vs);
   });
 }
@@ -411,9 +422,12 @@ export async function getBlockbookSimplePrice(req: Request, res: Response): Prom
  * @param res - The Express response object.
  */
 export async function getBlockbookMarketChart(req: Request, res: Response): Promise<void> {
-  await sendMirror(res, () => blockbookMirror.getMarketChart(
-    blockbookMirror.parseMarketChartParams(req.params.id, req.query.vs_currency, req.query.days, req.query.interval),
-  ));
+  await sendMirror(res, 'market_chart', (ctx) => {
+    const params = blockbookMirror.parseMarketChartParams(req.params.id, req.query.vs_currency, req.query.days, req.query.interval);
+    ctx.id = params.id;
+    ctx.vs = params.vs;
+    return blockbookMirror.getMarketChart(params);
+  });
 }
 
 export default {
