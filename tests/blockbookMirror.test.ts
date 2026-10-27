@@ -35,9 +35,9 @@ function upstreamError(status: number, headers: Record<string, string> = {}): Er
 }
 
 const SUPPORTED = ['btc', 'eth', 'usd', 'eur', 'gbp', 'sats'];
-/** Bitcoin: 60000 usd, 50000 eur, 1 btc. */
+/** Bitcoin: 60000 usd, 50000 eur; CoinGecko's bitcoin/btc quote drifts off 1. */
 const BTC_NOW: Record<string, number> = {
-  btc: 1, eth: 20, usd: 60000, eur: 50000, gbp: 45000, sats: 1e8,
+  btc: 1.0003, eth: 20, usd: 60000, eur: 50000, gbp: 45000, sats: 1e8,
 };
 
 function mockGecko(overrides: Partial<Record<'getSupportedVsCurrencies' | 'getSimplePrice' | 'getMarketChart', jest.Mock>> = {}) {
@@ -203,7 +203,8 @@ describe('simple/price', () => {
     const out = await getSimplePrice(['groestlcoin'], ['usd', 'eur', 'btc', 'sats']);
     expect(out.groestlcoin.usd).toBeCloseTo(0.6);
     expect(out.groestlcoin.eur).toBeCloseTo(0.6 * (50000 / 60000));
-    expect(out.groestlcoin.btc).toBeCloseTo(0.6 / 60000);
+    // Exactly usd / bitcoin.usd, not through CoinGecko's drifting bitcoin/btc quote.
+    expect(out.groestlcoin.btc).toBeCloseTo(0.6 / 60000, 12);
     expect(out.groestlcoin.sats).toBeCloseTo((0.6 / 60000) * 1e8);
     expect(paprika.getTicker).toHaveBeenCalledWith('grs-groestlcoin');
     gecko.getSimplePrice.mock.calls.forEach(([ids]) => expect(ids).toEqual(['bitcoin']));

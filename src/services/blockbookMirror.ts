@@ -249,10 +249,14 @@ async function bitcoinCross(): Promise<Record<string, number>> {
   return (await geckoSimplePrice(['bitcoin'], vs)).bitcoin ?? {};
 }
 
-/** USD → `vs` factor from a Bitcoin price map; undefined when Bitcoin has no usable price in `vs`. */
+/**
+ * USD → `vs` factor from a Bitcoin price map; undefined when Bitcoin has no
+ * usable price in `vs`. For btc the numerator is exactly 1: CoinGecko's
+ * bitcoin/btc quote drifts off 1 (seen at 1.000277).
+ */
 function crossRate(vs: string, bitcoin: Record<string, number>): number | undefined {
   if (vs === 'usd') return 1;
-  const rate = bitcoin[vs] / bitcoin.usd;
+  const rate = (vs === 'btc' ? 1 : bitcoin[vs]) / bitcoin.usd;
   return Number.isFinite(rate) && rate > 0 ? rate : undefined;
 }
 
