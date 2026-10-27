@@ -4,6 +4,7 @@ import {
   getMarketChart, getSimplePrice, getSupportedVsCurrencies, MirrorError, parseMarketChartParams, parseSimplePriceParams, resetBlockbookMirrorState,
 } from '../src/services/blockbookMirror';
 import config from '../config';
+import { isSupportedId } from '../src/services/priceHistory';
 
 jest.mock('../src/services/providers/coinGecko');
 jest.mock('../src/services/providers/coinPaprika');
@@ -16,6 +17,7 @@ const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const DEFAULTS = JSON.parse(JSON.stringify(config.blockbookMirror));
 const SINCE_MS = Date.parse('2026-07-20T00:00:00Z');
+const BTG_SINCE_MS = Date.parse('2026-07-27T00:00:00Z');
 /** 2026-10-27 13:37 UTC, after the groestlcoin fallback's `since`. */
 const NOW_MS = Date.parse('2026-10-27T13:37:00Z');
 const TODAY_MS = Math.floor(NOW_MS / DAY_MS) * DAY_MS;
@@ -48,6 +50,8 @@ function mockGecko(overrides: Partial<Record<'getSupportedVsCurrencies' | 'getSi
     ]))),
     getMarketChart: jest.fn(async (id: string, vs: string, days: number | 'max', interval?: string) => {
       if (interval === 'daily') {
+        // Bitcoin Gold froze on 2026-07-27 at 0.2338: the point is there, but it is the stale one.
+        if (id === 'bitcoin-gold') return { prices: dailySeries(Date.parse('2017-10-23T00:00:00Z'), (t) => (t === BTG_SINCE_MS ? 0.2338 : 0.25), BTG_SINCE_MS) };
         if (id === 'groestlcoin') return { prices: dailySeries(Date.parse('2014-04-11T00:00:00Z'), () => 0.3, Date.parse('2026-07-19T00:00:00Z')) };
         // Bitcoin: usd 60000, eur 50000 every day; one missing usd day.
         const value = BTC_NOW[vs];
@@ -162,7 +166,7 @@ describe('simple/price parameter validation', () => {
     expect(parsed.vs[0]).toBe('c0');
   });
 
-  it.each(['definitely-not-listed', 'litecoin', 'ethereum'])('answers 404 coin not found for %s (not a configured explorer coin), without any upstream call', async (id) => {
+  it.each(['definitely-not-listed', 'monero', 'ethereum'])('answers 404 coin not found for %s (not a configured explorer coin), without any upstream call', async (id) => {
     const gecko = mockGecko();
     const paprika = mockPaprika();
     const error = await expectMirrorError(getSimplePrice(['bitcoin', id], ['usd']), 404);
@@ -184,7 +188,7 @@ describe('simple/price parameter validation', () => {
 });
 
 describe('simple/price', () => {
-  it('asks CoinGecko once per id for every supported currency, cached 60 s, and answers any subset from it', async () => {
+  it('asks CoinGecko once per id for every supported currency, cached 5 min, and answers any subset from it', async () => {
     const gecko = mockGecko();
     await expect(getSimplePrice(['bitcoin'], ['usd', 'eur'])).resolves.toEqual({ bitcoin: { eur: 50000, usd: 60000 } });
     expect(gecko.getSimplePrice).toHaveBeenCalledWith(['bitcoin'], [...SUPPORTED].sort());
@@ -197,7 +201,7 @@ describe('simple/price', () => {
     await getSimplePrice(['groestlcoin', 'bitcoin'], ['eur']);
     expect(gecko.getSimplePrice).toHaveBeenCalledTimes(1);
 
-    nowMs += MINUTE_MS + 1;
+    nowMs += 5 * MINUTE_MS + 1;
     await getSimplePrice(['bitcoin'], ['eth']);
     expect(gecko.getSimplePrice).toHaveBeenCalledTimes(2);
   });
@@ -220,7 +224,7 @@ describe('simple/price', () => {
     gecko.getSimplePrice.mock.calls.forEach(([ids]) => expect(ids).toEqual(['bitcoin']));
   });
 
-  it('caches the CoinPaprika ticker for 10 minutes and the Bitcoin cross for 60 s', async () => {
+  it('caches the CoinPaprika ticker for 10 minutes and the Bitcoin cross for 5 min', async () => {
     const gecko = mockGecko();
     const paprika = mockPaprika();
     await getSimplePrice(['groestlcoin'], ['eur']);
@@ -228,7 +232,7 @@ describe('simple/price', () => {
     expect(paprika.getTicker).toHaveBeenCalledTimes(1);
     expect(gecko.getSimplePrice).toHaveBeenCalledTimes(1);
 
-    nowMs += MINUTE_MS + 1;
+    nowMs += 5 * MINUTE_MS + 1;
     await getSimplePrice(['groestlcoin'], ['eur']);
     expect(gecko.getSimplePrice).toHaveBeenCalledTimes(2);
     expect(paprika.getTicker).toHaveBeenCalledTimes(1);
@@ -478,13 +482,13 @@ describe('market_chart interval=daily for a fallback coin', () => {
 });
 
 describe('market_chart without interval', () => {
-  it('passes days through to CoinGecko, returns prices only, and caches 60 s for days <= 1', async () => {
+  it('passes days through to CoinGecko, returns prices only, and caches 15 min for days <= 1', async () => {
     const gecko = mockGecko();
     const out = await chart('bitcoin', 'usd', '1');
     expect(Object.keys(out)).toEqual(['prices']);
     expect(out.prices.every(([, price]) => price !== null)).toBe(true);
     expect(gecko.getMarketChart).toHaveBeenCalledWith('bitcoin', 'usd', 1);
-    nowMs += MINUTE_MS - 1;
+    nowMs += 15 * MINUTE_MS - 1;
     await chart('bitcoin', 'usd', '1');
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(1);
     nowMs += 2;
@@ -492,10 +496,10 @@ describe('market_chart without interval', () => {
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(2);
   });
 
-  it('caches 10 minutes for days 90', async () => {
+  it('caches 6 hours for days 90', async () => {
     const gecko = mockGecko();
     await chart('bitcoin', 'usd', '90');
-    nowMs += 10 * MINUTE_MS - 1;
+    nowMs += 6 * 60 * MINUTE_MS - 1;
     await chart('bitcoin', 'usd', '90');
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(1);
     nowMs += 2;
@@ -524,6 +528,8 @@ describe('market_chart without interval', () => {
 
 describe('upstream budget, cooldown and failures', () => {
   it('answers 429 + Retry-After once the CoinGecko burst is spent, without an upstream call', async () => {
+    config.blockbookMirror.coinGecko = { perMinute: 30, burst: 10, perDay: 3000 };
+    resetBlockbookMirrorState();
     const gecko = mockGecko();
     await getSupportedVsCurrencies(); // 1 call
     const keys = [...SUPPORTED.map((vs) => [vs, '1']), ['usd', '90'], ['eur', '90'], ['gbp', '90']];
@@ -658,7 +664,7 @@ describe('upstream budget, cooldown and failures', () => {
     expect(month.prices.length).toBeLessThan(all.prices.length);
   });
 
-  it('refuses a fifth concurrent upstream call with 429 + Retry-After 1', async () => {
+  it('refuses a ninth concurrent upstream call with 429 + Retry-After 1', async () => {
     let release!: () => void;
     const gate = new Promise<void>((resolve) => { release = resolve; });
     const gecko = mockGecko();
@@ -668,12 +674,91 @@ describe('upstream budget, cooldown and failures', () => {
       await gate;
       return original(...args);
     });
-    const running = ['usd', 'eur', 'gbp', 'btc'].map((vs) => chart('bitcoin', vs, '1'));
-    // Let the four reach the upstream await.
+    const running = ['usd', 'eur', 'gbp', 'btc'].flatMap((vs) => ['1', '90'].map((days) => chart('bitcoin', vs, days)));
+    // Let the eight reach the upstream await.
     await new Promise((resolve) => { setImmediate(resolve); });
     await expectMirrorError(chart('bitcoin', 'eth', '1'), 429, 1);
     release();
     await Promise.all(running);
     await expect(chart('bitcoin', 'eth', '1')).resolves.toBeDefined();
+  });
+});
+
+describe('explorer coin allowlist', () => {
+  const NEW_COINS = ['litecoin', 'zcash', 'digibyte', 'dogecoin', 'dash', 'vertcoin', 'ravencoin', 'ethereum-classic', 'bitcoin-cash', 'bitcoin-gold', 'clore-ai'];
+
+  it('serves the original explorers and the 11 added coins', () => {
+    expect(new Set(config.blockbookMirror.coins)).toEqual(new Set(['bitcoin', 'groestlcoin', ...NEW_COINS]));
+  });
+
+  it('only lists ids ZelCore carries, and every fallback coin is one of them', () => {
+    const { coins, fallbacks } = config.blockbookMirror;
+    expect(coins.filter((id) => !isSupportedId(id))).toEqual([]);
+    expect(Object.keys(fallbacks).filter((id) => !coins.includes(id))).toEqual([]);
+  });
+
+  it.each(NEW_COINS.filter((id) => id !== 'bitcoin-gold'))('prices %s from CoinGecko and keeps %s\'s daily series separate', async (id) => {
+    const gecko = mockGecko();
+    const paprika = mockPaprika();
+    await expect(getSimplePrice([id], ['usd'])).resolves.toEqual({ [id]: { usd: 2 } });
+    expect(gecko.getSimplePrice).toHaveBeenCalledWith([id], expect.any(Array));
+    const { prices } = await chart(id, 'usd', 'max', 'daily');
+    expect(prices.length).toBeGreaterThan(1000);
+    expect(gecko.getMarketChart).toHaveBeenCalledWith(id, 'usd', 'max', 'daily');
+    expect(paprika.getTicker).not.toHaveBeenCalled();
+  });
+
+  it('still answers 404 for a coin that is not an explorer coin, before any upstream call', async () => {
+    const gecko = mockGecko();
+    await expectMirrorError(getSimplePrice(['ethereum'], ['usd']), 404);
+    await expectMirrorError(chart('ethereum', 'usd', 'max', 'daily'), 404);
+    expect(gecko.getSimplePrice).not.toHaveBeenCalled();
+    expect(gecko.getMarketChart).not.toHaveBeenCalled();
+  });
+});
+
+describe('bitcoin-gold fallback (CoinGecko froze on 2026-07-27)', () => {
+  it('prices it from CoinPaprika btg-bitcoin-gold through Bitcoin, with no CoinGecko call of its own', async () => {
+    const gecko = mockGecko();
+    const paprika = mockPaprika();
+    const out = await getSimplePrice(['bitcoin-gold'], ['usd', 'eur']);
+    expect(out['bitcoin-gold'].usd).toBeCloseTo(0.6);
+    expect(out['bitcoin-gold'].eur).toBeCloseTo(0.6 * (50000 / 60000));
+    expect(paprika.getTicker).toHaveBeenCalledWith('btg-bitcoin-gold');
+    expect(gecko.getSimplePrice.mock.calls.every((c) => c[0][0] === 'bitcoin')).toBe(true);
+  });
+
+  it('stitches CoinGecko history before 2026-07-27 to CoinPaprika days from that day, dropping the frozen 07-27 point', async () => {
+    const gecko = mockGecko();
+    const paprika = mockPaprika();
+    const { prices } = await chart('bitcoin-gold', 'eur', 'max', 'daily');
+
+    const before = prices.filter(([ts]) => ts < BTG_SINCE_MS);
+    const after = prices.filter(([ts]) => ts >= BTG_SINCE_MS);
+    expect(before[0]).toEqual([Date.parse('2017-10-23T00:00:00Z'), 0.25]);
+    expect(before[before.length - 1]).toEqual([BTG_SINCE_MS - DAY_MS, 0.25]);
+    expect(after[0][0]).toBe(BTG_SINCE_MS);
+    expect(after[0][1]).toBeCloseTo(0.6 * (50000 / 60000));
+    expect(prices.some(([, price]) => price === 0.2338)).toBe(false);
+    expect(prices.every(([ts]) => ts % DAY_MS === 0)).toBe(true);
+    expect(paprika.getHistorical).toHaveBeenCalledWith('btg-bitcoin-gold', '2026-07-27', '1d', 'usd');
+    expect(gecko.getMarketChart.mock.calls.map((c) => `${c[0]}/${c[1]}`).sort()).toEqual(['bitcoin-gold/eur', 'bitcoin/eur', 'bitcoin/usd']);
+  });
+
+  it('serves a window after the cut-over from CoinPaprika alone', async () => {
+    const gecko = mockGecko();
+    mockPaprika();
+    const { prices } = await chart('bitcoin-gold', 'usd', '30', 'daily');
+    expect(prices.length).toBeGreaterThan(25);
+    expect(prices.every(([, price]) => price === 0.6)).toBe(true);
+    expect(gecko.getMarketChart).not.toHaveBeenCalled();
+  });
+
+  it('serves CoinPaprika hourly points for days=1 and days=90', async () => {
+    mockGecko();
+    const paprika = mockPaprika();
+    const { prices } = await chart('bitcoin-gold', 'usd', '90');
+    expect(prices.length).toBeGreaterThan(20);
+    expect(paprika.getHistorical).toHaveBeenCalledWith('btg-bitcoin-gold', String(Math.floor((nowMs - 23 * 3600_000) / 1000)), '1h', 'usd');
   });
 });

@@ -55,29 +55,66 @@ export const config = {
   // /v2/blockbook/api/v3 serves the CoinGecko v3 subset Blockbook's fiat
   // downloader calls (see services/blockbookMirror.ts). It is public and
   // unauthenticated, so each upstream gets its own budget, separate from
-  // priceHistory's, per process:
-  // - CoinGecko Pro: 30/min (burst 10) and 3000/day, at most ~6% of the
-  //   Analyst plan's 500/min and ~90k credits a month at sustained abuse;
-  // - CoinPaprika free (no key, 20k calls/month): 600/day (burst 30), ~18k a
-  //   month at sustained abuse. Normal use is ~200/day per fallback coin.
+  // priceHistory's, per process.
+  //
+  // Expected load, worst case. Two rates-api hosts share one CoinGecko key
+  // (the other domains are mirrors of them), each with its own cache; two
+  // explorers per coin, never inside one another's cache window. Each
+  // explorer polls every periodSeconds (60 s bitcoin, 900 s the others) with
+  // one simple/price plus market_chart days=1 and days=90 (usd), and once a
+  // day, after 01:00 UTC, asks for the daily series in its ~46 quote
+  // currencies. Caches: simple/price 5 min, days=1 15 min, days=90 6 h.
+  // - bitcoin: 288 + 96 + 4 = ~390 calls a day per host, ~780 for both;
+  // - 10 other CoinGecko coins at 900 s: price and days=1 can miss on every
+  //   poll (2 x 96 each), days=90 at most 4 per host = ~390 a day each,
+  //   ~3,900 for all;
+  // - daily series: (11 CoinGecko coins + the frozen pre-`since` history of
+  //   2 fallback coins) x 46 currencies = ~600 a day per host, ~1,200 for
+  //   both, the same for the one-time backfill (days=max is the same call);
+  // - fallback coins (groestlcoin, bitcoin-gold) cost no CoinGecko call but
+  //   those daily histories: bitcoin's price is shared with the bitcoin
+  //   explorer's.
+  // That is ~5.9k a day, ~177k a month for the key. If all of it reaches one
+  // host it is ~4.9k a day there. Budget on the Analyst plan (500/min, ~500k
+  // credits a month, shared with the rates refresher and priceHistory, up to
+  // ~150k), per process:
+  // - CoinGecko Pro: 6,000/day (~20% headroom over one host taking it all;
+  //   the bucket also refills 1/14.4 s, so a day's worth is never spendable in
+  //   a burst), 100/min with burst 40: the 01:00 UTC wave of ~600 daily series
+  //   clears in ~6 minutes, and any 60 s window is at most 140 calls, <=28% of
+  //   the plan. The ids are an allowlist and every answer is cached, so abuse
+  //   (varying vs on charts) can't go past these caps; both hosts sustained at
+  //   the cap are 360k credits a month;
+  // - CoinPaprika free (no key, 20k calls/month): 600/day (burst 30). The two
+  //   fallback coins cost ~240 a day each in the worst case (ticker 10 min
+  //   against a 900 s poll: 2 x 96; hourly 30 min: 48; daily: 1), 480 in
+  //   total, ~14.5k a month.
   // A spent budget, a full concurrency slot or a cooldown after an upstream
   // 429 answers 429 + Retry-After: Blockbook only backs off on 429.
   blockbookMirror: {
     // The only ids the mirror serves (the explorers' coins); anything else is
     // a 404 before any upstream call, so no caller can spend the budget on
-    // ids the explorers don't need.
-    coins: ['bitcoin', 'groestlcoin'] as string[],
-    coinGecko: { perMinute: 30, burst: 10, perDay: 3000 },
+    // ids the explorers don't need. Each must also be a CoinGecko id ZelCore
+    // lists (`isSupportedId`, checked by the tests).
+    coins: [
+      'bitcoin', 'groestlcoin', 'litecoin', 'zcash', 'digibyte', 'dogecoin', 'dash', 'vertcoin', 'ravencoin', 'ethereum-classic', 'bitcoin-cash', 'bitcoin-gold', 'clore-ai',
+    ] as string[],
+    coinGecko: { perMinute: 100, burst: 40, perDay: 6_000 },
     coinPaprika: { perDay: 600, burst: 30 },
     // Per provider.
-    maxConcurrentUpstream: 4,
+    // 26 explorers hit the cold caches together after 01:00 UTC and Blockbook
+    // waits 60 s on any 429, so 4 slots would stretch the daily wave to hours.
+    maxConcurrentUpstream: 8,
     // CoinPaprika request timeout. CoinGecko calls reuse the zero-retry
     // price-history client and its priceHistory.upstreamTimeoutMs.
     upstreamTimeoutMs: 15 * 1000,
     // Full daily series per (id, vs), bounded by total point count (an
-    // entry's size is its point count + 1, ~85 B per point): ~42 MB. Bitcoin
-    // plus one fallback coin in 47 currencies is ~440k points.
-    dailySeriesMaxPoints: 500_000,
+    // entry's size is its point count + 1, ~85 B per point): ~220 MB. The 13
+    // coins' full histories (~50k points per currency, bitcoin 4.9k, clore-ai
+    // under 1k) in 46 currencies are ~2.3M points; a smaller cap would evict
+    // series that are asked again within the day and be re-bought from
+    // CoinGecko.
+    dailySeriesMaxPoints: 2_600_000,
     // Pass-through market_chart (days 1 or 90) responses, by point count.
     chartCacheMaxPoints: 200_000,
     notFoundCacheMs: 10 * 60 * 1000,
@@ -95,6 +132,9 @@ export const config = {
     // days that CoinPaprika has, so the cut-over is before them.
     fallbacks: {
       groestlcoin: { coinpaprikaId: 'grs-groestlcoin', since: '2026-07-20' },
+      // CoinGecko's price froze at $0.2338 on 2026-07-27 (13:25 UTC); the
+      // 07-27 point is its last, so CoinPaprika (live) takes over on that day.
+      'bitcoin-gold': { coinpaprikaId: 'btg-bitcoin-gold', since: '2026-07-27' },
     } as Record<string, { coinpaprikaId: string; since: string }>,
   },
   coinPaprikaUrl: 'https://api.coinpaprika.com/v1/',
