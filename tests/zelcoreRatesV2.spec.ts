@@ -23,6 +23,8 @@ import { getBstockPrices, isBstocksDegraded } from '../src/services/bstocks';
 // eslint-disable-next-line import/first
 import { getAll } from '../src/services/zelcoreRatesV2';
 // eslint-disable-next-line import/first
+import { coinAggregatorIDs } from '../src/services/coinAggregatorIDs';
+// eslint-disable-next-line import/first
 import type { CryptoPrice } from '../src/types';
 
 const MockedCoinGecko = CoinGecko as jest.Mocked<typeof CoinGecko>;
@@ -119,6 +121,62 @@ it('asks CryptoCompare for both quote currencies in a single request', async () 
   const row = result.crypto.find((c) => c.id === 'QTUM');
   expect(row?.rates).toEqual({ btc: 0.00003, usd: 2.5 });
   expect(result.errors?.cryptocompare).toBeUndefined();
+});
+
+// Released wallets bundle coininfo.json and look these assets up as
+// `cryptocompare-<ID>` only, with no fallback to another provider.
+describe('coins moved off CryptoCompare', () => {
+  const lcwQsp = {
+    code: 'QSP', rate: 0.0005, rank: 900, circulatingSupply: 700, volume: 240, cap: 350, totalSupply: 1000, delta: { day: 1.02, week: 0.9 },
+  };
+  const cgGemlink = {
+    id: 'gemlink', current_price: 0.001, circulating_supply: 10, total_volume: 5, price_change_percentage_24h: 1, market_cap: 10, market_cap_rank: 5000, total_supply: 20, price_change_percentage_7d_in_currency: 2,
+  };
+
+  beforeEach(() => {
+    MockedCoinGecko.getInstance.mockReturnValue({
+      getExchangeRates: jest.fn().mockResolvedValue([cgGemlink]),
+    } as never);
+    MockedLiveCoinWatch.getInstance.mockReturnValue({
+      getExchangeRates: jest.fn().mockResolvedValue([lcwQsp]),
+    } as never);
+    MockedCryptoCompare.getInstance.mockReturnValue({
+      getMarketData: jest.fn().mockResolvedValue({}),
+    } as never);
+    mockedGetBstockPrices.mockResolvedValue([]);
+    mockedIsBstocksDegraded.mockReturnValue(false);
+  });
+
+  it('are priced by the providers they moved to', () => {
+    expect(coinAggregatorIDs.cryptoCompare).toEqual([]);
+    expect(coinAggregatorIDs.livecoinwatch).toContain('QSP');
+    expect(coinAggregatorIDs.coingecko).toContain('gemlink');
+  });
+
+  it('are served under the cryptocompare IDs released wallets look up', async () => {
+    const result = await getAll();
+
+    const qsp = result.crypto.find((c) => c.provider === 'cryptocompare' && c.id === 'QSP');
+    const tent = result.crypto.find((c) => c.provider === 'cryptocompare' && c.id === 'TENT');
+    expect(qsp?.rates).toEqual({ btc: 0.0005, usd: 0.0005 });
+    expect(tent?.rates).toEqual({ btc: 0.001, usd: 0.001 });
+    expect(result.crypto.some((c) => c.provider === 'livecoinwatch' && c.id === 'QSP')).toBe(true);
+    expect(result.errors?.cryptocompare).toBeUndefined();
+  });
+
+  it('never shadow a row CryptoCompare itself returned', async () => {
+    MockedCryptoCompare.getInstance.mockReturnValue({
+      getMarketData: jest.fn().mockResolvedValue({
+        QSP: { BTC: { PRICE: 0.0000001 }, USD: { PRICE: 0.007 } },
+      }),
+    } as never);
+
+    const result = await getAll();
+
+    const qspRows = result.crypto.filter((c) => c.provider === 'cryptocompare' && c.id === 'QSP');
+    expect(qspRows).toHaveLength(1);
+    expect(qspRows[0].rates).toEqual({ btc: 0.0000001, usd: 0.007 });
+  });
 });
 
 it('does not set errors.binance when bStocks is healthy', async () => {

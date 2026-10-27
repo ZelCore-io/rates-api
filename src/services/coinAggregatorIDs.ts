@@ -15,13 +15,13 @@ export const coinAggregatorIDs = {
   /**
    * CryptoCompare API IDs.
    *
-   * Add the CryptoCompare IDs at the end of this list.
+   * Empty: CryptoCompare ended its free tier and our key is capped at 25 calls
+   * a month. Its coins that still trade moved to CoinGecko (gemlink) and
+   * LiveCoinWatch (QSP), see `cryptoCompareAliases` in zelcoreRatesV2.ts; the
+   * rest are not priced anywhere any more. The provider is kept, so with a
+   * paid key tickers only need adding back here.
    */
-  cryptoCompare: [
-    'CONI', 'PAX', 'SPHTX', 'GVT', 'INS', 'MDA', 'QSP', 'SNGLS', 'TNB', 'WABI', 'DGD', 'TENT', 'BBO', 'ICN', 'MCO', 'EDO', 'WINGS', 'DTA', 'ADT', 'ATL',
-    'BCPT', 'BTH', 'USDS', 'VIDT', 'VBK', 'UST', 'GTO', 'ONGAS', 'MIOTA', 'TOK',
-    'GNT', 'AGI', 'ETHOS', 'BSV', 'AMB', 'SIN', 'QTUM', 'XEM', 'XCASH', // These are not actually used in ZelCore or some tickers; just for testing until merge
-  ],
+  cryptoCompare: [] as string[],
   /**
    * CoinGecko API IDs.
    *
@@ -48,11 +48,11 @@ export const coinAggregatorIDs = {
     'cardano', 'ripple', 'neo', 'bittorrent-old', 'groestlcoin', 'leo-token', 'enq-enecuum', 'fantom', 'aergo', 'unibright', 'ilcoin', 'hex', 'compound-governance-token', 'wrapped-bitcoin', 'mantra-dao', 'uniswap', 'just', 'beldex', 'zcoin',
     'pancakeswap-token', 'matic-network', 'staked-ether', 'amp-token', 'cosmos', 'tezos', 'shiba-inu', 'near', 'coin98', 'ankr', 'swipe', 'wazirx', 'saito', 'mithril', 'tierion', 'adex', 'aion', 'ethlend',
     'frax', 'smooth-love-potion', // These are not actually used in ZelCore or some tickers; just for testing until merge
-    'wax', 'bread', 'loom-network-new', 'ong', 'iota', 'oxbitcoin', 'dragonchain', 'binance-bitcoin', 'telestai'])],
+    'wax', 'bread', 'loom-network-new', 'ong', 'iota', 'oxbitcoin', 'dragonchain', 'binance-bitcoin', 'telestai', 'gemlink'])],
   /**
    * LiveCoinWatch API IDs.
    */
-  livecoinwatch: ['KDL', 'TLS'],
+  livecoinwatch: ['KDL', 'TLS', 'QSP'],
 };
 
 /**

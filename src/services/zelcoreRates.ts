@@ -66,11 +66,16 @@ export async function getAll(): Promise<RatesData> {
 
   // Fetch cryptocurrency prices from CryptoCompare
   try {
-    const cryptocompare = await CryptoCompare.getInstance().getExchangeRates(coinAggregatorIDs.cryptoCompare);
+    // Same ticker list and quote pair as the markets and v2 refreshers, so all
+    // three share one cached response and this provider costs one request per
+    // TTL instead of two. Only the BTC leg is read here.
+    const cryptocompare = await CryptoCompare.getInstance().getMarketData(coinAggregatorIDs.cryptoCompare, 'BTC,USD');
 
     const coinsCC = Object.keys(cryptocompare);
     coinsCC.forEach((coin) => {
-      efg[coin] = cryptocompare[coin].BTC;
+      const btc = cryptocompare[coin].BTC;
+      if (!btc) return;
+      efg[coin] = btc.PRICE;
     });
   } catch (e) {
     log.error('CryptoCompare error');
@@ -104,7 +109,9 @@ export async function getAll(): Promise<RatesData> {
   efg.GCSTAR = efg.USDT;
   efg.GCTGT = efg.USDT;
   efg.GCSWAL = efg.USDT;
-  efg.ONG = efg.ONGAS;
+  // ONGAS and TENT come from CryptoCompare only; fall back to CoinGecko's
+  // ONG/GLINK rows rather than blanking them whenever that provider is down.
+  efg.ONG = efg.ONGAS ?? efg.ONG;
   efg.SAI = efg.DAI;
   efg.WBNB = efg.BNB;
   efg.ARN = efg.ARNX;
@@ -134,7 +141,7 @@ export async function getAll(): Promise<RatesData> {
   efg.WMATIC = efg.MATIC;
   efg.POL = efg.MATIC;
   efg.kFRAX = efg.FRAX;
-  efg.GLINK = efg.TENT;
+  efg.GLINK = efg.TENT ?? efg.GLINK;
   efg.BABE = (efg.KDA || 0) / 4.2;
   efg.KDX = (efg.KDA || 0) / 28;
   efg.SKDX = (efg.KDA || 0) / 28;

@@ -23,6 +23,16 @@ function timeout(ms: number): Promise<void> {
 }
 
 /**
+ * CryptoCompare IDs that wallet coininfo.json still points at, mapped to the
+ * provider row that now prices the same coin. TENT covers both gemlink and
+ * snowgem, which share it.
+ */
+export const cryptoCompareAliases: Record<string, { provider: string, id: string }> = {
+  QSP: { provider: 'livecoinwatch', id: 'QSP' },
+  TENT: { provider: 'coingecko', id: 'gemlink' },
+};
+
+/**
  * Fetches and aggregates cryptocurrency prices and fiat rates from multiple providers.
  *
  * This function retrieves fiat rates from BitPay and cryptocurrency prices from CoinGecko,
@@ -145,8 +155,9 @@ export async function getAll(): Promise<PricesResponse> {
         rank: coin.rank,
         supply,
         volume,
-        change24h: coin.delta.day ? (1 - coin.delta.day) * 100 : 0,
-        change7d: coin.delta.week ? (1 - coin.delta.week) * 100 : 0,
+        // `delta` is a ratio to the period's opening rate: 1.02 is +2%.
+        change24h: coin.delta.day ? (coin.delta.day - 1) * 100 : 0,
+        change7d: coin.delta.week ? (coin.delta.week - 1) * 100 : 0,
         market: coin.cap ? coin.cap : supply * usdRate,
         total_supply: coin.totalSupply,
       };
@@ -156,6 +167,15 @@ export async function getAll(): Promise<PricesResponse> {
     log.error(e);
     errors.livecoinwatch = true;
   }
+
+  // Released wallets bundle coininfo.json, where these assets still look up
+  // `cryptocompare-<ID>`. CryptoCompare no longer prices them, so serve the
+  // row from the provider that does under the ID those wallets ask for.
+  Object.entries(cryptoCompareAliases).forEach(([id, source]) => {
+    if (processed.some((c) => c.provider === 'cryptocompare' && c.id === id)) return;
+    const row = processed.find((c) => c.provider === source.provider && c.id === source.id);
+    if (row) processed.push({ ...row, id, provider: 'cryptocompare' });
+  });
 
   // Fetch bStock prices from Binance. Bounded to 10s so a hung/slow Binance
   // outage cannot stall the refresh of every other provider behind it.
