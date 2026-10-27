@@ -57,32 +57,34 @@ export const config = {
   // unauthenticated, so each upstream gets its own budget, separate from
   // priceHistory's, per process.
   //
-  // Expected load, worst case per host (every host has its own cache; two
-  // explorers per coin, never inside one another's cache window). Each
+  // Expected load, worst case. Two rates-api hosts share one CoinGecko key
+  // (the other domains are mirrors of them), each with its own cache; two
+  // explorers per coin, never inside one another's cache window. Each
   // explorer polls every periodSeconds (60 s bitcoin, 900 s the others) with
   // one simple/price plus market_chart days=1 and days=90 (usd), and once a
   // day, after 01:00 UTC, asks for the daily series in its ~46 quote
-  // currencies:
-  // - bitcoin: caches of 60 s / 60 s / 10 min bound it to 1440 + 1440 + 144
-  //   = ~3,000 calls a day, whatever the number of explorers;
-  // - 10 other CoinGecko coins at 900 s: every poll misses (3 x 96 x 2
-  //   explorers = 576 a day each) = ~5,800 a day;
+  // currencies. Caches: simple/price 5 min, days=1 15 min, days=90 6 h.
+  // - bitcoin: 288 + 96 + 4 = ~390 calls a day per host, ~780 for both;
+  // - 10 other CoinGecko coins at 900 s: price and days=1 can miss on every
+  //   poll (2 x 96 each), days=90 at most 4 per host = ~390 a day each,
+  //   ~3,900 for all;
   // - daily series: (11 CoinGecko coins + the frozen pre-`since` history of
-  //   2 fallback coins) x 46 currencies = ~600 a day, the same for the
-  //   one-time backfill (days=max is the same call);
+  //   2 fallback coins) x 46 currencies = ~600 a day per host, ~1,200 for
+  //   both, the same for the one-time backfill (days=max is the same call);
   // - fallback coins (groestlcoin, bitcoin-gold) cost no CoinGecko call but
   //   those daily histories: bitcoin's price is shared with the bitcoin
   //   explorer's.
-  // That is ~9.4k a day, ~6.5 a minute on average. Budget on the Analyst
-  // plan (500/min, ~500k credits a month, shared with the rates refresher and
-  // priceHistory), per process:
-  // - CoinGecko Pro: 12,000/day (~28% headroom over the worst case; the
-  //   bucket also refills 1/7.2 s, so a day's worth is never spendable in a
-  //   burst), 100/min with burst 40: the 01:00 UTC wave of ~600 daily series
-  //   then clears in ~6 minutes instead of 20, and any 60 s window is at
-  //   most 140 calls, <=28% of the plan. The ids are an allowlist and every
-  //   answer is cached, so abuse (varying vs on charts) can't go past these
-  //   caps; sustained at the cap a month is up to 360k credits per process;
+  // That is ~5.9k a day, ~177k a month for the key. If all of it reaches one
+  // host it is ~4.9k a day there. Budget on the Analyst plan (500/min, ~500k
+  // credits a month, shared with the rates refresher and priceHistory, up to
+  // ~150k), per process:
+  // - CoinGecko Pro: 6,000/day (~20% headroom over one host taking it all;
+  //   the bucket also refills 1/14.4 s, so a day's worth is never spendable in
+  //   a burst), 100/min with burst 40: the 01:00 UTC wave of ~600 daily series
+  //   clears in ~6 minutes, and any 60 s window is at most 140 calls, <=28% of
+  //   the plan. The ids are an allowlist and every answer is cached, so abuse
+  //   (varying vs on charts) can't go past these caps; both hosts sustained at
+  //   the cap are 360k credits a month;
   // - CoinPaprika free (no key, 20k calls/month): 600/day (burst 30). The two
   //   fallback coins cost ~240 a day each in the worst case (ticker 10 min
   //   against a 900 s poll: 2 x 96; hourly 30 min: 48; daily: 1), 480 in
@@ -97,7 +99,7 @@ export const config = {
     coins: [
       'bitcoin', 'groestlcoin', 'litecoin', 'zcash', 'digibyte', 'dogecoin', 'dash', 'vertcoin', 'ravencoin', 'ethereum-classic', 'bitcoin-cash', 'bitcoin-gold', 'clore-ai',
     ] as string[],
-    coinGecko: { perMinute: 100, burst: 40, perDay: 12_000 },
+    coinGecko: { perMinute: 100, burst: 40, perDay: 6_000 },
     coinPaprika: { perDay: 600, burst: 30 },
     // Per provider.
     // 26 explorers hit the cold caches together after 01:00 UTC and Blockbook

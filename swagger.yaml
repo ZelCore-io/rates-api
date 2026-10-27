@@ -245,7 +245,7 @@ paths:
         CoinGecko v3 `simple/price` for Blockbook's fiat downloader. Only the
         configured explorer coins (bitcoin, groestlcoin, litecoin, zcash, digibyte, dogecoin, dash, vertcoin, ravencoin, ethereum-classic, bitcoin-cash, bitcoin-gold, clore-ai) are served; any other
         id is a 404. Each id is asked once for every supported currency and
-        cached 60 seconds, and any requested subset is answered from that.
+        cached 5 minutes, and any requested subset is answered from that.
         Coins CoinGecko stopped tracking (groestlcoin, bitcoin-gold) are priced from
         CoinPaprika's USD price (cached 10 minutes) times Bitcoin's current
         price ratio vs/usd. An upstream answer without a price is a 502 and is
@@ -305,7 +305,7 @@ paths:
         series lacks the newest closed day's 00:00 point it is asked again
         every 10 minutes. Without `interval`, `days` must be 1 or 90 (the
         windows Blockbook uses); it is passed through to CoinGecko and cached
-        60 seconds for 1, 10 minutes for 90.
+        15 minutes for 1, 6 hours for 90.
 
 
         Coins CoinGecko stopped tracking (groestlcoin, bitcoin-gold): the daily

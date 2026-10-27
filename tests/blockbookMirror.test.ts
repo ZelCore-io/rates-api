@@ -188,7 +188,7 @@ describe('simple/price parameter validation', () => {
 });
 
 describe('simple/price', () => {
-  it('asks CoinGecko once per id for every supported currency, cached 60 s, and answers any subset from it', async () => {
+  it('asks CoinGecko once per id for every supported currency, cached 5 min, and answers any subset from it', async () => {
     const gecko = mockGecko();
     await expect(getSimplePrice(['bitcoin'], ['usd', 'eur'])).resolves.toEqual({ bitcoin: { eur: 50000, usd: 60000 } });
     expect(gecko.getSimplePrice).toHaveBeenCalledWith(['bitcoin'], [...SUPPORTED].sort());
@@ -201,7 +201,7 @@ describe('simple/price', () => {
     await getSimplePrice(['groestlcoin', 'bitcoin'], ['eur']);
     expect(gecko.getSimplePrice).toHaveBeenCalledTimes(1);
 
-    nowMs += MINUTE_MS + 1;
+    nowMs += 5 * MINUTE_MS + 1;
     await getSimplePrice(['bitcoin'], ['eth']);
     expect(gecko.getSimplePrice).toHaveBeenCalledTimes(2);
   });
@@ -224,7 +224,7 @@ describe('simple/price', () => {
     gecko.getSimplePrice.mock.calls.forEach(([ids]) => expect(ids).toEqual(['bitcoin']));
   });
 
-  it('caches the CoinPaprika ticker for 10 minutes and the Bitcoin cross for 60 s', async () => {
+  it('caches the CoinPaprika ticker for 10 minutes and the Bitcoin cross for 5 min', async () => {
     const gecko = mockGecko();
     const paprika = mockPaprika();
     await getSimplePrice(['groestlcoin'], ['eur']);
@@ -232,7 +232,7 @@ describe('simple/price', () => {
     expect(paprika.getTicker).toHaveBeenCalledTimes(1);
     expect(gecko.getSimplePrice).toHaveBeenCalledTimes(1);
 
-    nowMs += MINUTE_MS + 1;
+    nowMs += 5 * MINUTE_MS + 1;
     await getSimplePrice(['groestlcoin'], ['eur']);
     expect(gecko.getSimplePrice).toHaveBeenCalledTimes(2);
     expect(paprika.getTicker).toHaveBeenCalledTimes(1);
@@ -482,13 +482,13 @@ describe('market_chart interval=daily for a fallback coin', () => {
 });
 
 describe('market_chart without interval', () => {
-  it('passes days through to CoinGecko, returns prices only, and caches 60 s for days <= 1', async () => {
+  it('passes days through to CoinGecko, returns prices only, and caches 15 min for days <= 1', async () => {
     const gecko = mockGecko();
     const out = await chart('bitcoin', 'usd', '1');
     expect(Object.keys(out)).toEqual(['prices']);
     expect(out.prices.every(([, price]) => price !== null)).toBe(true);
     expect(gecko.getMarketChart).toHaveBeenCalledWith('bitcoin', 'usd', 1);
-    nowMs += MINUTE_MS - 1;
+    nowMs += 15 * MINUTE_MS - 1;
     await chart('bitcoin', 'usd', '1');
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(1);
     nowMs += 2;
@@ -496,10 +496,10 @@ describe('market_chart without interval', () => {
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(2);
   });
 
-  it('caches 10 minutes for days 90', async () => {
+  it('caches 6 hours for days 90', async () => {
     const gecko = mockGecko();
     await chart('bitcoin', 'usd', '90');
-    nowMs += 10 * MINUTE_MS - 1;
+    nowMs += 6 * 60 * MINUTE_MS - 1;
     await chart('bitcoin', 'usd', '90');
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(1);
     nowMs += 2;

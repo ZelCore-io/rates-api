@@ -31,9 +31,11 @@ const DAILY_REFRESH_GRACE_MS = 20 * MINUTE_MS;
 /** A daily series still missing its newest closed day is re-asked this often instead. */
 const DAILY_INCOMPLETE_TTL_MS = 10 * MINUTE_MS;
 const SUPPORTED_VS_TTL_MS = DAY_MS;
-const SIMPLE_PRICE_TTL_MS = MINUTE_MS;
-const SHORT_CHART_TTL_MS = MINUTE_MS;
-const LONG_CHART_TTL_MS = 10 * MINUTE_MS;
+// Long enough that the explorers polling one coin share an answer: the
+// CoinGecko key is shared by both rates-api hosts (see config/index.ts).
+const SIMPLE_PRICE_TTL_MS = 5 * MINUTE_MS;
+const SHORT_CHART_TTL_MS = 15 * MINUTE_MS;
+const LONG_CHART_TTL_MS = 6 * HOUR_MS;
 const TICKER_TTL_MS = 10 * MINUTE_MS;
 const HOURLY_TTL_MS = 30 * MINUTE_MS;
 /** CoinPaprika's free plan serves 1h points only for a start within ~24 h. */
@@ -259,7 +261,7 @@ export async function getSupportedVsCurrencies(): Promise<string[]> {
 
 /**
  * A served CoinGecko id's current price in every supported quote currency
- * (plus usd): one CoinGecko `simple/price` call per id, cached 60 s. Every
+ * (plus usd): one CoinGecko `simple/price` call per id, cached 5 min. Every
  * request answers its subset from this, so varying `vs_currencies` costs no
  * extra upstream calls.
  */
@@ -435,9 +437,9 @@ export function parseSimplePriceParams(ids: unknown, vsCurrencies: unknown): { i
  * - Every id must be a configured explorer coin (else 404) and every vs a
  *   supported quote currency (else 400).
  * - CoinGecko ids: one upstream call per id for every supported quote
- *   currency, cached 60 s; the requested currencies are picked from it.
+ *   currency, cached 5 min; the requested currencies are picked from it.
  * - Fallback ids: CoinPaprika's USD price (cached 10 min) times Bitcoin's
- *   current `vs`/`usd` ratio from CoinGecko (cached 60 s).
+ *   current `vs`/`usd` ratio from CoinGecko (cached 5 min).
  * - An upstream answer without any price is a 502, never cached.
  *
  * @param ids - Validated ids from `parseSimplePriceParams`.
@@ -522,8 +524,8 @@ export function parseMarketChartParams(id: unknown, vsCurrency: unknown, days: u
  *   (all for `max`). Fallback coins stitch CoinGecko's history before
  *   `since` (asked only when the window reaches before `since`) to
  *   CoinPaprika's converted daily points.
- * - No interval: passed through to CoinGecko (`days` 1 or 90), cached 60 s
- *   for days 1, 10 min for 90. Fallback coins get CoinPaprika's hourly
+ * - No interval: passed through to CoinGecko (`days` 1 or 90), cached 15 min
+ *   for days 1, 6 h for 90. Fallback coins get CoinPaprika's hourly
  *   points for the last 23 hours (cached 30 min) at the current Bitcoin
  *   cross, whatever `days` asks for.
  *
