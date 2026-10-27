@@ -266,6 +266,58 @@ export class CoinGecko {
   }
 
   /**
+   * Retrieves the quote currencies CoinGecko prices against
+   * (`simple/supported_vs_currencies`).
+   *
+   * Uncached and never retried, like `getMarketChartRange`: the Blockbook
+   * mirror (`services/blockbookMirror`) owns caching, budgeting and backoff.
+   *
+   * @returns Lowercase currency codes, e.g. `['btc', 'eth', 'usd', ...]`.
+   * @throws The underlying Axios error on any non-2xx response or network failure.
+   */
+  public async getSupportedVsCurrencies(): Promise<string[]> {
+    const response = await CoinGecko.historyClient.get('simple/supported_vs_currencies', { headers: this.headers });
+    return response.data;
+  }
+
+  /**
+   * Retrieves current prices (`simple/price`). Uncached and never retried;
+   * see `getSupportedVsCurrencies`.
+   *
+   * @param ids - CoinGecko coin ids.
+   * @param vsCurrencies - Quote currencies.
+   * @returns `{id: {vs: price}}`; ids CoinGecko doesn't know are absent.
+   * @throws The underlying Axios error on any non-2xx response or network failure.
+   */
+  public async getSimplePrice(ids: string[], vsCurrencies: string[]): Promise<Record<string, Record<string, number | null>>> {
+    const response = await CoinGecko.historyClient.get('simple/price', {
+      headers: this.headers,
+      params: { ids: ids.join(','), vs_currencies: vsCurrencies.join(',') },
+    });
+    return response.data;
+  }
+
+  /**
+   * Retrieves one coin's recent price chart (`coins/{id}/market_chart`).
+   * Uncached and never retried; see `getSupportedVsCurrencies`.
+   *
+   * @param id - CoinGecko coin id.
+   * @param vsCurrency - Quote currency.
+   * @param days - Days back from now, or `max`.
+   * @param interval - `daily` for one point per UTC day; omitted, CoinGecko
+   * picks the granularity from `days` (5-minutely for 1, hourly up to 90).
+   * @returns CoinGecko's `market_chart` payload; only `prices` is used here.
+   * @throws The underlying Axios error on any non-2xx response or network failure.
+   */
+  public async getMarketChart(id: string, vsCurrency: string, days: number | 'max', interval?: 'daily'): Promise<{ prices: [number, number | null][] }> {
+    const response = await CoinGecko.historyClient.get(`coins/${encodeURIComponent(id)}/market_chart`, {
+      headers: this.headers,
+      params: interval ? { vs_currency: vsCurrency, days, interval } : { vs_currency: vsCurrency, days },
+    });
+    return response.data;
+  }
+
+  /**
    * Retrieves exchange rates for a list of coin IDs.
    *
    * @private
