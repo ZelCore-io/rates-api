@@ -398,7 +398,7 @@ export async function getBlockbookSupportedVs(req: Request, res: Response): Prom
 /**
  * Handles the Blockbook mirror's `simple/price?ids=a,b&vs_currencies=x,y`:
  * `{id: {vs: price}}`. 400 on bad or unsupported parameters, 404
- * `{"error":"coin not found"}` for an id ZelCore doesn't list, 429 +
+ * `{"error":"coin not found"}` for an id the mirror doesn't serve, 429 +
  * `Retry-After` when an upstream budget is spent, 502 on upstream failure.
  *
  * @param req - The Express request object (`query.ids`, `query.vs_currencies`).

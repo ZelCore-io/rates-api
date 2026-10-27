@@ -125,7 +125,7 @@ export default (app: Application): void => {
   /**
    * CoinGecko v3 subset for Blockbook's fiat downloader (`fiat_rates_params`
    * `url`/`tipUrl` = .../v2/blockbook/api/v3), so explorers need no
-   * CoinGecko key. Same response shapes as CoinGecko; only ids ZelCore lists;
+   * CoinGecko key. Same response shapes as CoinGecko; only the configured explorer coins;
    * a spent upstream budget is a 429 + Retry-After. Coins CoinGecko dropped
    * are priced from CoinPaprika. See `services/blockbookMirror`.
    *
@@ -134,7 +134,7 @@ export default (app: Application): void => {
    *
    * @route GET /v2/blockbook/api/v3/simple/supported_vs_currencies
    * @route GET /v2/blockbook/api/v3/simple/price?ids=a,b&vs_currencies=x,y
-   * @route GET /v2/blockbook/api/v3/coins/:id/market_chart?vs_currency=x&days=N|max[&interval=daily]
+   * @route GET /v2/blockbook/api/v3/coins/:id/market_chart?vs_currency=x&days=N|max&interval=daily, or days=1|90 without interval
    */
   app.get('/v2/blockbook/api/v3/simple/supported_vs_currencies', (req: Request, res: Response) => {
     apiService.getBlockbookSupportedVs(req, res);

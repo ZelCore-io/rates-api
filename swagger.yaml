@@ -242,17 +242,20 @@ paths:
     get:
       summary: Current prices (CoinGecko shape)
       description: >
-        CoinGecko v3 `simple/price` for Blockbook's fiat downloader. Only ids
-        ZelCore lists are served. Cached 60 seconds per sorted id and currency
-        list. Coins CoinGecko stopped tracking (groestlcoin) are priced from
+        CoinGecko v3 `simple/price` for Blockbook's fiat downloader. Only the
+        configured explorer coins (bitcoin, groestlcoin) are served; any other
+        id is a 404. Each id is asked once for every supported currency and
+        cached 60 seconds, and any requested subset is answered from that.
+        Coins CoinGecko stopped tracking (groestlcoin) are priced from
         CoinPaprika's USD price (cached 10 minutes) times Bitcoin's current
-        price ratio vs/usd. Upstream use is budgeted per provider; a spent
-        budget or an upstream rate limit answers 429 with Retry-After.
+        price ratio vs/usd. An upstream answer without a price is a 502 and is
+        not cached. Upstream use is budgeted per provider; a spent budget or
+        an upstream rate limit answers 429 with Retry-After.
       parameters:
         - name: ids
           in: query
           required: true
-          description: Comma-separated CoinGecko ids, at most 10.
+          description: Comma-separated CoinGecko ids, at most 10; only bitcoin and groestlcoin are served.
           schema:
             type: string
             example: bitcoin,groestlcoin
@@ -290,29 +293,35 @@ paths:
       summary: Price chart (CoinGecko shape, prices only)
       description: >
         CoinGecko v3 `coins/{id}/market_chart` for Blockbook's fiat
-        downloader; only `prices` is returned, null prices dropped. Only ids
-        ZelCore lists are served.
+        downloader; only `prices` is returned, null prices dropped. Only the
+        configured explorer coins (bitcoin, groestlcoin) are served; any other
+        id is a 404. An upstream answer without prices is a 502 and is not
+        cached.
 
 
         With `interval=daily`, the answer is sliced (points with
         ts >= now - days, or all for `max`) from one cached full daily series
-        per coin and currency, fresh until the next 00:20 UTC. Without
-        `interval`, `days` (1..90) is passed through to CoinGecko and cached
-        60 seconds for days <= 1, else 10 minutes.
+        per coin and currency, fresh until the next 00:20 UTC; while the
+        series lacks the newest closed day's 00:00 point it is asked again
+        every 10 minutes. Without `interval`, `days` must be 1 or 90 (the
+        windows Blockbook uses); it is passed through to CoinGecko and cached
+        60 seconds for 1, 10 minutes for 90.
 
 
         Coins CoinGecko stopped tracking (groestlcoin): the daily series is
-        CoinGecko's history up to the day before the configured cut-over,
-        then CoinPaprika's daily USD price (at most a year back) converted
-        with Bitcoin's same-day price; days without a Bitcoin price are
-        skipped. Without `interval` they get CoinPaprika's hourly points for
-        the last 23 hours (cached 30 minutes) at the current Bitcoin cross,
-        whatever `days` asks for.
+        CoinGecko's history up to the day before the configured cut-over
+        (2026-07-20), then CoinPaprika's daily USD price (at most a year back)
+        converted with Bitcoin's same-day price; days without a Bitcoin price
+        are skipped. CoinGecko's history is only asked when the window starts
+        before the cut-over; if it can't be had, the answer is a 502, never a
+        partial history. Without `interval` they get CoinPaprika's hourly
+        points for the last 23 hours (cached 30 minutes) at the current
+        Bitcoin cross, whatever `days` asks for.
       parameters:
         - name: id
           in: path
           required: true
-          description: CoinGecko coin id.
+          description: CoinGecko coin id; only bitcoin and groestlcoin are served.
           schema:
             type: string
             pattern: '^[a-z0-9-]{1,100}$'
@@ -327,7 +336,7 @@ paths:
         - name: days
           in: query
           required: true
-          description: With interval=daily an integer 1..36500 or `max`; without, an integer 1..90.
+          description: With interval=daily an integer 1..36500 or `max`; without, 1 or 90.
           schema:
             type: string
             example: '90'
