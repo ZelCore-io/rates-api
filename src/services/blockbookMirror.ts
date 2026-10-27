@@ -28,6 +28,8 @@ const DAY_MS = 24 * HOUR_MS;
 
 /** Daily series are refreshed this long after 00:00 UTC, once the new day's point is published. */
 const DAILY_REFRESH_GRACE_MS = 20 * MINUTE_MS;
+/** A daily series still missing its newest closed day is re-asked this often instead. */
+const DAILY_INCOMPLETE_TTL_MS = 10 * MINUTE_MS;
 const SUPPORTED_VS_TTL_MS = DAY_MS;
 const SIMPLE_PRICE_TTL_MS = MINUTE_MS;
 const SHORT_CHART_TTL_MS = MINUTE_MS;
@@ -132,6 +134,19 @@ function nextDailyRefreshMs(nowMs: number): number {
   return today > nowMs ? today : today + DAY_MS;
 }
 
+/**
+ * When a daily series fetched at `nowMs` goes stale: the next 00:20 UTC when
+ * it holds the newest day that should be closed by now (today's 00:00 point
+ * after 00:20, else yesterday's), otherwise in 10 minutes, so a series
+ * fetched before the upstream published that point isn't kept for a day.
+ */
+function dailyExpiryMs(nowMs: number, points: PricePoint[]): number {
+  const todayMs = Math.floor(nowMs / DAY_MS) * DAY_MS;
+  const newestClosedMs = nowMs >= todayMs + DAILY_REFRESH_GRACE_MS ? todayMs : todayMs - DAY_MS;
+  const next = nextDailyRefreshMs(nowMs);
+  return points.some(([ts]) => ts === newestClosedMs) ? next : Math.min(next, nowMs + DAILY_INCOMPLETE_TTL_MS);
+}
+
 /** `[ts, price]` pairs with a finite timestamp and price; nulls and junk dropped. */
 function cleanPoints(prices: unknown): PricePoint[] {
   if (!Array.isArray(prices)) return [];
@@ -169,7 +184,7 @@ function upstreamFailure(provider: Provider, what: string, error: unknown): Mirr
 
 /**
  * Serves `key` from `cache` while fresh, otherwise makes one upstream call
- * through `provider`'s budget and caches the result until `expiresAt(now)`.
+ * through `provider`'s budget and caches the result until `expiresAt(now, value)`.
  *
  * - Concurrent callers for the same key share one call (coalescing).
  * - Failures are not cached; an upstream 404 is remembered for
@@ -180,7 +195,7 @@ function upstreamFailure(provider: Provider, what: string, error: unknown): Mirr
  * Synchronous up to the upstream await, so concurrent callers see each
  * other's in-flight calls and admissions.
  */
-async function cached<T>(label: string, cache: LRU<string, Entry<T>>, key: string, expiresAt: (nowMs: number) => number, provider: Provider, fetch: () => Promise<T>, rememberNotFound = true): Promise<T> {
+async function cached<T>(label: string, cache: LRU<string, Entry<T>>, key: string, expiresAt: (nowMs: number, value: T) => number, provider: Provider, fetch: () => Promise<T>, rememberNotFound = true): Promise<T> {
   const entry = cache.get(key);
   if (entry && entry.expiresMs > Date.now()) return entry.value;
   if (entry) cache.delete(key);
@@ -202,7 +217,7 @@ async function cached<T>(label: string, cache: LRU<string, Entry<T>>, key: strin
     } finally {
       provider.budget.release();
     }
-    cache.set(key, { value, expiresMs: expiresAt(Date.now()) });
+    cache.set(key, { value, expiresMs: expiresAt(Date.now(), value) });
     return value;
   })().finally(() => inFlight.delete(flightKey));
   inFlight.set(flightKey, promise);
@@ -295,10 +310,10 @@ async function paprikaSeries(coinpaprikaId: string, start: string, interval: '1d
 
 /**
  * CoinPaprika's daily USD series for a fallback coin from max(`since`, now −
- * 364 days), cached until the next 00:20 UTC.
+ * 364 days), cached as `dailyExpiryMs` says.
  */
 function paprikaDaily(fallback: Fallback): Promise<PricePoint[]> {
-  return cached('paprika', paprikaSeriesCache, `${fallback.coinpaprikaId}|1d`, nextDailyRefreshMs, coinPaprika, () => {
+  return cached('paprika', paprikaSeriesCache, `${fallback.coinpaprikaId}|1d`, dailyExpiryMs, coinPaprika, () => {
     const startMs = Math.max(fallback.sinceMs, (Math.floor(Date.now() / DAY_MS) - DAILY_LOOKBACK_DAYS) * DAY_MS);
     return paprikaSeries(fallback.coinpaprikaId, new Date(startMs).toISOString().slice(0, 10), '1d');
   });
@@ -314,11 +329,15 @@ function paprikaHourly(fallback: Fallback): Promise<PricePoint[]> {
 
 /**
  * CoinGecko's full daily series for (id, vs) (`market_chart?days=max&interval=daily`),
- * cached until the next 00:20 UTC. Blockbook asks once a day after 01:00 UTC,
+ * cached as `dailyExpiryMs` says. Blockbook asks once a day after 01:00 UTC,
  * so each pair costs one upstream call a day. An empty series is a 502.
+ *
+ * `frozenHistory` (a fallback coin's pre-`since` part, which never gets new
+ * points): cached until the next 00:20 UTC as is, and a 404 is not remembered.
  */
-function geckoDaily(id: string, vs: string, rememberNotFound = true): Promise<PricePoint[]> {
-  return cached('daily', dailyCache, `${id}|${vs}`, nextDailyRefreshMs, coinGecko, async () => nonEmptyPoints((await CoinGecko.getInstance().getMarketChart(id, vs, 'max', 'daily'))?.prices), rememberNotFound);
+function geckoDaily(id: string, vs: string, frozenHistory = false): Promise<PricePoint[]> {
+  const expiresAt = frozenHistory ? nextDailyRefreshMs : dailyExpiryMs;
+  return cached('daily', dailyCache, `${id}|${vs}`, expiresAt, coinGecko, async () => nonEmptyPoints((await CoinGecko.getInstance().getMarketChart(id, vs, 'max', 'daily'))?.prices), !frozenHistory);
 }
 
 /** Points at exactly 00:00 UTC, by UTC day number. */
@@ -343,7 +362,7 @@ async function fallbackDaily(id: string, fallback: Fallback, vs: string, fromMs:
   let history: PricePoint[] = [];
   if (fromMs === null || fromMs < fallback.sinceMs) {
     try {
-      history = (await geckoDaily(id, vs, false)).filter(([ts]) => ts < fallback.sinceMs);
+      history = (await geckoDaily(id, vs, true)).filter(([ts]) => ts < fallback.sinceMs);
     } catch (error) {
       if (error instanceof MirrorError && error.status === 429) throw error;
       throw new MirrorError(502, 'Upstream unavailable');
@@ -490,7 +509,8 @@ export function parseMarketChartParams(id: unknown, vsCurrency: unknown, days: u
  * `{prices: [[epochMs, price], ...]}`, null prices dropped.
  *
  * - `interval: 'daily'`: sliced from one cached full daily series per
- *   (id, vs), fresh until the next 00:20 UTC; points with ts >= now − days
+ *   (id, vs), fresh until the next 00:20 UTC (10 min while it lacks the
+ *   newest closed day); points with ts >= now − days
  *   (all for `max`). Fallback coins stitch CoinGecko's history before
  *   `since` (asked only when the window reaches before `since`) to
  *   CoinPaprika's converted daily points.

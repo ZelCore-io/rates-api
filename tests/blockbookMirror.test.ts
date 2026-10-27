@@ -315,6 +315,38 @@ describe('market_chart interval=daily', () => {
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(2);
   });
 
+  it('re-asks every 10 minutes while the series lacks today\'s 00:00 point, then keeps it until the next 00:20', async () => {
+    const gecko = mockGecko();
+    const original = gecko.getMarketChart.getMockImplementation()!;
+    // Not yet published: the series ends with yesterday's 00:00 point (plus the "now" point).
+    gecko.getMarketChart.mockImplementationOnce(async () => ({ prices: dailySeries(Date.parse('2013-04-28T00:00:00Z'), () => 50000, TODAY_MS - DAY_MS) }));
+    const first = await chart('bitcoin', 'eur', '2', 'daily');
+    expect(first.prices.some(([ts]) => ts === TODAY_MS)).toBe(false);
+    nowMs += 10 * MINUTE_MS - 1;
+    await chart('bitcoin', 'eur', '2', 'daily');
+    expect(gecko.getMarketChart).toHaveBeenCalledTimes(1);
+    nowMs += 1;
+    const second = await chart('bitcoin', 'eur', '2', 'daily');
+    expect(gecko.getMarketChart).toHaveBeenCalledTimes(2);
+    expect(second.prices.some(([ts]) => ts === TODAY_MS)).toBe(true);
+
+    // Complete now: kept until the next 00:20 UTC.
+    gecko.getMarketChart.mockImplementation(original);
+    nowMs = TODAY_MS + DAY_MS + 19 * MINUTE_MS;
+    await chart('bitcoin', 'eur', '2', 'daily');
+    expect(gecko.getMarketChart).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps a series fetched before 00:20 UTC that holds yesterday\'s point until 00:20', async () => {
+    const gecko = mockGecko();
+    nowMs = TODAY_MS + 5 * MINUTE_MS;
+    gecko.getMarketChart.mockImplementationOnce(async () => ({ prices: dailySeries(Date.parse('2013-04-28T00:00:00Z'), () => 50000, TODAY_MS - DAY_MS) }));
+    await chart('bitcoin', 'eur', '2', 'daily');
+    nowMs = TODAY_MS + 19 * MINUTE_MS;
+    await chart('bitcoin', 'eur', '2', 'daily');
+    expect(gecko.getMarketChart).toHaveBeenCalledTimes(1);
+  });
+
   it('bounds the daily cache by point count', async () => {
     config.blockbookMirror.dailySeriesMaxPoints = 10_000;
     resetBlockbookMirrorState();
@@ -406,6 +438,33 @@ describe('market_chart interval=daily for a fallback coin', () => {
     // A window reaching before `since` (and max) does fetch it.
     await chart('groestlcoin', 'usd', '100', 'daily');
     expect(gecko.getMarketChart.mock.calls.filter((c) => c[0] === 'groestlcoin').map((c) => c[1])).toEqual(['usd']);
+  });
+
+  it('re-asks CoinPaprika after 10 minutes while its daily series lacks today\'s 00:00 point', async () => {
+    mockGecko();
+    const paprika = mockPaprika();
+    const original = paprika.getHistorical.getMockImplementation()!;
+    paprika.getHistorical.mockImplementationOnce(async (id: string, start: string, interval: string) => (await original(id, start, interval)).slice(0, -1));
+    await chart('groestlcoin', 'usd', '7', 'daily');
+    nowMs += 10 * MINUTE_MS - 1;
+    await chart('groestlcoin', 'usd', '7', 'daily');
+    expect(paprika.getHistorical).toHaveBeenCalledTimes(1);
+    nowMs += 1;
+    await chart('groestlcoin', 'usd', '7', 'daily');
+    expect(paprika.getHistorical).toHaveBeenCalledTimes(2);
+    // Complete: no refetch for hours.
+    nowMs += 6 * 60 * MINUTE_MS;
+    await chart('groestlcoin', 'usd', '7', 'daily');
+    expect(paprika.getHistorical).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps the frozen CoinGecko history until the next 00:20 UTC even though it has no recent point', async () => {
+    const gecko = mockGecko();
+    mockPaprika();
+    await chart('groestlcoin', 'usd', 'max', 'daily');
+    nowMs += 6 * 60 * MINUTE_MS;
+    await chart('groestlcoin', 'usd', 'max', 'daily');
+    expect(gecko.getMarketChart.mock.calls.filter((c) => c[0] === 'groestlcoin')).toHaveLength(1);
   });
 
   it('shares the CoinPaprika daily series across currencies', async () => {
