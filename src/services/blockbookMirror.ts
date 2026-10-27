@@ -5,7 +5,7 @@ import TokenBucket from '../lib/tokenBucket';
 import UpstreamBudget from '../lib/upstreamBudget';
 import { CoinGecko } from './providers/coinGecko';
 import { CoinPaprika } from './providers/coinPaprika';
-import { isSupportedId, parseRetryAfterMs, SUPPORTED_FIATS } from './priceHistory';
+import { parseRetryAfterMs, SUPPORTED_FIATS } from './priceHistory';
 
 /*
  * The CoinGecko v3 subset Blockbook's fiat downloader (`fiat/coingecko.go`)
@@ -40,7 +40,8 @@ const HOURLY_LOOKBACK_MS = 23 * HOUR_MS;
 const DAILY_LOOKBACK_DAYS = 364;
 
 const MAX_DAILY_DAYS = 36500;
-const MAX_INTRADAY_DAYS = 90;
+/** Without `interval`, only the two windows Blockbook asks for (5-minute and hourly refreshes). */
+const INTRADAY_DAYS: readonly number[] = [1, 90];
 
 const ID_RE = /^[a-z0-9-]{1,100}$/;
 /** CoinGecko quote codes are short lowercase alphanumerics (usd, sats, link). */
@@ -84,7 +85,7 @@ interface Fallback {
 let coinGecko: Provider;
 let coinPaprika: Provider;
 let supportedVsCache: LRU<string, Entry<string[]>>;
-let simplePriceCache: LRU<string, Entry<SimplePrices>>;
+let simplePriceCache: LRU<string, Entry<Record<string, number>>>;
 let dailyCache: LRU<string, Entry<PricePoint[]>>;
 let chartCache: LRU<string, Entry<PricePoint[]>>;
 let tickerCache: LRU<string, Entry<number>>;
@@ -93,6 +94,7 @@ let notFoundUntil: LRU<string, number>;
 let lastGoodVs: string[] | null = null;
 let vsRetryAfterMs = 0;
 let fallbacks = new Map<string, Fallback>();
+let servedIds = new Set<string>();
 const inFlight = new Map<string, Promise<unknown>>();
 
 /** Rebuilds caches, budgets, cooldowns and fallbacks from the current config. Also the test hook. */
@@ -110,7 +112,7 @@ export function resetBlockbookMirrorState(): void {
     budget: new UpstreamBudget([new TokenBucket(cfg.coinPaprika.burst, cfg.coinPaprika.perDay / DAY_MS)], cfg.maxConcurrentUpstream),
   };
   supportedVsCache = new LRU({ max: 1 });
-  simplePriceCache = new LRU({ max: 1000 });
+  simplePriceCache = new LRU({ max: 100 });
   dailyCache = new LRU({ maxSize: cfg.dailySeriesMaxPoints, sizeCalculation: (entry) => entry.value.length + 1 });
   chartCache = new LRU({ maxSize: cfg.chartCacheMaxPoints, sizeCalculation: (entry) => entry.value.length + 1 });
   tickerCache = new LRU({ max: 100 });
@@ -119,6 +121,7 @@ export function resetBlockbookMirrorState(): void {
   lastGoodVs = null;
   vsRetryAfterMs = 0;
   fallbacks = new Map(Object.entries(cfg.fallbacks).map(([id, fb]) => [id, { coinpaprikaId: fb.coinpaprikaId, sinceMs: Date.parse(`${fb.since}T00:00:00Z`) }]));
+  servedIds = new Set(cfg.coins);
   inFlight.clear();
 }
 resetBlockbookMirrorState();
@@ -221,32 +224,34 @@ export async function getSupportedVsCurrencies(): Promise<string[]> {
   }
 }
 
-/** One cached CoinGecko `simple/price` call; ids and vs must already be sorted. */
-function geckoSimplePrice(ids: string[], vs: string[]): Promise<SimplePrices> {
-  return cached('price', simplePriceCache, `${ids.join(',')}|${vs.join(',')}`, (now) => now + SIMPLE_PRICE_TTL_MS, coinGecko, async () => {
-    const data = await CoinGecko.getInstance().getSimplePrice(ids, vs);
-    const out: SimplePrices = {};
-    ids.forEach((id) => {
-      const quotes = data?.[id];
-      if (!quotes || typeof quotes !== 'object') return;
-      out[id] = {};
+/**
+ * A served CoinGecko id's current price in every supported quote currency
+ * (plus usd): one CoinGecko `simple/price` call per id, cached 60 s. Every
+ * request answers its subset from this, so varying `vs_currencies` costs no
+ * extra upstream calls.
+ */
+async function geckoPrices(id: string): Promise<Record<string, number>> {
+  const vs = [...new Set([...(await getSupportedVsCurrencies()), 'usd'])].sort();
+  return cached('price', simplePriceCache, id, (now) => now + SIMPLE_PRICE_TTL_MS, coinGecko, async () => {
+    const quotes = (await CoinGecko.getInstance().getSimplePrice([id], vs))?.[id];
+    const out: Record<string, number> = {};
+    if (quotes && typeof quotes === 'object') {
       vs.forEach((v) => {
         const price = quotes[v];
-        if (typeof price === 'number' && Number.isFinite(price)) out[id][v] = price;
+        if (typeof price === 'number' && Number.isFinite(price)) out[v] = price;
       });
-    });
+    }
     return out;
   });
 }
 
 /**
- * Bitcoin's current price in every supported quote currency (one cached
- * call, shared by every fallback coin and currency). Used as the cross:
+ * Bitcoin's current price in every supported quote currency (the same
+ * cached call as a bitcoin `simple/price`). Used as the cross:
  * `price(vs) = usd * bitcoin[vs] / bitcoin[usd]`.
  */
-async function bitcoinCross(): Promise<Record<string, number>> {
-  const vs = [...new Set([...(await getSupportedVsCurrencies()), 'usd'])].sort();
-  return (await geckoSimplePrice(['bitcoin'], vs)).bitcoin ?? {};
+function bitcoinCross(): Promise<Record<string, number>> {
+  return geckoPrices('bitcoin');
 }
 
 /**
@@ -343,9 +348,9 @@ async function fallbackDaily(id: string, fallback: Fallback, vs: string): Promis
   return [...history, ...converted];
 }
 
-/** Only ids ZelCore lists; anything else is a 404 before any upstream call. */
+/** Only the configured explorer coins (`blockbookMirror.coins`); anything else is a 404 before any upstream call. */
 function assertServedId(id: string): void {
-  if (!ID_RE.test(id) || !isSupportedId(id)) throw coinNotFound();
+  if (!ID_RE.test(id) || !servedIds.has(id)) throw coinNotFound();
 }
 
 async function assertSupportedVs(vs: string[]): Promise<void> {
@@ -382,9 +387,10 @@ export function parseSimplePriceParams(ids: unknown, vsCurrencies: unknown): { i
 /**
  * Current prices, as CoinGecko's `simple/price`: `{id: {vs: price}}`.
  *
- * - Every id must be one ZelCore lists (else 404) and every vs a supported
- *   quote currency (else 400).
- * - CoinGecko ids: one upstream call, cached 60 s per sorted id and vs list.
+ * - Every id must be a configured explorer coin (else 404) and every vs a
+ *   supported quote currency (else 400).
+ * - CoinGecko ids: one upstream call per id for every supported quote
+ *   currency, cached 60 s; the requested currencies are picked from it.
  * - Fallback ids: CoinPaprika's USD price (cached 10 min) times Bitcoin's
  *   current `vs`/`usd` ratio from CoinGecko (cached 60 s).
  *
@@ -397,8 +403,13 @@ export async function getSimplePrice(ids: string[], vs: string[]): Promise<Simpl
   ids.forEach(assertServedId);
   await assertSupportedVs(vs);
   const sortedVs = [...vs].sort();
-  const geckoIds = ids.filter((id) => !fallbacks.has(id)).sort();
-  const out: SimplePrices = geckoIds.length ? { ...(await geckoSimplePrice(geckoIds, sortedVs)) } : {};
+  const out: SimplePrices = {};
+  const pick = (prices: Record<string, number>): Record<string, number> => Object.fromEntries(sortedVs.filter((v) => v in prices).map((v) => [v, prices[v]]));
+  // eslint-disable-next-line no-restricted-syntax -- sequential on purpose, see fallbackDaily.
+  for (const id of ids.filter((i) => !fallbacks.has(i)).sort()) {
+    // eslint-disable-next-line no-await-in-loop
+    out[id] = pick(await geckoPrices(id));
+  }
 
   const fallbackIds = ids.filter((id) => fallbacks.has(id));
   if (fallbackIds.length) {
@@ -427,7 +438,7 @@ export interface MarketChartParams {
 
 /**
  * Validates `coins/{id}/market_chart` values: `interval` absent or `daily`;
- * `days` an integer 1..36500 or `max` with `daily`, 1..90 without.
+ * `days` an integer 1..36500 or `max` with `daily`, 1 or 90 without.
  *
  * @throws {MirrorError} 400 on a missing, repeated or malformed parameter;
  * 404 for a malformed id.
@@ -444,12 +455,15 @@ export function parseMarketChartParams(id: unknown, vsCurrency: unknown, days: u
       id: coin, vs, days: 'max', interval: 'daily',
     };
   }
-  const max = daily ? MAX_DAILY_DAYS : MAX_INTRADAY_DAYS;
   const n = typeof days === 'string' && DAYS_RE.test(days) ? Number(days) : NaN;
-  if (!(n >= 1 && n <= max)) throw new MirrorError(400, `days must be an integer 1..${max}${daily ? ' or max' : ''}`);
-  return daily ? {
+  if (!daily) {
+    if (!INTRADAY_DAYS.includes(n)) throw new MirrorError(400, 'days must be 1 or 90 without interval');
+    return { id: coin, vs, days: n };
+  }
+  if (!(n >= 1 && n <= MAX_DAILY_DAYS)) throw new MirrorError(400, `days must be an integer 1..${MAX_DAILY_DAYS} or max`);
+  return {
     id: coin, vs, days: n, interval: 'daily',
-  } : { id: coin, vs, days: n };
+  };
 }
 
 /**
@@ -460,12 +474,15 @@ export function parseMarketChartParams(id: unknown, vsCurrency: unknown, days: u
  *   (id, vs), fresh until the next 00:20 UTC; points with ts >= now − days
  *   (all for `max`). Fallback coins stitch CoinGecko's history before
  *   `since` to CoinPaprika's converted daily points.
- * - No interval: passed through to CoinGecko (`days` 1..90), cached 60 s
- *   for days <= 1, else 10 min. Fallback coins get CoinPaprika's hourly
+ * - No interval: passed through to CoinGecko (`days` 1 or 90), cached 60 s
+ *   for days 1, 10 min for 90. Fallback coins get CoinPaprika's hourly
  *   points for the last 23 hours (cached 30 min) at the current Bitcoin
  *   cross, whatever `days` asks for.
  *
- * @throws {MirrorError} 400 (unsupported vs), 404 (unlisted id or upstream
+ * Cache keys are built only from validated, bounded values: a configured
+ * coin, a supported vs currency and (intraday) days 1 or 90.
+ *
+ * @throws {MirrorError} 400 (unsupported vs), 404 (unserved id or upstream
  * 404), 429 (carries `retryAfterS`) or 502.
  */
 export async function getMarketChart(params: MarketChartParams): Promise<{ prices: PricePoint[] }> {

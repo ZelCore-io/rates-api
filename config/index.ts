@@ -63,6 +63,10 @@ export const config = {
   // A spent budget, a full concurrency slot or a cooldown after an upstream
   // 429 answers 429 + Retry-After: Blockbook only backs off on 429.
   blockbookMirror: {
+    // The only ids the mirror serves (the explorers' coins); anything else is
+    // a 404 before any upstream call, so no caller can spend the budget on
+    // ids the explorers don't need.
+    coins: ['bitcoin', 'groestlcoin'] as string[],
     coinGecko: { perMinute: 30, burst: 10, perDay: 3000 },
     coinPaprika: { perDay: 600, burst: 30 },
     // Per provider.
@@ -74,7 +78,7 @@ export const config = {
     // entry's size is its point count + 1, ~85 B per point): ~42 MB. Bitcoin
     // plus one fallback coin in 47 currencies is ~440k points.
     dailySeriesMaxPoints: 500_000,
-    // Pass-through market_chart (days 1..90) responses, by point count.
+    // Pass-through market_chart (days 1 or 90) responses, by point count.
     chartCacheMaxPoints: 200_000,
     notFoundCacheMs: 10 * 60 * 1000,
     // After a failed supported_vs_currencies refresh the last good (or

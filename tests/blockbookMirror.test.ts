@@ -162,11 +162,18 @@ describe('simple/price parameter validation', () => {
     expect(parsed.vs[0]).toBe('c0');
   });
 
-  it('answers 404 coin not found for an id ZelCore does not list, without an upstream call', async () => {
+  it.each(['definitely-not-listed', 'litecoin', 'ethereum'])('answers 404 coin not found for %s (not a configured explorer coin), without any upstream call', async (id) => {
     const gecko = mockGecko();
-    const error = await expectMirrorError(getSimplePrice(['bitcoin', 'definitely-not-listed'], ['usd']), 404);
+    const paprika = mockPaprika();
+    const error = await expectMirrorError(getSimplePrice(['bitcoin', id], ['usd']), 404);
     expect(error.message).toBe('coin not found');
+    await expectMirrorError(chart(id, 'usd', '1', 'daily'), 404);
+    await expectMirrorError(chart(id, 'usd', '1'), 404);
+    expect(gecko.getSupportedVsCurrencies).not.toHaveBeenCalled();
     expect(gecko.getSimplePrice).not.toHaveBeenCalled();
+    expect(gecko.getMarketChart).not.toHaveBeenCalled();
+    expect(paprika.getTicker).not.toHaveBeenCalled();
+    expect(paprika.getHistorical).not.toHaveBeenCalled();
   });
 
   it('answers 400 for a vs currency that is not supported', async () => {
@@ -177,24 +184,27 @@ describe('simple/price parameter validation', () => {
 });
 
 describe('simple/price', () => {
-  it('passes CoinGecko ids through and caches 60 s keyed by the sorted id and vs lists', async () => {
+  it('asks CoinGecko once per id for every supported currency, cached 60 s, and answers any subset from it', async () => {
     const gecko = mockGecko();
-    await expect(getSimplePrice(['litecoin', 'bitcoin'], ['usd', 'eur'])).resolves.toEqual({
-      bitcoin: { eur: 50000, usd: 60000 },
-      litecoin: { eur: 2, usd: 2 },
-    });
-    await getSimplePrice(['bitcoin', 'litecoin'], ['eur', 'usd']);
+    await expect(getSimplePrice(['bitcoin'], ['usd', 'eur'])).resolves.toEqual({ bitcoin: { eur: 50000, usd: 60000 } });
+    expect(gecko.getSimplePrice).toHaveBeenCalledWith(['bitcoin'], [...SUPPORTED].sort());
+
+    // Every other subset, order and mix with a fallback coin is served from the same call.
+    await expect(getSimplePrice(['bitcoin'], ['gbp'])).resolves.toEqual({ bitcoin: { gbp: 45000 } });
+    await getSimplePrice(['bitcoin'], ['sats', 'eth', 'btc', 'usd', 'eur', 'gbp']);
+    await getSimplePrice(['bitcoin'], ['eur', 'usd']);
+    mockPaprika();
+    await getSimplePrice(['groestlcoin', 'bitcoin'], ['eur']);
     expect(gecko.getSimplePrice).toHaveBeenCalledTimes(1);
-    expect(gecko.getSimplePrice).toHaveBeenCalledWith(['bitcoin', 'litecoin'], ['eur', 'usd']);
 
     nowMs += MINUTE_MS + 1;
-    await getSimplePrice(['bitcoin', 'litecoin'], ['eur', 'usd']);
+    await getSimplePrice(['bitcoin'], ['eth']);
     expect(gecko.getSimplePrice).toHaveBeenCalledTimes(2);
   });
 
   it('drops null and missing prices', async () => {
     mockGecko({ getSimplePrice: jest.fn(async () => ({ bitcoin: { usd: null, eur: 5 } })) });
-    await expect(getSimplePrice(['bitcoin', 'litecoin'], ['usd', 'eur'])).resolves.toEqual({ bitcoin: { eur: 5 } });
+    await expect(getSimplePrice(['bitcoin'], ['usd', 'eur'])).resolves.toEqual({ bitcoin: { eur: 5 } });
   });
 
   it('prices a fallback coin from CoinPaprika USD through the current Bitcoin cross, never asking CoinGecko for it', async () => {
@@ -242,6 +252,9 @@ describe('market_chart parameter validation', () => {
     ['days 36501 (daily)', '36501', 'daily'],
     ['fractional days', '1.5', 'daily'],
     ['days 91 without interval', '91', undefined],
+    ['days 7 without interval', '7', undefined],
+    ['days 2 without interval', '2', undefined],
+    ['days 89 without interval', '89', undefined],
     ['days max without interval', 'max', undefined],
     ['an unknown interval', '1', 'hourly'],
     ['a repeated days parameter', ['1', '2'], 'daily'],
@@ -258,7 +271,7 @@ describe('market_chart parameter validation', () => {
     expect(parseMarketChartParams('bitcoin', 'usd', '90', undefined).days).toBe(90);
   });
 
-  it('answers 404 for an unlisted id and 400 for an unsupported vs, without an upstream call', async () => {
+  it('answers 404 for an unserved id and 400 for an unsupported vs, without an upstream call', async () => {
     const gecko = mockGecko();
     await expectMirrorError(chart('definitely-not-listed', 'usd', '1', 'daily'), 404);
     await expectMirrorError(chart('bitcoin', 'xyz', '1', 'daily'), 400);
@@ -389,7 +402,7 @@ describe('market_chart without interval', () => {
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(2);
   });
 
-  it('caches 10 minutes for days > 1', async () => {
+  it('caches 10 minutes for days 90', async () => {
     const gecko = mockGecko();
     await chart('bitcoin', 'usd', '90');
     nowMs += 10 * MINUTE_MS - 1;
@@ -423,19 +436,21 @@ describe('upstream budget, cooldown and failures', () => {
   it('answers 429 + Retry-After once the CoinGecko burst is spent, without an upstream call', async () => {
     const gecko = mockGecko();
     await getSupportedVsCurrencies(); // 1 call
-    for (let days = 2; days <= 10; days += 1) {
-      // eslint-disable-next-line no-await-in-loop -- sequential: each must be admitted on its own.
-      await chart('bitcoin', 'usd', String(days));
+    const keys = [...SUPPORTED.map((vs) => [vs, '1']), ['usd', '90'], ['eur', '90'], ['gbp', '90']];
+    // eslint-disable-next-line no-restricted-syntax -- sequential: each must be admitted on its own.
+    for (const [vs, days] of keys) {
+      // eslint-disable-next-line no-await-in-loop
+      await chart('bitcoin', vs, days);
     }
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(9);
     // 30/min refill: the next token is 2 s away.
-    await expectMirrorError(chart('bitcoin', 'usd', '11'), 429, 2);
+    await expectMirrorError(chart('bitcoin', 'btc', '90'), 429, 2);
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(9);
     // Cached answers are still served.
-    await expect(chart('bitcoin', 'usd', '5')).resolves.toBeDefined();
+    await expect(chart('bitcoin', 'eur', '90')).resolves.toBeDefined();
 
     nowMs += 2000;
-    await expect(chart('bitcoin', 'usd', '11')).resolves.toBeDefined();
+    await expect(chart('bitcoin', 'btc', '90')).resolves.toBeDefined();
   });
 
   it('answers 429 once the CoinGecko daily budget is spent', async () => {
@@ -443,9 +458,9 @@ describe('upstream budget, cooldown and failures', () => {
     resetBlockbookMirrorState();
     mockGecko();
     await getSupportedVsCurrencies();
-    await chart('bitcoin', 'usd', '2');
-    await chart('bitcoin', 'usd', '3');
-    const error = await expectMirrorError(chart('bitcoin', 'usd', '4'), 429);
+    await chart('bitcoin', 'usd', '1');
+    await chart('bitcoin', 'usd', '90');
+    const error = await expectMirrorError(chart('bitcoin', 'eur', '1'), 429);
     expect(error.retryAfterS).toBeGreaterThan(60);
   });
 
@@ -480,6 +495,8 @@ describe('upstream budget, cooldown and failures', () => {
   });
 
   it('answers 404 on an upstream 404 and remembers it for 10 minutes', async () => {
+    config.blockbookMirror.coins = ['bitcoin', 'groestlcoin', 'litecoin'];
+    resetBlockbookMirrorState();
     const gecko = mockGecko();
     gecko.getMarketChart.mockImplementation(async () => { throw upstreamError(404); });
     const error = await expectMirrorError(chart('litecoin', 'usd', '1', 'daily'), 404);
@@ -519,12 +536,12 @@ describe('upstream budget, cooldown and failures', () => {
       await gate;
       return original(...args);
     });
-    const running = ['2', '3', '4', '5'].map((days) => chart('bitcoin', 'usd', days));
+    const running = ['usd', 'eur', 'gbp', 'btc'].map((vs) => chart('bitcoin', vs, '1'));
     // Let the four reach the upstream await.
     await new Promise((resolve) => { setImmediate(resolve); });
-    await expectMirrorError(chart('bitcoin', 'usd', '6'), 429, 1);
+    await expectMirrorError(chart('bitcoin', 'eth', '1'), 429, 1);
     release();
     await Promise.all(running);
-    await expect(chart('bitcoin', 'usd', '6')).resolves.toBeDefined();
+    await expect(chart('bitcoin', 'eth', '1')).resolves.toBeDefined();
   });
 });
