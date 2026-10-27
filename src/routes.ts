@@ -123,6 +123,30 @@ export default (app: Application): void => {
   });
 
   /**
+   * CoinGecko v3 subset for Blockbook's fiat downloader (`fiat_rates_params`
+   * `url`/`tipUrl` = .../v2/blockbook/api/v3), so explorers need no
+   * CoinGecko key. Same response shapes as CoinGecko; only ids ZelCore lists;
+   * a spent upstream budget is a 429 + Retry-After. Coins CoinGecko dropped
+   * are priced from CoinPaprika. See `services/blockbookMirror`.
+   *
+   * No route-level apicache, as for /v2/prices/history: the service keeps
+   * bounded caches of its own, and failures must never be cached.
+   *
+   * @route GET /v2/blockbook/api/v3/simple/supported_vs_currencies
+   * @route GET /v2/blockbook/api/v3/simple/price?ids=a,b&vs_currencies=x,y
+   * @route GET /v2/blockbook/api/v3/coins/:id/market_chart?vs_currency=x&days=N|max[&interval=daily]
+   */
+  app.get('/v2/blockbook/api/v3/simple/supported_vs_currencies', (req: Request, res: Response) => {
+    apiService.getBlockbookSupportedVs(req, res);
+  });
+  app.get('/v2/blockbook/api/v3/simple/price', (req: Request, res: Response) => {
+    apiService.getBlockbookSimplePrice(req, res);
+  });
+  app.get('/v2/blockbook/api/v3/coins/:id/market_chart', (req: Request, res: Response) => {
+    apiService.getBlockbookMarketChart(req, res);
+  });
+
+  /**
    * Retrieves found contracts.
    *
    * @route GET /v2/found-contracts
