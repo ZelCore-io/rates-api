@@ -71,7 +71,7 @@ function mockPaprika(overrides: Partial<Record<'getTicker' | 'getHistorical', je
     getHistorical: jest.fn(async (id: string, start: string, interval: string) => {
       const out: { timestamp: string; price: number | null }[] = [];
       if (interval === '1d') {
-        for (let t = Date.parse(`${start}T00:00:00Z`); t <= TODAY_MS; t += DAY_MS) out.push({ timestamp: new Date(t).toISOString().replace('.000Z', 'Z'), price: 0.6 });
+        for (let t = Date.parse(`${start}T00:00:00Z`); t <= Math.floor(nowMs / DAY_MS) * DAY_MS; t += DAY_MS) out.push({ timestamp: new Date(t).toISOString().replace('.000Z', 'Z'), price: 0.6 });
       } else {
         const first = Math.ceil((Number(start) * 1000) / (60 * MINUTE_MS)) * 60 * MINUTE_MS;
         for (let t = first; t <= nowMs; t += 60 * MINUTE_MS) out.push({ timestamp: new Date(t).toISOString().replace('.000Z', 'Z'), price: 0.6 });
@@ -370,11 +370,27 @@ describe('market_chart interval=daily for a fallback coin', () => {
     expect(gecko.getMarketChart.mock.calls.map((c) => `${c[0]}/${c[1]}`)).toEqual(['groestlcoin/usd', 'groestlcoin/btc', 'bitcoin/usd']);
   });
 
-  it('serves only the CoinPaprika part when CoinGecko answers 404 for the coin', async () => {
-    mockGecko({ getMarketChart: jest.fn(async () => { throw upstreamError(404); }) });
+  it.each([
+    ['a 404', upstreamError(404)],
+    ['a 500', upstreamError(500)],
+  ])('answers 502 (not a partial 200) when CoinGecko answers %s for the pre-`since` history, and retries next time', async (_label, failure) => {
+    const gecko = mockGecko();
+    const original = gecko.getMarketChart.getMockImplementation()!;
+    gecko.getMarketChart.mockImplementationOnce(async () => { throw failure; });
     mockPaprika();
+    await expectMirrorError(chart('groestlcoin', 'usd', 'max', 'daily'), 502);
+    gecko.getMarketChart.mockImplementation(original);
     const { prices } = await chart('groestlcoin', 'usd', 'max', 'daily');
-    expect(prices[0][0]).toBe(SINCE_MS);
+    expect(prices[0]).toEqual([Date.parse('2014-04-11T00:00:00Z'), 0.3]);
+    expect(gecko.getMarketChart.mock.calls.filter((c) => c[0] === 'groestlcoin')).toHaveLength(2);
+  });
+
+  it('keeps a CoinGecko 429 for the history a 429', async () => {
+    const gecko = mockGecko();
+    await getSupportedVsCurrencies();
+    gecko.getMarketChart.mockImplementationOnce(async () => { throw upstreamError(429, { 'retry-after': '30' }); });
+    mockPaprika();
+    await expectMirrorError(chart('groestlcoin', 'usd', 'max', 'daily'), 429, 30);
   });
 
   it('never asks CoinGecko for the pre-`since` history when the window starts on or after `since`', async () => {
@@ -507,6 +523,45 @@ describe('upstream budget, cooldown and failures', () => {
     await expectMirrorError(chart('bitcoin', 'usd', '1', 'daily'), 502);
     await expect(chart('bitcoin', 'usd', '1', 'daily')).resolves.toBeDefined();
     expect(gecko.getMarketChart).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([
+    ['daily, empty prices', () => chart('bitcoin', 'usd', 'max', 'daily'), 'getMarketChart', async () => ({ prices: [] })],
+    ['daily, all-null prices', () => chart('bitcoin', 'usd', '1', 'daily'), 'getMarketChart', async () => ({ prices: [[TODAY_MS, null]] })],
+    ['daily, malformed body', () => chart('bitcoin', 'usd', '1', 'daily'), 'getMarketChart', async () => ({ error: 'x' })],
+    ['intraday, empty prices', () => chart('bitcoin', 'usd', '1'), 'getMarketChart', async () => ({ prices: [] })],
+    ['simple/price, coin missing', () => getSimplePrice(['bitcoin'], ['usd']), 'getSimplePrice', async () => ({})],
+    ['simple/price, null prices', () => getSimplePrice(['bitcoin'], ['usd']), 'getSimplePrice', async () => ({ bitcoin: { usd: null } })],
+  ])('answers 502 on an empty CoinGecko answer (%s), caches nothing, and asks again next time', async (_label, request, method, empty) => {
+    const gecko = mockGecko() as unknown as Record<string, jest.Mock>;
+    await getSupportedVsCurrencies();
+    gecko[method].mockImplementationOnce(empty);
+    await expectMirrorError(request(), 502);
+    await expect(request()).resolves.toBeDefined();
+    expect(gecko[method]).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([
+    ['daily', '1d', () => chart('groestlcoin', 'usd', '7', 'daily')],
+    ['hourly', '1h', () => chart('groestlcoin', 'usd', '1')],
+  ])('answers 502 on an empty CoinPaprika %s series, caches nothing, and asks again next time', async (_label, interval, request) => {
+    mockGecko();
+    const paprika = mockPaprika();
+    const original = paprika.getHistorical.getMockImplementation()!;
+    paprika.getHistorical.mockImplementationOnce(async () => []);
+    await expectMirrorError(request(), 502);
+    paprika.getHistorical.mockImplementation(original);
+    await expect(request()).resolves.toBeDefined();
+    expect(paprika.getHistorical.mock.calls.filter((c) => c[2] === interval)).toHaveLength(2);
+  });
+
+  it('answers 502 on a CoinPaprika ticker without a price, and asks again next time', async () => {
+    mockGecko();
+    const paprika = mockPaprika();
+    paprika.getTicker.mockImplementationOnce(async () => ({ quotes: {} }) as never);
+    await expectMirrorError(getSimplePrice(['groestlcoin'], ['usd']), 502);
+    await expect(getSimplePrice(['groestlcoin'], ['usd'])).resolves.toEqual({ groestlcoin: { usd: 0.6 } });
+    expect(paprika.getTicker).toHaveBeenCalledTimes(2);
   });
 
   it('answers 404 on an upstream 404 and remembers it for 10 minutes', async () => {

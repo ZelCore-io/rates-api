@@ -139,6 +139,16 @@ function cleanPoints(prices: unknown): PricePoint[] {
 }
 
 /**
+ * `cleanPoints`, but an empty result (empty, malformed or all-null upstream
+ * answer) is a 502: a failure, so never cached.
+ */
+function nonEmptyPoints(prices: unknown): PricePoint[] {
+  const points = cleanPoints(prices);
+  if (!points.length) throw new MirrorError(502, 'Upstream returned no prices');
+  return points;
+}
+
+/**
  * Turns an upstream failure into a MirrorError. Logged by status/message
  * only: the Axios error object carries the request headers, which hold the
  * CoinGecko Pro key.
@@ -163,13 +173,14 @@ function upstreamFailure(provider: Provider, what: string, error: unknown): Mirr
  *
  * - Concurrent callers for the same key share one call (coalescing).
  * - Failures are not cached; an upstream 404 is remembered for
- *   `notFoundCacheMs` so a dead id can't spend budget on every request.
+ *   `notFoundCacheMs` (unless `rememberNotFound` is false) so a dead id
+ *   can't spend budget on every request.
  * - A refused admission is a 429 with the wait as `retryAfterS`.
  *
  * Synchronous up to the upstream await, so concurrent callers see each
  * other's in-flight calls and admissions.
  */
-async function cached<T>(label: string, cache: LRU<string, Entry<T>>, key: string, expiresAt: (nowMs: number) => number, provider: Provider, fetch: () => Promise<T>): Promise<T> {
+async function cached<T>(label: string, cache: LRU<string, Entry<T>>, key: string, expiresAt: (nowMs: number) => number, provider: Provider, fetch: () => Promise<T>, rememberNotFound = true): Promise<T> {
   const entry = cache.get(key);
   if (entry && entry.expiresMs > Date.now()) return entry.value;
   if (entry) cache.delete(key);
@@ -186,7 +197,7 @@ async function cached<T>(label: string, cache: LRU<string, Entry<T>>, key: strin
       value = await fetch();
     } catch (error) {
       const failure = error instanceof MirrorError ? error : upstreamFailure(provider, `${label} ${key}`, error);
-      if (failure.status === 404) notFoundUntil.set(flightKey, Date.now() + config.blockbookMirror.notFoundCacheMs);
+      if (failure.status === 404 && rememberNotFound) notFoundUntil.set(flightKey, Date.now() + config.blockbookMirror.notFoundCacheMs);
       throw failure;
     } finally {
       provider.budget.release();
@@ -241,6 +252,7 @@ async function geckoPrices(id: string): Promise<Record<string, number>> {
         if (typeof price === 'number' && Number.isFinite(price)) out[v] = price;
       });
     }
+    if (!Object.keys(out).length) throw new MirrorError(502, 'Upstream returned no price');
     return out;
   });
 }
@@ -275,10 +287,10 @@ function paprikaUsdPrice(coinpaprikaId: string): Promise<number> {
   });
 }
 
-/** CoinPaprika `historical` points as `[ms, usd]`, nulls dropped. */
+/** CoinPaprika `historical` points as `[ms, usd]`, nulls dropped; none at all is a 502. */
 async function paprikaSeries(coinpaprikaId: string, start: string, interval: '1d' | '1h'): Promise<PricePoint[]> {
   const data = await CoinPaprika.getInstance().getHistorical(coinpaprikaId, start, interval, 'usd');
-  return cleanPoints((Array.isArray(data) ? data : []).map((p) => [Date.parse(p?.timestamp), p?.price]));
+  return nonEmptyPoints((Array.isArray(data) ? data : []).map((p) => [Date.parse(p?.timestamp), p?.price]));
 }
 
 /**
@@ -303,10 +315,10 @@ function paprikaHourly(fallback: Fallback): Promise<PricePoint[]> {
 /**
  * CoinGecko's full daily series for (id, vs) (`market_chart?days=max&interval=daily`),
  * cached until the next 00:20 UTC. Blockbook asks once a day after 01:00 UTC,
- * so each pair costs one upstream call a day.
+ * so each pair costs one upstream call a day. An empty series is a 502.
  */
-function geckoDaily(id: string, vs: string): Promise<PricePoint[]> {
-  return cached('daily', dailyCache, `${id}|${vs}`, nextDailyRefreshMs, coinGecko, async () => cleanPoints((await CoinGecko.getInstance().getMarketChart(id, vs, 'max', 'daily'))?.prices));
+function geckoDaily(id: string, vs: string, rememberNotFound = true): Promise<PricePoint[]> {
+  return cached('daily', dailyCache, `${id}|${vs}`, nextDailyRefreshMs, coinGecko, async () => nonEmptyPoints((await CoinGecko.getInstance().getMarketChart(id, vs, 'max', 'daily'))?.prices), rememberNotFound);
 }
 
 /** Points at exactly 00:00 UTC, by UTC day number. */
@@ -323,15 +335,18 @@ function byMidnight(points: PricePoint[]): Map<number, number> {
  * CoinGecko's (frozen) history before `since`, then CoinPaprika's daily USD
  * points converted with Bitcoin's daily price in `vs` and in USD for the
  * same day. Days without both Bitcoin points are skipped. CoinGecko's
- * history is only fetched when the window starts before `since`.
+ * history is only fetched when the window starts before `since`; when it
+ * can't be had (404 or failure) the request fails with 502 rather than
+ * answering a partial history that Blockbook would store as complete.
  */
 async function fallbackDaily(id: string, fallback: Fallback, vs: string, fromMs: number | null): Promise<PricePoint[]> {
   let history: PricePoint[] = [];
   if (fromMs === null || fromMs < fallback.sinceMs) {
     try {
-      history = (await geckoDaily(id, vs)).filter(([ts]) => ts < fallback.sinceMs);
+      history = (await geckoDaily(id, vs, false)).filter(([ts]) => ts < fallback.sinceMs);
     } catch (error) {
-      if (!(error instanceof MirrorError && error.status === 404)) throw error;
+      if (error instanceof MirrorError && error.status === 429) throw error;
+      throw new MirrorError(502, 'Upstream unavailable');
     }
   }
   const usd = (await paprikaDaily(fallback)).filter(([ts]) => ts >= fallback.sinceMs);
@@ -396,6 +411,7 @@ export function parseSimplePriceParams(ids: unknown, vsCurrencies: unknown): { i
  *   currency, cached 60 s; the requested currencies are picked from it.
  * - Fallback ids: CoinPaprika's USD price (cached 10 min) times Bitcoin's
  *   current `vs`/`usd` ratio from CoinGecko (cached 60 s).
+ * - An upstream answer without any price is a 502, never cached.
  *
  * @param ids - Validated ids from `parseSimplePriceParams`.
  * @param vs - Validated quote currencies from `parseSimplePriceParams`.
@@ -507,11 +523,12 @@ export async function getMarketChart(params: MarketChartParams): Promise<{ price
     const usd = await paprikaHourly(fallback);
     if (vs === 'usd') return { prices: usd };
     const rate = crossRate(vs, await bitcoinCross());
-    return { prices: rate === undefined ? [] : usd.map(([ts, price]): PricePoint => [ts, price * rate]) };
+    if (rate === undefined) throw new MirrorError(502, 'Upstream returned no price');
+    return { prices: usd.map(([ts, price]): PricePoint => [ts, price * rate]) };
   }
 
   const n = days as number;
   const ttlMs = n <= 1 ? SHORT_CHART_TTL_MS : LONG_CHART_TTL_MS;
-  const prices = await cached('chart', chartCache, `${id}|${vs}|${n}`, (now) => now + ttlMs, coinGecko, async () => cleanPoints((await CoinGecko.getInstance().getMarketChart(id, vs, n))?.prices));
+  const prices = await cached('chart', chartCache, `${id}|${vs}|${n}`, (now) => now + ttlMs, coinGecko, async () => nonEmptyPoints((await CoinGecko.getInstance().getMarketChart(id, vs, n))?.prices));
   return { prices };
 }
