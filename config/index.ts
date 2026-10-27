@@ -91,9 +91,10 @@ export const config = {
     // Coins CoinGecko stopped tracking. Their history up to the day before
     // `since` (UTC date) still comes from CoinGecko; from `since` on, and for
     // current and intraday prices, from CoinPaprika's USD quote converted
-    // through Bitcoin's price.
+    // through Bitcoin's price. groestlcoin: CoinGecko's last weeks miss 17
+    // days that CoinPaprika has, so the cut-over is before them.
     fallbacks: {
-      groestlcoin: { coinpaprikaId: 'grs-groestlcoin', since: '2026-08-12' },
+      groestlcoin: { coinpaprikaId: 'grs-groestlcoin', since: '2026-07-20' },
     } as Record<string, { coinpaprikaId: string; since: string }>,
   },
   coinPaprikaUrl: 'https://api.coinpaprika.com/v1/',

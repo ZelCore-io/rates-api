@@ -15,7 +15,7 @@ const MockedCoinPaprika = CoinPaprika as jest.Mocked<typeof CoinPaprika>;
 const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const DEFAULTS = JSON.parse(JSON.stringify(config.blockbookMirror));
-const SINCE_MS = Date.parse('2026-08-12T00:00:00Z');
+const SINCE_MS = Date.parse('2026-07-20T00:00:00Z');
 /** 2026-10-27 13:37 UTC, after the groestlcoin fallback's `since`. */
 const NOW_MS = Date.parse('2026-10-27T13:37:00Z');
 const TODAY_MS = Math.floor(NOW_MS / DAY_MS) * DAY_MS;
@@ -48,7 +48,7 @@ function mockGecko(overrides: Partial<Record<'getSupportedVsCurrencies' | 'getSi
     ]))),
     getMarketChart: jest.fn(async (id: string, vs: string, days: number | 'max', interval?: string) => {
       if (interval === 'daily') {
-        if (id === 'groestlcoin') return { prices: dailySeries(Date.parse('2014-04-11T00:00:00Z'), () => 0.3, Date.parse('2026-08-11T00:00:00Z')) };
+        if (id === 'groestlcoin') return { prices: dailySeries(Date.parse('2014-04-11T00:00:00Z'), () => 0.3, Date.parse('2026-07-19T00:00:00Z')) };
         // Bitcoin: usd 60000, eur 50000 every day; one missing usd day.
         const value = BTC_NOW[vs];
         return { prices: dailySeries(Date.parse('2013-04-28T00:00:00Z'), (t) => (vs === 'usd' && t === TODAY_MS - 10 * DAY_MS ? null : value)) };
@@ -337,7 +337,7 @@ describe('market_chart interval=daily for a fallback coin', () => {
     const before = prices.filter(([ts]) => ts < SINCE_MS);
     const after = prices.filter(([ts]) => ts >= SINCE_MS);
     expect(before[0]).toEqual([Date.parse('2014-04-11T00:00:00Z'), 0.3]);
-    expect(before[before.length - 1]).toEqual([Date.parse('2026-08-11T00:00:00Z'), 0.3]);
+    expect(before[before.length - 1]).toEqual([Date.parse('2026-07-19T00:00:00Z'), 0.3]);
     expect(after[0][0]).toBe(SINCE_MS);
     expect(after[0][1]).toBeCloseTo(0.6 * (50000 / 60000));
     // Every point is a UTC midnight: CoinGecko's frozen "now" point is not carried over.
@@ -346,7 +346,7 @@ describe('market_chart interval=daily for a fallback coin', () => {
     expect(after.some(([ts]) => ts === TODAY_MS - 10 * DAY_MS)).toBe(false);
     expect(after).toHaveLength((TODAY_MS - SINCE_MS) / DAY_MS + 1 - 1);
 
-    expect(paprika.getHistorical).toHaveBeenCalledWith('grs-groestlcoin', '2026-08-12', '1d', 'usd');
+    expect(paprika.getHistorical).toHaveBeenCalledWith('grs-groestlcoin', '2026-07-20', '1d', 'usd');
     expect(gecko.getMarketChart.mock.calls.map((c) => `${c[0]}/${c[1]}`).sort()).toEqual(['bitcoin/eur', 'bitcoin/usd', 'groestlcoin/eur']);
   });
 
@@ -375,6 +375,21 @@ describe('market_chart interval=daily for a fallback coin', () => {
     mockPaprika();
     const { prices } = await chart('groestlcoin', 'usd', 'max', 'daily');
     expect(prices[0][0]).toBe(SINCE_MS);
+  });
+
+  it('never asks CoinGecko for the pre-`since` history when the window starts on or after `since`', async () => {
+    const gecko = mockGecko();
+    mockPaprika();
+    const day = await chart('groestlcoin', 'eur', '1', 'daily');
+    expect(day.prices.length).toBeGreaterThan(0);
+    await chart('groestlcoin', 'usd', '2', 'daily');
+    // now - 99 days is 2026-07-20 13:37, after `since`.
+    await chart('groestlcoin', 'gbp', '99', 'daily');
+    expect(gecko.getMarketChart.mock.calls.filter((c) => c[0] === 'groestlcoin')).toHaveLength(0);
+
+    // A window reaching before `since` (and max) does fetch it.
+    await chart('groestlcoin', 'usd', '100', 'daily');
+    expect(gecko.getMarketChart.mock.calls.filter((c) => c[0] === 'groestlcoin').map((c) => c[1])).toEqual(['usd']);
   });
 
   it('shares the CoinPaprika daily series across currencies', async () => {

@@ -319,17 +319,20 @@ function byMidnight(points: PricePoint[]): Map<number, number> {
 }
 
 /**
- * Daily series for a fallback coin: CoinGecko's (frozen) history before
- * `since`, then CoinPaprika's daily USD points converted with Bitcoin's
- * daily price in `vs` and in USD for the same day. Days without both Bitcoin
- * points are skipped. A CoinGecko 404 for the coin just drops the old part.
+ * Daily series for a fallback coin from `fromMs` on (null: all of it):
+ * CoinGecko's (frozen) history before `since`, then CoinPaprika's daily USD
+ * points converted with Bitcoin's daily price in `vs` and in USD for the
+ * same day. Days without both Bitcoin points are skipped. CoinGecko's
+ * history is only fetched when the window starts before `since`.
  */
-async function fallbackDaily(id: string, fallback: Fallback, vs: string): Promise<PricePoint[]> {
+async function fallbackDaily(id: string, fallback: Fallback, vs: string, fromMs: number | null): Promise<PricePoint[]> {
   let history: PricePoint[] = [];
-  try {
-    history = (await geckoDaily(id, vs)).filter(([ts]) => ts < fallback.sinceMs);
-  } catch (error) {
-    if (!(error instanceof MirrorError && error.status === 404)) throw error;
+  if (fromMs === null || fromMs < fallback.sinceMs) {
+    try {
+      history = (await geckoDaily(id, vs)).filter(([ts]) => ts < fallback.sinceMs);
+    } catch (error) {
+      if (!(error instanceof MirrorError && error.status === 404)) throw error;
+    }
   }
   const usd = (await paprikaDaily(fallback)).filter(([ts]) => ts >= fallback.sinceMs);
   if (vs === 'usd') return [...history, ...usd];
@@ -473,7 +476,8 @@ export function parseMarketChartParams(id: unknown, vsCurrency: unknown, days: u
  * - `interval: 'daily'`: sliced from one cached full daily series per
  *   (id, vs), fresh until the next 00:20 UTC; points with ts >= now − days
  *   (all for `max`). Fallback coins stitch CoinGecko's history before
- *   `since` to CoinPaprika's converted daily points.
+ *   `since` (asked only when the window reaches before `since`) to
+ *   CoinPaprika's converted daily points.
  * - No interval: passed through to CoinGecko (`days` 1 or 90), cached 60 s
  *   for days 1, 10 min for 90. Fallback coins get CoinPaprika's hourly
  *   points for the last 23 hours (cached 30 min) at the current Bitcoin
@@ -494,10 +498,9 @@ export async function getMarketChart(params: MarketChartParams): Promise<{ price
   const fallback = fallbacks.get(id);
 
   if (interval === 'daily') {
-    const series = fallback ? await fallbackDaily(id, fallback, vs) : await geckoDaily(id, vs);
-    if (days === 'max') return { prices: series };
-    const fromMs = Date.now() - days * DAY_MS;
-    return { prices: series.filter(([ts]) => ts >= fromMs) };
+    const fromMs = days === 'max' ? null : Date.now() - days * DAY_MS;
+    const series = fallback ? await fallbackDaily(id, fallback, vs, fromMs) : await geckoDaily(id, vs);
+    return { prices: fromMs === null ? series : series.filter(([ts]) => ts >= fromMs) };
   }
 
   if (fallback) {
