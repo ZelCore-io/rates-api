@@ -110,8 +110,9 @@ function getDay(key: string): CachedDay | undefined {
  * Only CoinGecko ids ZelCore carries are served: the static list plus every
  * `coingeckoID` from coininfo.json, merged hourly by `getLatestCoinInfo`.
  * This keeps the endpoint from being an open proxy over all of CoinGecko.
+ * Shared with the Blockbook mirror (`services/blockbookMirror`).
  */
-function isSupportedId(geckoId: string): boolean {
+export function isSupportedId(geckoId: string): boolean {
   const source = coinAggregatorIDs.coingecko;
   if (!allowList || allowList.source !== source || allowList.length !== source.length) {
     allowList = { source, length: source.length, ids: new Set(source) };
@@ -166,7 +167,7 @@ function downsample(prices: PricePoint[], granularity: Granularity): PricePoint[
 }
 
 /** `Retry-After` as seconds or an HTTP date; undefined when absent or unusable. */
-function parseRetryAfterMs(value: unknown): number | undefined {
+export function parseRetryAfterMs(value: unknown): number | undefined {
   if (value === undefined || value === null || value === '') return undefined;
   const seconds = Number(value);
   if (Number.isFinite(seconds)) return seconds > 0 ? seconds * 1000 : undefined;

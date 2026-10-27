@@ -219,6 +219,159 @@ paths:
               schema:
                 $ref: '#/components/schemas/PriceHistoryError'
 
+  /v2/blockbook/api/v3/simple/supported_vs_currencies:
+    get:
+      summary: Quote currencies (CoinGecko shape)
+      description: >
+        CoinGecko v3 `simple/supported_vs_currencies` for Blockbook's fiat
+        downloader. Cached 24 hours. When CoinGecko can't be asked, the last
+        good list is served, or before the first answer a static list (the
+        price-history fiats plus btc, eth and vef). Always 200.
+      responses:
+        '200':
+          description: Lowercase currency codes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: [btc, eth, usd, eur]
+
+  /v2/blockbook/api/v3/simple/price:
+    get:
+      summary: Current prices (CoinGecko shape)
+      description: >
+        CoinGecko v3 `simple/price` for Blockbook's fiat downloader. Only the
+        configured explorer coins (bitcoin, groestlcoin) are served; any other
+        id is a 404. Each id is asked once for every supported currency and
+        cached 60 seconds, and any requested subset is answered from that.
+        Coins CoinGecko stopped tracking (groestlcoin) are priced from
+        CoinPaprika's USD price (cached 10 minutes) times Bitcoin's current
+        price ratio vs/usd. An upstream answer without a price is a 502 and is
+        not cached. Upstream use is budgeted per provider; a spent budget or
+        an upstream rate limit answers 429 with Retry-After.
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          description: Comma-separated CoinGecko ids, at most 10; only bitcoin and groestlcoin are served.
+          schema:
+            type: string
+            example: bitcoin,groestlcoin
+        - name: vs_currencies
+          in: query
+          required: true
+          description: Comma-separated quote currencies from supported_vs_currencies, at most 60.
+          schema:
+            type: string
+            example: usd,eur,btc
+      responses:
+        '200':
+          description: Prices by id and quote currency. Ids or currencies without a price are left out.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  additionalProperties:
+                    type: number
+              example:
+                bitcoin: { usd: 60000, eur: 50000 }
+        '400':
+          $ref: '#/components/responses/BlockbookBadRequest'
+        '404':
+          $ref: '#/components/responses/BlockbookCoinNotFound'
+        '429':
+          $ref: '#/components/responses/BlockbookRateLimited'
+        '502':
+          $ref: '#/components/responses/BlockbookUpstreamFailure'
+
+  /v2/blockbook/api/v3/coins/{id}/market_chart:
+    get:
+      summary: Price chart (CoinGecko shape, prices only)
+      description: >
+        CoinGecko v3 `coins/{id}/market_chart` for Blockbook's fiat
+        downloader; only `prices` is returned, null prices dropped. Only the
+        configured explorer coins (bitcoin, groestlcoin) are served; any other
+        id is a 404. An upstream answer without prices is a 502 and is not
+        cached.
+
+
+        With `interval=daily`, the answer is sliced (points with
+        ts >= now - days, or all for `max`) from one cached full daily series
+        per coin and currency, fresh until the next 00:20 UTC; while the
+        series lacks the newest closed day's 00:00 point it is asked again
+        every 10 minutes. Without `interval`, `days` must be 1 or 90 (the
+        windows Blockbook uses); it is passed through to CoinGecko and cached
+        60 seconds for 1, 10 minutes for 90.
+
+
+        Coins CoinGecko stopped tracking (groestlcoin): the daily series is
+        CoinGecko's history up to the day before the configured cut-over
+        (2026-07-20), then CoinPaprika's daily USD price (at most a year back)
+        converted with Bitcoin's same-day price; days without a Bitcoin price
+        are skipped. CoinGecko's history is only asked when the window starts
+        before the cut-over; if it can't be had, the answer is a 502, never a
+        partial history. Without `interval` they get CoinPaprika's hourly
+        points for the last 23 hours (cached 30 minutes) at the current
+        Bitcoin cross, whatever `days` asks for.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: CoinGecko coin id; only bitcoin and groestlcoin are served.
+          schema:
+            type: string
+            pattern: '^[a-z0-9-]{1,100}$'
+            example: bitcoin
+        - name: vs_currency
+          in: query
+          required: true
+          description: Quote currency from supported_vs_currencies.
+          schema:
+            type: string
+            example: usd
+        - name: days
+          in: query
+          required: true
+          description: With interval=daily an integer 1..36500 or `max`; without, 1 or 90.
+          schema:
+            type: string
+            example: '90'
+        - name: interval
+          in: query
+          required: false
+          description: Only `daily` is accepted.
+          schema:
+            type: string
+            enum: [daily]
+      responses:
+        '200':
+          description: Price points as [epochMs, price] pairs; daily points are at 00:00 UTC, plus CoinGecko's latest point.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prices:
+                    type: array
+                    items:
+                      type: array
+                      minItems: 2
+                      maxItems: 2
+                      items:
+                        type: number
+        '400':
+          $ref: '#/components/responses/BlockbookBadRequest'
+        '404':
+          $ref: '#/components/responses/BlockbookCoinNotFound'
+        '429':
+          $ref: '#/components/responses/BlockbookRateLimited'
+        '502':
+          $ref: '#/components/responses/BlockbookUpstreamFailure'
+
   /v2/found-contracts:
     get:
       summary: Get found contracts
@@ -260,6 +413,41 @@ paths:
           description: Prometheus metrics data.
 
 components:
+  responses:
+    BlockbookBadRequest:
+      description: Missing, repeated or malformed parameter, too many ids or currencies, or an unsupported quote currency.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PriceHistoryError'
+    BlockbookCoinNotFound:
+      description: ZelCore does not list this id, or the upstream answered 404 (remembered for 10 minutes).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PriceHistoryError'
+          example:
+            error: coin not found
+    BlockbookRateLimited:
+      description: >
+        An upstream budget (CoinGecko 30/min burst 10 and 3000/day; CoinPaprika
+        600/day burst 30) is spent, four calls to that provider are already in
+        flight, or the provider rate-limited us and its cooldown is running.
+      headers:
+        Retry-After:
+          description: Seconds until a retry can be admitted.
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PriceHistoryError'
+    BlockbookUpstreamFailure:
+      description: Upstream failure (outage, timeout, unusable answer). Never cached.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PriceHistoryError'
   schemas:
     PriceHistoryError:
       type: object

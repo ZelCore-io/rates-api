@@ -8,6 +8,7 @@ import zelcoreRatesV2 from './zelcoreRatesV2';
 import { getLatestCoinInfo } from './coinAggregatorIDs';
 import { getBstockHistory as getBstockHistoryData } from './bstocks';
 import { getPriceHistory as getPriceHistoryData, parsePriceHistoryParams, PriceHistoryError } from './priceHistory';
+import * as blockbookMirror from './blockbookMirror';
 import { checkContracts, foundContracts } from './newContracts';
 import { PricesResponse, FoundContractStore, MarketsData, RatesData } from '../types';
 
@@ -355,6 +356,80 @@ export async function getPriceHistory(req: Request, res: Response): Promise<void
   }
 }
 
+/** What a Blockbook-mirror 502 is logged with; filled once the parameters are validated. */
+interface MirrorLogContext {
+  id: string;
+  vs: string;
+}
+
+/**
+ * Sends a Blockbook-mirror result, or its MirrorError as `{error}` with the
+ * status and `Retry-After` it carries. Every 502 is logged as one line:
+ * route, id, vs and the internal reason.
+ */
+async function sendMirror(res: Response, route: string, work: (ctx: MirrorLogContext) => Promise<unknown>): Promise<void> {
+  const ctx: MirrorLogContext = { id: '-', vs: '-' };
+  try {
+    res.json(await work(ctx));
+  } catch (error) {
+    if (error instanceof blockbookMirror.MirrorError) {
+      if (error.status === 502) log.warn(`Blockbook mirror 502: ${route} id=${ctx.id} vs=${ctx.vs} reason=${error.reason ?? error.message}`);
+      if (error.retryAfterS) res.set('Retry-After', String(error.retryAfterS));
+      res.status(error.status).json({ error: error.message });
+      return;
+    }
+    log.error(error);
+    res.status(500).json({ error: 'Internal error' });
+  }
+}
+
+/**
+ * Handles the Blockbook mirror's `simple/supported_vs_currencies`: a JSON
+ * array of lowercase quote currency codes. Always 200 (falls back to the last
+ * good or a static list).
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ */
+export async function getBlockbookSupportedVs(req: Request, res: Response): Promise<void> {
+  await sendMirror(res, 'simple/supported_vs_currencies', () => blockbookMirror.getSupportedVsCurrencies());
+}
+
+/**
+ * Handles the Blockbook mirror's `simple/price?ids=a,b&vs_currencies=x,y`:
+ * `{id: {vs: price}}`. 400 on bad or unsupported parameters, 404
+ * `{"error":"coin not found"}` for an id the mirror doesn't serve, 429 +
+ * `Retry-After` when an upstream budget is spent, 502 on upstream failure.
+ *
+ * @param req - The Express request object (`query.ids`, `query.vs_currencies`).
+ * @param res - The Express response object.
+ */
+export async function getBlockbookSimplePrice(req: Request, res: Response): Promise<void> {
+  await sendMirror(res, 'simple/price', (ctx) => {
+    const { ids, vs } = blockbookMirror.parseSimplePriceParams(req.query.ids, req.query.vs_currencies);
+    ctx.id = ids.join(',');
+    ctx.vs = vs.join(',');
+    return blockbookMirror.getSimplePrice(ids, vs);
+  });
+}
+
+/**
+ * Handles the Blockbook mirror's
+ * `coins/:id/market_chart?vs_currency=x&days=N|max[&interval=daily]`:
+ * `{prices: [[epochMs, price], ...]}`. Errors as for `getBlockbookSimplePrice`.
+ *
+ * @param req - The Express request object (`params.id`, `query.vs_currency`, `query.days`, `query.interval`).
+ * @param res - The Express response object.
+ */
+export async function getBlockbookMarketChart(req: Request, res: Response): Promise<void> {
+  await sendMirror(res, 'market_chart', (ctx) => {
+    const params = blockbookMirror.parseMarketChartParams(req.params.id, req.query.vs_currency, req.query.days, req.query.interval);
+    ctx.id = params.id;
+    ctx.vs = params.vs;
+    return blockbookMirror.getMarketChart(params);
+  });
+}
+
 export default {
   getRates,
   getMarketsUsd,
@@ -367,4 +442,7 @@ export default {
   checkContractsV2,
   getBstockHistory,
   getPriceHistory,
+  getBlockbookSupportedVs,
+  getBlockbookSimplePrice,
+  getBlockbookMarketChart,
 };
