@@ -52,6 +52,47 @@ export const config = {
     defaultCooldownMs: 60 * 1000,
     maxCooldownMs: 60 * 60 * 1000,
   },
+  // /v2/blockbook/api/v3 serves the CoinGecko v3 subset Blockbook's fiat
+  // downloader calls (see services/blockbookMirror.ts). It is public and
+  // unauthenticated, so each upstream gets its own budget, separate from
+  // priceHistory's, per process:
+  // - CoinGecko Pro: 30/min (burst 10) and 3000/day, at most ~6% of the
+  //   Analyst plan's 500/min and ~90k credits a month at sustained abuse;
+  // - CoinPaprika free (no key, 20k calls/month): 600/day (burst 30), ~18k a
+  //   month at sustained abuse. Normal use is ~200/day per fallback coin.
+  // A spent budget, a full concurrency slot or a cooldown after an upstream
+  // 429 answers 429 + Retry-After: Blockbook only backs off on 429.
+  blockbookMirror: {
+    coinGecko: { perMinute: 30, burst: 10, perDay: 3000 },
+    coinPaprika: { perDay: 600, burst: 30 },
+    // Per provider.
+    maxConcurrentUpstream: 4,
+    // CoinPaprika request timeout. CoinGecko calls reuse the zero-retry
+    // price-history client and its priceHistory.upstreamTimeoutMs.
+    upstreamTimeoutMs: 15 * 1000,
+    // Full daily series per (id, vs), bounded by total point count (an
+    // entry's size is its point count + 1, ~85 B per point): ~42 MB. Bitcoin
+    // plus one fallback coin in 47 currencies is ~440k points.
+    dailySeriesMaxPoints: 500_000,
+    // Pass-through market_chart (days 1..90) responses, by point count.
+    chartCacheMaxPoints: 200_000,
+    notFoundCacheMs: 10 * 60 * 1000,
+    // After a failed supported_vs_currencies refresh the last good (or
+    // static) list is served this long before CoinGecko is asked again.
+    supportedVsRetryMs: 5 * 60 * 1000,
+    defaultCooldownMs: 60 * 1000,
+    maxCooldownMs: 60 * 60 * 1000,
+    maxIds: 10,
+    maxVsCurrencies: 60,
+    // Coins CoinGecko stopped tracking. Their history up to the day before
+    // `since` (UTC date) still comes from CoinGecko; from `since` on, and for
+    // current and intraday prices, from CoinPaprika's USD quote converted
+    // through Bitcoin's price.
+    fallbacks: {
+      groestlcoin: { coinpaprikaId: 'grs-groestlcoin', since: '2026-08-12' },
+    } as Record<string, { coinpaprikaId: string; since: string }>,
+  },
+  coinPaprikaUrl: 'https://api.coinpaprika.com/v1/',
 };
 
 export default config;
