@@ -65,20 +65,20 @@ export const config = {
   // day, after 01:00 UTC, asks for the daily series in its ~46 quote
   // currencies. Caches: simple/price 5 min, days=1 15 min, days=90 6 h.
   // - bitcoin: 288 + 96 + 4 = ~390 calls a day per host, ~780 for both;
-  // - 10 other CoinGecko coins at 900 s: price and days=1 can miss on every
+  // - 11 other CoinGecko coins at 900 s: price and days=1 can miss on every
   //   poll (2 x 96 each), days=90 at most 4 per host = ~390 a day each,
-  //   ~3,900 for all;
-  // - daily series: (11 CoinGecko coins + the frozen pre-`since` history of
-  //   2 fallback coins) x 46 currencies = ~600 a day per host, ~1,200 for
+  //   ~4,300 for all;
+  // - daily series: (12 CoinGecko coins + the frozen pre-`since` history of
+  //   2 fallback coins) x 46 currencies = ~650 a day per host, ~1,300 for
   //   both, the same for the one-time backfill (days=max is the same call);
   // - fallback coins (groestlcoin, bitcoin-gold) cost no CoinGecko call but
   //   those daily histories: bitcoin's price is shared with the bitcoin
   //   explorer's.
-  // That is ~5.9k a day, ~177k a month for the key. If all of it reaches one
-  // host it is ~4.9k a day there. Budget on the Analyst plan (500/min, ~500k
+  // That is ~6.4k a day, ~192k a month for the key. If all of it reaches one
+  // host it is ~5.4k a day there. Budget on the Analyst plan (500/min, ~500k
   // credits a month, shared with the rates refresher and priceHistory, up to
   // ~150k), per process:
-  // - CoinGecko Pro: 6,000/day (~20% headroom over one host taking it all;
+  // - CoinGecko Pro: 6,000/day (~11% headroom over one host taking it all;
   //   the bucket also refills 1/14.4 s, so a day's worth is never spendable in
   //   a burst), 100/min with burst 40: the 01:00 UTC wave of ~600 daily series
   //   clears in ~6 minutes, and any 60 s window is at most 140 calls, <=28% of
@@ -97,7 +97,7 @@ export const config = {
     // ids the explorers don't need. Each must also be a CoinGecko id ZelCore
     // lists (`isSupportedId`, checked by the tests).
     coins: [
-      'bitcoin', 'groestlcoin', 'litecoin', 'zcash', 'digibyte', 'dogecoin', 'dash', 'vertcoin', 'ravencoin', 'ethereum-classic', 'bitcoin-cash', 'bitcoin-gold', 'clore-ai',
+      'bitcoin', 'groestlcoin', 'litecoin', 'zcash', 'digibyte', 'dogecoin', 'dash', 'vertcoin', 'ravencoin', 'ethereum-classic', 'bitcoin-cash', 'bitcoin-gold', 'clore-ai', 'zcoin',
     ] as string[],
     coinGecko: { perMinute: 100, burst: 40, perDay: 6_000 },
     coinPaprika: { perDay: 600, burst: 30 },
