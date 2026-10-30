@@ -685,9 +685,9 @@ describe('upstream budget, cooldown and failures', () => {
 });
 
 describe('explorer coin allowlist', () => {
-  const NEW_COINS = ['litecoin', 'zcash', 'digibyte', 'dogecoin', 'dash', 'vertcoin', 'ravencoin', 'ethereum-classic', 'bitcoin-cash', 'bitcoin-gold', 'clore-ai', 'zcoin', 'zclassic'];
+  const NEW_COINS = ['litecoin', 'zcash', 'digibyte', 'dogecoin', 'dash', 'vertcoin', 'ravencoin', 'ethereum-classic', 'bitcoin-cash', 'bitcoin-gold', 'clore-ai', 'zcoin', 'zclassic', 'zero'];
 
-  it('serves the original explorers and the 13 added coins', () => {
+  it('serves the original explorers and the 14 added coins', () => {
     expect(new Set(config.blockbookMirror.coins)).toEqual(new Set(['bitcoin', 'groestlcoin', ...NEW_COINS]));
   });
 
