@@ -697,7 +697,7 @@ describe('explorer coin allowlist', () => {
     expect(Object.keys(fallbacks).filter((id) => !coins.includes(id))).toEqual([]);
   });
 
-  it.each(NEW_COINS.filter((id) => id !== 'bitcoin-gold'))('prices %s from CoinGecko and keeps %s\'s daily series separate', async (id) => {
+  it.each(NEW_COINS.filter((id) => !Object.keys(config.blockbookMirror.fallbacks).includes(id)))('prices %s from CoinGecko and keeps %s\'s daily series separate', async (id) => {
     const gecko = mockGecko();
     const paprika = mockPaprika();
     await expect(getSimplePrice([id], ['usd'])).resolves.toEqual({ [id]: { usd: 2 } });
@@ -714,6 +714,27 @@ describe('explorer coin allowlist', () => {
     await expectMirrorError(chart('ethereum', 'usd', 'max', 'daily'), 404);
     expect(gecko.getSimplePrice).not.toHaveBeenCalled();
     expect(gecko.getMarketChart).not.toHaveBeenCalled();
+  });
+});
+
+describe('komodo fallback (CoinGecko drifted from 2026-08-02, stopped on 2026-11-04)', () => {
+  it('prices it from CoinPaprika kmd-komodo through Bitcoin, with no CoinGecko call of its own', async () => {
+    const gecko = mockGecko();
+    const paprika = mockPaprika();
+    const out = await getSimplePrice(['komodo'], ['usd', 'eur']);
+    expect(out.komodo.usd).toBeCloseTo(0.6);
+    expect(out.komodo.eur).toBeCloseTo(0.6 * (50000 / 60000));
+    expect(paprika.getTicker).toHaveBeenCalledWith('kmd-komodo');
+    expect(gecko.getSimplePrice.mock.calls.every((c) => c[0][0] === 'bitcoin')).toBe(true);
+  });
+
+  it('serves the days=1 chart from CoinPaprika hourly points, never CoinGecko komodo', async () => {
+    const gecko = mockGecko();
+    const paprika = mockPaprika();
+    const { prices } = await chart('komodo', 'usd', '1');
+    expect(prices.length).toBeGreaterThan(20);
+    expect(paprika.getHistorical).toHaveBeenCalledWith('kmd-komodo', String(Math.floor((nowMs - 23 * 3600_000) / 1000)), '1h', 'usd');
+    expect(gecko.getMarketChart.mock.calls.some((c) => c[0] === 'komodo')).toBe(false);
   });
 });
 
