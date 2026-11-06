@@ -36,7 +36,9 @@ const SUPPORTED_VS_TTL_MS = DAY_MS;
 const SIMPLE_PRICE_TTL_MS = 5 * MINUTE_MS;
 const SHORT_CHART_TTL_MS = 15 * MINUTE_MS;
 const LONG_CHART_TTL_MS = 6 * HOUR_MS;
-const TICKER_TTL_MS = 10 * MINUTE_MS;
+// Not shorter than Blockbook's 900 s poll: at most one CoinPaprika ticker call
+// per fallback coin every 15 minutes, however many explorers ask.
+const TICKER_TTL_MS = 15 * MINUTE_MS;
 const HOURLY_TTL_MS = 30 * MINUTE_MS;
 /** CoinPaprika's free plan serves 1h points only for a start within ~24 h. */
 const HOURLY_LOOKBACK_MS = 23 * HOUR_MS;
@@ -301,7 +303,7 @@ function crossRate(vs: string, bitcoin: Record<string, number>): number | undefi
   return Number.isFinite(rate) && rate > 0 ? rate : undefined;
 }
 
-/** CoinPaprika's current USD price, cached 10 min. */
+/** CoinPaprika's current USD price, cached 15 min. */
 function paprikaUsdPrice(coinpaprikaId: string): Promise<number> {
   return cached('ticker', tickerCache, coinpaprikaId, (now) => now + TICKER_TTL_MS, coinPaprika, async () => {
     const data = await CoinPaprika.getInstance().getTicker(coinpaprikaId);
@@ -512,6 +514,24 @@ export function parseMarketChartParams(id: unknown, vsCurrency: unknown, days: u
   return {
     id: coin, vs, days: n, interval: 'daily',
   };
+}
+
+/**
+ * CoinPaprika USD prices of the fallback coins (`config.blockbookMirror.fallbacks`),
+ * from the same cached ticker the explorers use, so asking costs no extra
+ * upstream calls. A coin whose price can't be had (budget spent, upstream
+ * failure) is left out and logged.
+ */
+export async function getFallbackUsdPrices(): Promise<Record<string, number>> {
+  const out: Record<string, number> = {};
+  await Promise.all([...fallbacks].map(async ([id, fallback]) => {
+    try {
+      out[id] = await paprikaUsdPrice(fallback.coinpaprikaId);
+    } catch (error) {
+      log.warn(`Fallback price for ${id} unavailable: ${error instanceof MirrorError ? (error.reason ?? error.message) : (error as Error)?.message}`);
+    }
+  }));
+  return out;
 }
 
 /**

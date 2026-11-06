@@ -85,10 +85,10 @@ export const config = {
   //   the plan. The ids are an allowlist and every answer is cached, so abuse
   //   (varying vs on charts) can't go past these caps; both hosts sustained at
   //   the cap are 470k credits a month;
-  // - CoinPaprika free (no key, 20k calls/month): 600/day (burst 30). The two
-  //   fallback coins cost ~240 a day each in the worst case (ticker 10 min
-  //   against a 900 s poll: 2 x 96; hourly 30 min: 48; daily: 1), 480 in
-  //   total, ~14.5k a month.
+  // - CoinPaprika free (no key, 20k calls/month): 600/day (burst 30). The three
+  //   fallback coins cost ~145 a day each in the worst case (ticker 15 min,
+  //   not shorter than Blockbook's 900 s poll: 96; hourly 30 min: 48; daily:
+  //   1), 435 in total, ~13k a month.
   // A spent budget, a full concurrency slot or a cooldown after an upstream
   // 429 answers 429 + Retry-After: Blockbook only backs off on 429.
   blockbookMirror: {
@@ -135,6 +135,10 @@ export const config = {
       // CoinGecko's price froze at $0.2338 on 2026-07-27 (13:25 UTC); the
       // 07-27 point is its last, so CoinPaprika (live) takes over on that day.
       'bitcoin-gold': { coinpaprikaId: 'btg-bitcoin-gold', since: '2026-07-27' },
+      // CoinGecko's komodo series drifted from the market (1-5x XT, the only
+      // exchange with volume) from 2026-08-02 and stopped on 2026-11-04, so
+      // its 1-day chart is empty. CoinPaprika tracks XT.
+      komodo: { coinpaprikaId: 'kmd-komodo', since: '2026-08-02' },
     } as Record<string, { coinpaprikaId: string; since: string }>,
   },
   coinPaprikaUrl: 'https://api.coinpaprika.com/v1/',

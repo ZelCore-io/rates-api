@@ -2,6 +2,7 @@ import { coinAggregatorIDs } from './coinAggregatorIDs';
 import * as log from '../lib/log';
 import { CoinGecko, BitPay, CryptoCompare, LiveCoinWatch } from './providers';
 import { getBstockPrices, isBstocksDegraded, getLastGoodBstockPrices } from './bstocks';
+import { getFallbackUsdPrices } from './blockbookMirror';
 import { PricesResponse, CryptoPrice, ICurrencyRate } from '../types';
 
 /**
@@ -99,6 +100,29 @@ export async function getAll(): Promise<PricesResponse> {
     log.error('CoinGecko error');
     log.error(e);
     errors.coingecko = true;
+  }
+
+  // Coins CoinGecko stopped tracking or misprices (the explorers' fallback
+  // coins, config.blockbookMirror.fallbacks). Wallets look them up by
+  // coingeckoID, so their coingecko row is priced from CoinPaprika, its BTC
+  // rate crossed through CoinGecko's Bitcoin price; a coin CoinGecko dropped
+  // gets a row again. Without a Bitcoin row or a CoinPaprika price the row
+  // stays as CoinGecko gave it.
+  const bitcoinUsd = processed.find((c) => c.provider === 'coingecko' && c.id === 'bitcoin')?.rates.usd;
+  if (bitcoinUsd) {
+    const fallbackPrices = await getFallbackUsdPrices();
+    Object.entries(fallbackPrices).forEach(([id, usd]) => {
+      const rates = { btc: usd / bitcoinUsd, usd };
+      const row = processed.find((c) => c.provider === 'coingecko' && c.id === id);
+      if (row) {
+        row.rates = rates;
+        row.market = row.supply ? row.supply * usd : 0;
+      } else {
+        processed.push({
+          id, provider: 'coingecko', rates, supply: 0, volume: 0, change24h: 0, market: 0,
+        });
+      }
+    });
   }
 
   // Fetch cryptocurrency prices from CryptoCompare

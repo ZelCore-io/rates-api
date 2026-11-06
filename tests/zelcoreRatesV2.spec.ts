@@ -10,6 +10,10 @@ jest.mock('../src/services/providers', () => ({
   CryptoCompare: { getInstance: jest.fn() },
   LiveCoinWatch: { getInstance: jest.fn() },
 }));
+jest.mock('../src/services/blockbookMirror', () => ({
+  __esModule: true,
+  getFallbackUsdPrices: jest.fn(async () => ({})),
+}));
 jest.mock('../src/services/bstocks', () => ({
   __esModule: true,
   getBstockPrices: jest.fn(),
@@ -22,6 +26,8 @@ import { CoinGecko, BitPay, CryptoCompare, LiveCoinWatch } from '../src/services
 import { getBstockPrices, isBstocksDegraded } from '../src/services/bstocks';
 // eslint-disable-next-line import/first
 import { getAll } from '../src/services/zelcoreRatesV2';
+// eslint-disable-next-line import/first
+import { getFallbackUsdPrices } from '../src/services/blockbookMirror';
 // eslint-disable-next-line import/first
 import { coinAggregatorIDs } from '../src/services/coinAggregatorIDs';
 // eslint-disable-next-line import/first
@@ -185,4 +191,49 @@ it('does not set errors.binance when bStocks is healthy', async () => {
 
   const result = await getAll();
   expect(result.errors?.binance).toBeUndefined();
+});
+
+describe('coins CoinGecko stopped tracking (the explorers\' fallback coins)', () => {
+  const mockedFallback = getFallbackUsdPrices as jest.MockedFunction<typeof getFallbackUsdPrices>;
+  let vsIsBtc = true;
+  const geckoRow = (id: string, btc: number, usd: number) => ({ id, current_price: vsIsBtc ? btc : usd, circulating_supply: 1000, total_volume: 0, price_change_percentage_24h: null, market_cap: 1, market_cap_rank: 9, total_supply: 1000 });
+
+  beforeEach(() => {
+    mockedGetBstockPrices.mockResolvedValue([]);
+    mockedIsBstocksDegraded.mockReturnValue(false);
+    MockedCoinGecko.getInstance.mockReturnValue({
+      getExchangeRates: jest.fn(async (_ids: string[], vs?: string) => {
+        vsIsBtc = vs !== 'usd';
+        return [geckoRow('bitcoin', 1, 50000), geckoRow('komodo', 1.4e-7, 0.0072)];
+      }),
+    } as never);
+  });
+
+  it('prices the CoinGecko row from CoinPaprika, crossing BTC through CoinGecko bitcoin', async () => {
+    mockedFallback.mockResolvedValue({ komodo: 0.003 });
+    const { crypto } = await getAll();
+    const kmd = crypto.filter((c) => c.provider === 'coingecko' && c.id === 'komodo');
+    expect(kmd).toHaveLength(1);
+    expect(kmd[0].rates.usd).toBe(0.003);
+    expect(kmd[0].rates.btc).toBeCloseTo(0.003 / 50000, 15);
+    expect(kmd[0].market).toBeCloseTo(3);
+  });
+
+  it('adds a row for a fallback coin CoinGecko no longer returns', async () => {
+    mockedFallback.mockResolvedValue({ groestlcoin: 0.025 });
+    const { crypto } = await getAll();
+    expect(crypto.find((c) => c.provider === 'coingecko' && c.id === 'groestlcoin')?.rates).toEqual({ btc: 0.025 / 50000, usd: 0.025 });
+  });
+
+  it('keeps the CoinGecko row when CoinPaprika has no price', async () => {
+    mockedFallback.mockResolvedValue({});
+    const { crypto } = await getAll();
+    expect(crypto.find((c) => c.provider === 'coingecko' && c.id === 'komodo')?.rates.usd).toBe(0.0072);
+  });
+
+  it('does not ask CoinPaprika when CoinGecko is down', async () => {
+    MockedCoinGecko.getInstance.mockReturnValue({ getExchangeRates: jest.fn().mockRejectedValue(new Error('down')) } as never);
+    await getAll();
+    expect(mockedFallback).not.toHaveBeenCalled();
+  });
 });
